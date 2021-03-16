@@ -1,7 +1,5 @@
 package company.store.shelve.goods;
 
-
-// TODO Refactor as Interface? -> .class ?
 public class Goods {
 
     private String name;
