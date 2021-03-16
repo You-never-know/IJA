@@ -1,3 +1,7 @@
+package company.store.shelve;
+
+import company.store.shelve.goods.Goods;
+
 // TODO HTH include goods?
 // TODO Refactor as Interface?
 public class Shelve {
