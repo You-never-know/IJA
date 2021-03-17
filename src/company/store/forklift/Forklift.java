@@ -1,9 +1,8 @@
 package company.store.forklift;
 
+import company.store.request.action.Action;
 import company.store.shelve.goods.Goods;
 import company.store.request.Request;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Forklift {
@@ -22,4 +21,23 @@ public class Forklift {
         this.coordinates = coordinates;
     }
 
+    public int[] getCoordinates() {
+        return coordinates;
+    }
+
+    public int[][] getPath() {
+        return path;
+    }
+
+    /* TODO A star baby
+    public int[][] countPath(){
+        ;
+    }
+    */
+
+    public void doAction(){
+        Action action = this.request.popFirstActionsList();
+        // TODO + how to GUI?
+        this.request.pushActionsDoneList(action);
+    }
 }
