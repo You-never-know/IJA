@@ -1,18 +1,19 @@
 package company.store.shelve;
 
 import company.store.shelve.goods.Goods;
+import company.store.shelve.goods.coordinates.Coordinates;
 
 public class Shelve {
 
     private int id;
-    private int[] coordinates;
+    private Coordinates coordinates;
     private ShelveStatus status;
     private Goods goods;
 
-    public Shelve(int id, int[] coordinates) {
+    public Shelve(int id, int x, int y) {
 
         this.id = id;
-        this.coordinates = coordinates;
+        this.coordinates = new Coordinates(x,y);
         this.status = ShelveStatus.FREE;
         this.goods = null;
     }
@@ -26,6 +27,10 @@ public class Shelve {
 
     public void setGoods(Goods goods) {
         this.goods = goods;
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
     }
 
     public void sellGoods(int count) {
@@ -48,7 +53,7 @@ public class Shelve {
         return id;
     }
 
-    public int[] getCoordinates() {
+    public Coordinates getCoordinates() {
         return coordinates;
     }
 

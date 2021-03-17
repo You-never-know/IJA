@@ -1,20 +1,22 @@
 package company.store.shelve.goods;
 
+import company.store.shelve.goods.coordinates.Coordinates;
+
 public class Goods {
 
     private String name;
     private int id;
     private int itemWeight;
     private int count;
-    private int[] coordinates;
+    private Coordinates coordinates;
 
 
-    public Goods(String name, int id, int itemWeight, int count, int[] coordinates) {
+    public Goods(String name, int id, int itemWeight, int count, int x, int y) {
         this.name = name;
         this.id = id;
         this.itemWeight = itemWeight;
         this.count = count;
-        this.coordinates = coordinates;
+        this.coordinates = new Coordinates(x,y);
     }
 
     public void sellItem(int sold) {
@@ -38,8 +40,11 @@ public class Goods {
         return this.count;
     }
 
-    public int[] getCoordinates() {
+    public Coordinates getCoordinates() {
         return coordinates;
     }
 
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
 }
