@@ -28,19 +28,19 @@ public class Shelve {
         this.goods = goods;
     }
 
-    public void sellGoods(int count){
+    public void sellGoods(int count) {
         this.goods.sellItem(count);
     }
 
-    public int getGoodsId(){
+    public int getGoodsId() {
         return this.goods.getId();
     }
 
-    public int getGoodsCount(){
+    public int getGoodsCount() {
         return this.goods.getCount();
     }
 
-    public int getGoodsWeight(){
+    public int getGoodsWeight() {
         return this.goods.getItemWeight();
     }
 
