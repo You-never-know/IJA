@@ -31,7 +31,6 @@ public class Store {
 			int ySize = Integer.parseInt(strSizeArray[1]);
 			//TODO err parsed not int
 			this.map = new int[xSize][ySize];
-			// TODO load map from file
 			String line;
 			int lineCounter = 0;
 			while ((line = br.readLine()) != null) {
@@ -48,8 +47,6 @@ public class Store {
 					this.map[x][lineCounter] = Integer.parseInt(strMapContent[x]);
 					//TODO err parsed not int
 				}
-
-				// TODO loop: str to int + assign to map array
 				lineCounter++;
 			}
 		} catch(Exception e) {
