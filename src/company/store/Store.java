@@ -6,9 +6,6 @@ import company.store.request.Request;
 import company.store.shelve.goods.Goods;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import java.util.List;
 
@@ -32,15 +29,28 @@ public class Store {
 			String[] strSizeArray = (br.readLine()).split(" ");
 			int xSize = Integer.parseInt(strSizeArray[0]);
 			int ySize = Integer.parseInt(strSizeArray[1]);
+			//TODO err parsed not int
 			this.map = new int[xSize][ySize];
 			// TODO load map from file
 			String line;
+			int lineCounter = 0;
 			while ((line = br.readLine()) != null) {
+				if(lineCounter >= ySize){
+					break;
+					// TODO err *panik* + > VS >= ?
+				}
 				String[] strMapContent = line.split(" ");
 				if(strMapContent.length != xSize){
 					// TODO err
 				}
+
+				for (int x = 0; x < xSize; x++) {
+					this.map[x][lineCounter] = Integer.parseInt(strMapContent[x]);
+					//TODO err parsed not int
+				}
+
 				// TODO loop: str to int + assign to map array
+				lineCounter++;
 			}
 		} catch(Exception e) {
 			// TODO catch errors
