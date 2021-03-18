@@ -4,6 +4,11 @@ import company.store.forklift.Forklift;
 import company.store.shelve.Shelve;
 import company.store.request.Request;
 import company.store.shelve.goods.Goods;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import java.util.List;
 
@@ -22,21 +27,25 @@ public class Store {
 	}
 
 	public void setMap(String filePath) {
-		// TODO import reader
-		String[] strSizeArray = (filePath.readLine()).split(" ");
-		int xSize = Integer.parseInt(strSizeArray[0]);
-		int ySize = Integer.parseInt(strSizeArray[1]);
-		// TODO catch errors
-		this.map = new int[xSize][ySize];
-		// TODO load map from file
-		line = filePath.readLine();
-		while (line!= null){
-			String[] strMapContent = (filePath.readLine()).split(" ");
-			if(strMapContent.length != xSize){
-				// TODO err
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filePath));
+			String[] strSizeArray = (br.readLine()).split(" ");
+			int xSize = Integer.parseInt(strSizeArray[0]);
+			int ySize = Integer.parseInt(strSizeArray[1]);
+			this.map = new int[xSize][ySize];
+			// TODO load map from file
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] strMapContent = line.split(" ");
+				if(strMapContent.length != xSize){
+					// TODO err
+				}
+				// TODO loop: str to int + assign to map array
 			}
-			// TODO loop: str to int + assign to map array
-			line = filePath.readLine();
+		} catch(Exception e) {
+			// TODO catch errors
 		}
 	}
+
+
 }
