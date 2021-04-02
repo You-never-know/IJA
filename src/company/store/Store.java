@@ -5,52 +5,86 @@ import company.store.shelve.Shelve;
 import company.store.request.Request;
 import company.store.shelve.goods.Goods;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 public class Store {
 
 	private List<Shelve> shelvesList;
-	private List<Goods> goodsList; // TODO had to be #map from pdf skeleton... is this needed? Why?
+	private List<Goods> goodsList;
 	private List<Forklift> freeForkliftsList;
 	private List<Forklift> workingForkliftsList;
 	private List<Request> requestsList;
 	private List<Request> doneRequestsList;
 	private int[][] map;
+	private int width;
+	private int height;
 
 	public Store () {
-	;
+		shelvesList = new ArrayList<>();
+		goodsList = new ArrayList<>();
+		freeForkliftsList = new ArrayList<>();
+		workingForkliftsList = new ArrayList<>();
+		requestsList = new ArrayList<>();
+		doneRequestsList = new ArrayList<>();
 	}
 
+	public int GetWidth() { return width; }
+
+	public int GetHeight() { return height; }
+
 	public void setMap(String filePath) {
+
+		BufferedReader br = null;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filePath));
-			String[] strSizeArray = (br.readLine()).split(" ");
-			int xSize = Integer.parseInt(strSizeArray[0]);
-			int ySize = Integer.parseInt(strSizeArray[1]);
-			//TODO err parsed not int
-			this.map = new int[xSize][ySize];
-			String line;
-			int lineCounter = 0;
+			br = new BufferedReader(new FileReader(filePath));
+		} catch (FileNotFoundException e) {
+			System.err.println("File not found, try again"); // TODO write this in GUI
+			return;
+		}
+
+		String[] strSizeArray = null;
+		try {
+			strSizeArray = (br.readLine()).split(" ");
+			width = Integer.parseInt(strSizeArray[0]);
+			height = Integer.parseInt(strSizeArray[1]);
+		} catch (IOException e) {
+			System.err.println("Error while reading a file"); // TODO write this in GUI
+			return;
+		} catch (NumberFormatException e) {
+			System.err.println("Wrong format of the input file"); // TODO write this in GUI
+			return;
+		}
+
+		this.map = new int[width][height]; // TODO is it the other way around because of GridPane ?
+		String line;
+		int lineCounter = 0;
+
+		try {
 			while ((line = br.readLine()) != null) {
-				if(lineCounter >= ySize){
-					break;
-					// TODO err *panik* + > VS >= ?
+				if (lineCounter >= height) {
+					System.err.println("Wrong number of rows given, check the input map file"); // TODO write this in GUI
+					return;
 				}
 				String[] strMapContent = line.split(" ");
-				if(strMapContent.length != xSize){
-					// TODO err
+				if (strMapContent.length != width) {
+					System.err.println("Wrong number of cols given, check the input map file"); // TODO write this in GUI
+					return;
 				}
-
-				for (int x = 0; x < xSize; x++) {
+				for (int x = 0; x < width; x++) {
 					this.map[x][lineCounter] = Integer.parseInt(strMapContent[x]);
-					//TODO err parsed not int
 				}
 				lineCounter++;
 			}
-		} catch(Exception e) {
-			// TODO catch errors
+		} catch (IOException e) {
+			System.err.println("Error while reading a file"); // TODO write this in GUI
+			return;
+		} catch (NumberFormatException e) {
+			System.err.println("Wrong format of the input file"); // TODO write this in GUI
+			return;
 		}
 	}
 
