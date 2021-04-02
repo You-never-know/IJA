@@ -13,7 +13,7 @@ public class StoreManager extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		GridPane root = new GridPane();
-		Scene scene = new Scene(root, 1600, 1200);
+		Scene scene = new Scene(root, 1200, 800);
 		primaryStage.setTitle("My warehouse");
 		primaryStage.setScene(scene);
 		primaryStage.show();
