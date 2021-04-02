@@ -5,15 +5,17 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class StoreManager extends Application {
 
 	@Override
-	public void start(Stage primaryStage) throws Exception{
-		Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-		primaryStage.setTitle("Hello World");
-		primaryStage.setScene(new Scene(root, 300, 275));
+	public void start(Stage primaryStage) {
+		GridPane root = new GridPane();
+		Scene scene = new Scene(root, 1600, 1200);
+		primaryStage.setTitle("My warehouse");
+		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 
