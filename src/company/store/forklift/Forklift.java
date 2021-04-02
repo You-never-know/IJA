@@ -11,9 +11,9 @@ public class Forklift {
 
     private int id;
     private Request request;
-    List<Goods> goodsList;
+    private List<Goods> goodsList;
     private Coordinates coordinates;
-    List<Coordinates> path;
+    private List<Coordinates> path;
     private int weightBearing;
     private int piecesBearing;
     private ForkliftStatus status;
