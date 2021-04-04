@@ -1,13 +1,14 @@
 package company;
 
+import controller.Controller;
 import company.store.Store;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class StoreManager extends Application {
 
@@ -15,23 +16,24 @@ public class StoreManager extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		store = new Store();
-		store.setMap("/home/dany/Skola/IJA/projekt/IJA/inputs/map1010.in"); // TODO pridať textove okienko, kde zadá cestu k súboru, pripadne nejaké vždy určiť
-		int h = store.GetHeight(); // TODO Scene Builder build the GUI first
-		int w = store.GetWidth();
+		// store = new Store();
+		// store.setMap("/home/dany/Skola/IJA/projekt/IJA/inputs/map1010.in"); // TODO pridať textove okienko, kde zadá cestu k súboru, pripadne nejaké vždy určiť
+		// int h = store.GetHeight(); // TODO Scene Builder build the GUI first
+		// int w = store.GetWidth();
 
-		BorderPane screen = new BorderPane();
-		GridPane pane = new GridPane();
-		pane.setPrefSize(w,h);
-		VBox menu = new VBox();
-		screen.setRight(menu);
-		screen.setCenter(pane);
-
-
-		Scene scene = new Scene(screen, 1200, 800);
-		primaryStage.setTitle("My warehouse");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		Parent root = null;
+		try {
+			root = FXMLLoader.load(StoreManager.class.getResource("WarehouseGUI.fxml"));
+		} catch (IOException e) {
+			System.err.println("GUI not found"); // TODO write this in GUI
+			System.exit(1);
+		}
+		if (root != null) {
+			Scene scene = new Scene(root, 1200, 800);
+			primaryStage.setTitle("My warehouse");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		}
 	}
 
 

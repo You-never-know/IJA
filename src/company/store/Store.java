@@ -59,7 +59,7 @@ public class Store {
 			return;
 		}
 
-		this.map = new int[width][height]; // TODO is it the other way around because of GridPane ?
+		this.map = new int[width][height];
 		String line;
 		int lineCounter = 0;
 
