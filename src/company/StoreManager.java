@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class StoreManager extends Application {
 
@@ -23,9 +24,11 @@ public class StoreManager extends Application {
 
 		Parent root = null;
 		try {
-			root = FXMLLoader.load(StoreManager.class.getResource("WarehouseGUI.fxml"));
+			URL url = StoreManager.class.getResource("../controller/WarehouseGUI.fxml");
+			System.out.println("Value URL = " + url);
+			root = FXMLLoader.load(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
 		} catch (IOException e) {
-			System.err.println("GUI not found"); // TODO write this in GUI
+			System.err.println(e); // TODO write this in GUI
 			System.exit(1);
 		}
 		if (root != null) {
