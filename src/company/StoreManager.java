@@ -24,8 +24,6 @@ public class StoreManager extends Application {
 
 		Parent root = null;
 		try {
-			URL url = StoreManager.class.getResource("../controller/WarehouseGUI.fxml");
-			System.out.println("Value URL = " + url);
 			root = FXMLLoader.load(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
 		} catch (IOException e) {
 			System.err.println(e); // TODO write this in GUI
@@ -33,7 +31,7 @@ public class StoreManager extends Application {
 		}
 		if (root != null) {
 			Scene scene = new Scene(root, 1200, 800);
-			primaryStage.setTitle("My warehouse");
+			primaryStage.setTitle("Warehouse manager");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		}

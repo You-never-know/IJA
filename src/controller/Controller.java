@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 public class Controller {
 
@@ -64,37 +65,37 @@ public class Controller {
     private TextField add_good_name;
 
     @FXML
-    void load_map(ActionEvent event) {
+    void load_map(MouseEvent event) {
 
     }
 
     @FXML
-    void load_goods(ActionEvent event) {
+    void load_goods(MouseEvent event) {
 
     }
 
     @FXML
-    void add_item_to_list(ActionEvent event) {
+    void add_item_to_list(MouseEvent event) {
 
     }
 
     @FXML
-    void submit_shoping_list(ActionEvent event) {
+    void submit_shoping_list(MouseEvent event) {
 
     }
 
     @FXML
-    void clear_shoping_list(ActionEvent event) {
+    void clear_shoping_list(MouseEvent event) {
 
     }
 
     @FXML
-    void add_barrier(ActionEvent event) {
+    void add_barrier(MouseEvent event) {
 
     }
 
     @FXML
-    void remove_barrier(ActionEvent event) {
+    void remove_barrier(MouseEvent event) {
 
     }
 
