@@ -1,5 +1,6 @@
 package company;
 
+import company.store.forklift.Forklift;
 import controller.Controller;
 import company.store.Store;
 import javafx.application.Application;
@@ -32,6 +33,8 @@ public class StoreManager extends Application {
             System.exit(1);
         }
         root = setUP_Store(root);
+        // odkomentuj pre testovanie
+        //test_forklift();
         Scene scene = new Scene(root, 1200, 800);
         primaryStage.setTitle("Warehouse manager");
         primaryStage.setScene(scene);
@@ -40,6 +43,12 @@ public class StoreManager extends Application {
 
     public void set_map_path(String path) {
         map_path = path;
+    }
+
+    public void test_forklift () {
+        Forklift fork = new Forklift(1,2,0,store);
+        // volaj funkcie ake len chces
+
     }
 
     public SplitPane setUP_Store(SplitPane root) {
