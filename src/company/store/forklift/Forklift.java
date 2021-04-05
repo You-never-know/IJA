@@ -2,9 +2,10 @@ package company.store.forklift;
 
 import company.store.request.action.Action;
 import company.store.shelve.goods.Goods;
+import company.StoreManager;
+import company.store.Store;
 import company.store.request.Request;
 import company.store.shelve.goods.coordinates.Coordinates;
-import company.store.Store;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,10 +86,12 @@ public class Forklift {
 
         open.add(position);
         predecessorsOpen.add(null);
+        /*
         System.out.println(predecessorsOpen);
         if(predecessorsOpen.get(0) == null){
             System.out.println("tadah");
          }
+         */
         while (!open.isEmpty()) {
 
             /* find node to be expanded */
@@ -111,6 +114,7 @@ public class Forklift {
             Coordinates expanding = open.get(toExpand);
             if(expanding == destination){
                 this.path = pathRecursion(closed,predecessorsClosed,expanding);
+                System.out.println(this.path);
             }
             int predecessor = predecessorsOpen.get(toExpand);
             open.remove(toExpand);
@@ -140,12 +144,12 @@ public class Forklift {
                         open.add(expandList.get(j));
                         predecessorsOpen.add(toExpand);
                     }else{
-                        if(open.indexOf(expandList.get(j))!=-1){
+                        if(open.contains(expandList.get(j))){
                             if(open.get(open.indexOf(expandList.get(j))).getHeuristicValue(destination) > expandList.get(j).getHeuristicValue(destination)){
                                 predecessorsOpen.add(open.indexOf(expandList.get(j)),toExpand);
                             }
 
-                        }else if(closed.indexOf(expandList.get(j))!=-1){
+                        }else if(closed.contains(expandList.get(j))){
                             if(closed.get(closed.indexOf(expandList.get(j))).getHeuristicValue(destination) > expandList.get(j).getHeuristicValue(destination)){
                                 Coordinates moving = closed.get(closed.indexOf(expandList.get(j)));
                                 closed.remove(expandList.get(j));
@@ -163,15 +167,11 @@ public class Forklift {
     }
 
     public boolean isValidCoordinate(Coordinates coordinates) {
-        if (coordinates.getX() < mapWidth && coordinates.getX() >= 0 && coordinates.getY() < mapHeight && coordinates.getY() >= 0) {
-            return true;
-        }
-        return false;
+        return coordinates.getX() < store.GetWidth() && coordinates.getX() >= 0 && coordinates.getY() < store.GetHeight() && coordinates.getY() >= 0;
     }
 
     public boolean isNotBlocked(Coordinates coordinates) {
-        //TODO - is not block or shelve
-        return true;
+        return store.GetMapValue(coordinates.getX(), coordinates.getY()) != 1 && store.GetMapValue(coordinates.getX(), coordinates.getY()) != 2;
     }
 
     public List<Coordinates> pathRecursion(List<Coordinates> list, List<Integer> predecessors, Coordinates node){
