@@ -54,13 +54,12 @@ public class StoreManager extends Application {
         NumberBinding rects_height = Bindings.max(pane.heightProperty(),0);
         NumberBinding rects_width = Bindings.max(0,pane.widthProperty());
         warehouse.setStyle("-fx-background-color: white;");
-        int [][] map = store.GetMap();
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 Rectangle rec = new Rectangle(20,40);
                 rec.widthProperty().bind(rects_width.divide((double)w).subtract(1));
                 rec.heightProperty().bind(rects_height.divide((double)h).subtract(1));
-                if (map[i][j] == 0) {
+                if (store.GetMapValue(i,j) == 0) {
                     rec.setStyle("-fx-fill: white;-fx-stroke: transparent; -fx-stroke-width: 1;");
                 }
                 else {

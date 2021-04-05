@@ -38,7 +38,13 @@ public class Store {
 
 	public int GetHeight() { return height; }
 
-	public int[][] GetMap() { return map; }
+	public int GetMapValue(int row, int coll)
+	{
+		if (row >= height || coll >= width) {
+			return -1;
+		}
+		return map[row][coll];
+	}
 
 	public boolean setMap(String filePath) {
 		BufferedReader br = null;
