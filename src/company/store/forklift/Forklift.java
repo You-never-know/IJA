@@ -4,6 +4,7 @@ import company.store.request.action.Action;
 import company.store.shelve.goods.Goods;
 import company.store.request.Request;
 import company.store.shelve.goods.coordinates.Coordinates;
+import company.store.Store;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +19,7 @@ public class Forklift {
     private int weightBearing;
     private int piecesBearing;
     private ForkliftStatus status;
-    private int mapWidth;
-    private int mapHeight;
-    private int[][] map;
+    private Store store;
 
     public enum ForkliftStatus {
         TOP(3), BOTTOM(4), LEFT(5), RIGHT(6); //TODO 8 , 9, 10 bad numbers
@@ -39,14 +38,12 @@ public class Forklift {
     public Forklift(){
         this.coordinates = new Coordinates(2, 0);
     }
-    public Forklift(int id, int x, int y, int mapWidth, int mapHeight, int[][] map) {
+    public Forklift(int id, int x, int y, Store store) {
         this.id = id;
         this.coordinates = new Coordinates(x, y);
         this.status = null;
         this.path = new ArrayList<>();
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
-        this.map = map;
+        this.store = store;
     }
 
     public List<Coordinates> getPath() {

@@ -42,8 +42,6 @@ public class StoreManager extends Application {
         map_path = path;
     }
 
-    public Store GetStore() { return store; }
-
     public SplitPane setUP_Store(SplitPane root) {
         store = new Store();
         if (!store.setMap(map_path)) {
