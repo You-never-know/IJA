@@ -1,0 +1,11 @@
+
+
+.path {
+    -fx-fill: white;
+    -fx-stroke: transparent;
+    -fx-stroke-width: 1;
+}
+.shelve{
+    -fx-fill: green;-fx-stroke: black; -fx-stroke-width: 1;
+}
+

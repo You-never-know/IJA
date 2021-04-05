@@ -36,6 +36,7 @@ public class StoreManager extends Application {
         primaryStage.setTitle("Warehouse manager");
         primaryStage.setScene(scene);
         primaryStage.show();
+        scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("../controller/style.css")));
     }
 
     public void set_map_path(String path) {
@@ -60,10 +61,10 @@ public class StoreManager extends Application {
                 rec.widthProperty().bind(rects_width.divide((double)w).subtract(1));
                 rec.heightProperty().bind(rects_height.divide((double)h).subtract(1));
                 if (store.GetMapValue(i,j) == 0) {
-                    rec.setStyle("-fx-fill: white;-fx-stroke: transparent; -fx-stroke-width: 1;");
+                    rec.getStyleClass().add("path");
                 }
                 else {
-                    rec.setStyle("-fx-fill: green;-fx-stroke: black; -fx-stroke-width: 1;");
+                    rec.getStyleClass().add("shelve");
                 }
                 warehouse.addColumn(i,rec);
             }
