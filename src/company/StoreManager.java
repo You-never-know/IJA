@@ -3,42 +3,80 @@ package company;
 import controller.Controller;
 import company.store.Store;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class StoreManager extends Application {
 
-	Store store;
+    Store store;
+    String default_map_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "../inputs/map1010.in";
+    String map_path = default_map_path;
+    String goods_path;
 
-	@Override
-	public void start(Stage primaryStage) {
-		// store = new Store();
-		// store.setMap("/home/dany/Skola/IJA/projekt/IJA/inputs/map1010.in"); // TODO pridať textove okienko, kde zadá cestu k súboru, pripadne nejaké vždy určiť
-		// int h = store.GetHeight(); // TODO Scene Builder build the GUI first
-		// int w = store.GetWidth();
+    @Override
+    public void start(Stage primaryStage) {
+        SplitPane root = null;
+        try {
+            root = FXMLLoader.load(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
+        } catch (IOException e) {
+            System.err.println(e); // TODO write this in GUI
+            System.exit(1);
+        }
+        root = setUP_Store(root);
+        Scene scene = new Scene(root, 1200, 800);
+        primaryStage.setTitle("Warehouse manager");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
-		Parent root = null;
-		try {
-			root = FXMLLoader.load(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
-		} catch (IOException e) {
-			System.err.println(e); // TODO write this in GUI
-			System.exit(1);
-		}
-		if (root != null) {
-			Scene scene = new Scene(root, 1200, 800);
-			primaryStage.setTitle("Warehouse manager");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		}
-	}
+    public void set_map_path(String path) {
+        map_path = path;
+    }
 
+    public SplitPane setUP_Store(SplitPane root) {
+        store = new Store();
+        if (!store.setMap(map_path)) {
+            store.setMap(default_map_path);
+        }
+        int h = store.GetHeight();
+        int w = store.GetWidth();
+        GridPane warehouse = new GridPane();
+        Pane pane = (Pane) root.getItems().get(0);
+        NumberBinding rects_height = Bindings.max(pane.heightProperty(),0);
+        NumberBinding rects_width = Bindings.max(0,pane.widthProperty());
+        warehouse.setStyle("-fx-background-color: white;");
+        int [][] map = store.GetMap();
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                Rectangle rec = new Rectangle(20,40);
+                rec.widthProperty().bind(rects_width.divide((double)w).subtract(1));
+                rec.heightProperty().bind(rects_height.divide((double)h).subtract(1));
+                if (map[i][j] == 0) {
+                    rec.setStyle("-fx-fill: white;-fx-stroke: transparent; -fx-stroke-width: 1;");
+                }
+                else {
+                    rec.setStyle("-fx-fill: green;-fx-stroke: black; -fx-stroke-width: 1;");
+                }
+                warehouse.addColumn(i,rec);
+            }
+        }
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+        //warehouse.setGridLinesVisible(true);
+       // System.out.println(warehouse.getChildren());
+        pane.getChildren().add(warehouse);
+        return root;
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

@@ -30,22 +30,25 @@ public class Store {
 		workingForkliftsList = new ArrayList<>();
 		requestsList = new ArrayList<>();
 		doneRequestsList = new ArrayList<>();
+		width = 0;
+		height = 0;
 	}
 
 	public int GetWidth() { return width; }
 
 	public int GetHeight() { return height; }
 
-	public void setMap(String filePath) {
+	public int[][] GetMap() { return map; }
 
+	public boolean setMap(String filePath) {
 		BufferedReader br = null;
 		try {
+			System.out.println(filePath);
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
 			System.err.println("File not found, try again"); // TODO write this in GUI
-			return;
+			return false;
 		}
-
 		String[] strSizeArray = null;
 		try {
 			strSizeArray = (br.readLine()).split(" ");
@@ -53,26 +56,24 @@ public class Store {
 			height = Integer.parseInt(strSizeArray[1]);
 		} catch (IOException e) {
 			System.err.println("Error while reading a file"); // TODO write this in GUI
-			return;
+			return false;
 		} catch (NumberFormatException e) {
 			System.err.println("Wrong format of the input file"); // TODO write this in GUI
-			return;
+			return false;
 		}
-
 		this.map = new int[width][height];
 		String line;
 		int lineCounter = 0;
-
 		try {
 			while ((line = br.readLine()) != null) {
 				if (lineCounter >= height) {
 					System.err.println("Wrong number of rows given, check the input map file"); // TODO write this in GUI
-					return;
+					return false;
 				}
 				String[] strMapContent = line.split(" ");
 				if (strMapContent.length != width) {
 					System.err.println("Wrong number of cols given, check the input map file"); // TODO write this in GUI
-					return;
+					return false;
 				}
 				for (int x = 0; x < width; x++) {
 					this.map[x][lineCounter] = Integer.parseInt(strMapContent[x]);
@@ -81,11 +82,12 @@ public class Store {
 			}
 		} catch (IOException e) {
 			System.err.println("Error while reading a file"); // TODO write this in GUI
-			return;
+			return false;
 		} catch (NumberFormatException e) {
 			System.err.println("Wrong format of the input file"); // TODO write this in GUI
-			return;
+			return false;
 		}
+		return true;
 	}
 
 
