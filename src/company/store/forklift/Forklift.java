@@ -163,7 +163,7 @@ public class Forklift {
     }
 
     public boolean isValidCoordinate(Coordinates coordinates) {
-        if (coordinates.getX() < mapWidth && coordinates.getX() >= 0 && coordinates.getY() < mapHeight && coordinates.getY() >= 0) {
+        if (coordinates.getX() < store.GetWidth() && coordinates.getX() >= 0 && coordinates.getY() < store.GetHeight() && coordinates.getY() >= 0) {
             return true;
         }
         return false;
