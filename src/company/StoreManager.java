@@ -18,7 +18,7 @@ import java.io.IOException;
 public class StoreManager extends Application {
 
     Store store;
-    String default_map_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "../inputs/map1010.in";
+    String default_map_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "../inputs/map1525.in";
     String map_path = default_map_path;
     String goods_path;
 
