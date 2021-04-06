@@ -9,3 +9,6 @@
     -fx-fill: green;-fx-stroke: black; -fx-stroke-width: 1;
 }
 
+.full_shelve{
+    -fx-fill: orange;-fx-stroke: black; -fx-stroke-width: 1;
+}

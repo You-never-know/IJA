@@ -18,74 +18,115 @@ import java.io.IOException;
 
 public class StoreManager extends Application {
 
-    Store store;
-    String default_map_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "../inputs/map1525.in";
-    String map_path = default_map_path;
-    String goods_path;
+    private Store store;
+    private String class_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    private String default_map_path = class_path + "../inputs/map1525.in";
+    private String map_path = default_map_path;
+    private String default_goods_path = class_path + "../inputs/goods.in";
+    private String goods_path = default_goods_path;
+    private GridPane store_plan;
+    private Controller controller;
+    private FXMLLoader loader;
+    private SplitPane root;
 
     @Override
     public void start(Stage primaryStage) {
-        SplitPane root = null;
+        SetUpManager();
         try {
-            root = FXMLLoader.load(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
+            root = loader.load();
         } catch (IOException e) {
             System.err.println(e); // TODO write this in GUI
             System.exit(1);
         }
-        root = setUP_Store(root);
-        // odkomentuj pre testovanie
-        //test_forklift();
+        controller = (Controller) loader.getController();
+        controller.SetStore(store);
+        setUP_Store();
         Scene scene = new Scene(root, 1200, 800);
+        scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("../controller/style.css")));
         primaryStage.setTitle("Warehouse manager");
         primaryStage.setScene(scene);
+        new Thread(() -> {
+            store.main();
+        }).start();
         primaryStage.show();
-        scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("../controller/style.css")));
+    }
+
+    public void SetUpManager() {
+        store = new Store();
+        store.setManager(this);
+        loader = new FXMLLoader();
+        loader.setLocation(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
     }
 
     public void set_map_path(String path) {
-        map_path = path;
+        map_path = class_path + path;
     }
 
-    public void test_forklift () {
-        Forklift fork = new Forklift(1,2,0,store);
+    public String get_map_path() {
+        return map_path;
+    }
+
+    public String get_default_map_path() {
+        return default_map_path;
+    }
+
+    public void set_goods_path(String path) {
+        this.goods_path = class_path + path;
+    }
+
+    public String get_goods_path() {
+        return this.goods_path;
+    }
+
+    public String get_default_goods_path() {
+        return default_goods_path;
+    }
+
+    public void test_forklift() {
+        Forklift fork = new Forklift(1, 2, 0, store);
         // volaj funkcie ake len chces
 
     }
 
-    public SplitPane setUP_Store(SplitPane root) {
-        store = new Store();
+    public void setUP_Goods(int index) {
+        store_plan.getChildren().get(index).getStyleClass().add("full_shelve");
+    }
+
+    public void setUP_Store() {
         if (!store.setMap(map_path)) {
-            store.setMap(default_map_path);
+            this.map_path = default_map_path;
+            return;
         }
         int h = store.GetHeight();
         int w = store.GetWidth();
-        GridPane warehouse = new GridPane();
+        store_plan = new GridPane();
         Pane pane = (Pane) root.getItems().get(0);
-        NumberBinding rects_height = Bindings.max(pane.heightProperty(),0);
-        NumberBinding rects_width = Bindings.max(0,pane.widthProperty());
-        warehouse.setStyle("-fx-background-color: white;");
+        NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
+        NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
+        store_plan.setStyle("-fx-background-color: white;");
+        int shelve_id = 1;
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                Rectangle rec = new Rectangle(20,40);
-                rec.widthProperty().bind(rects_width.divide((double)w).subtract(1));
-                rec.heightProperty().bind(rects_height.divide((double)h).subtract(1));
-                if (store.GetMapValue(i,j) == 0) {
+                Rectangle rec = new Rectangle(20, 40);
+                rec.widthProperty().bind(rects_width.divide((double) w).subtract(1));
+                rec.heightProperty().bind(rects_height.divide((double) h).subtract(1));
+                if (store.GetMapValue(i, j) == 0) {
                     rec.getStyleClass().add("path");
-                }
-                else {
+                } else {
+                    store.create_shelf(shelve_id, i, j);
+                    shelve_id++;
                     rec.getStyleClass().add("shelve");
                 }
-                warehouse.addColumn(i,rec);
+                store_plan.addColumn(i, rec);
             }
         }
-
-        //warehouse.setGridLinesVisible(true);
-       // System.out.println(warehouse.getChildren());
-        pane.getChildren().add(warehouse);
-        return root;
+        pane.getChildren().remove(0);
+        pane.getChildren().add(store_plan);
     }
+
 
     public static void main(String[] args) {
         launch(args);
+        Runtime.getRuntime().exit(0);
     }
 }

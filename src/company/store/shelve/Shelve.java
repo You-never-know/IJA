@@ -3,6 +3,8 @@ package company.store.shelve;
 import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
 
+import java.util.Objects;
+
 public class Shelve {
 
     private int id;
@@ -11,7 +13,6 @@ public class Shelve {
     private Goods goods;
 
     public Shelve(int id, int x, int y) {
-
         this.id = id;
         this.coordinates = new Coordinates(x,y);
         this.status = ShelveStatus.FREE;
@@ -25,8 +26,23 @@ public class Shelve {
 
     // TODO showGoods
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Shelve shelve = (Shelve) o;
+        return id == shelve.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
     public void setGoods(Goods goods) {
         this.goods = goods;
+        this.status = ShelveStatus.OCCUPIED;
     }
 
     public void setCoordinates(Coordinates coordinates) {
@@ -45,7 +61,7 @@ public class Shelve {
         return this.goods.getCount();
     }
 
-    public int getGoodsWeight() {
+    public double getGoodsWeight() {
         return this.goods.getItemWeight();
     }
 

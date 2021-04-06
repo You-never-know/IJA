@@ -1,6 +1,6 @@
 package controller;
 
-import javafx.event.ActionEvent;
+import company.store.Store;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -9,6 +9,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
 public class Controller {
+
+    private Store store;
+
+    public void SetStore(Store store) {
+        this.store = store;
+    }
 
     @FXML
     private TableColumn<?, ?> shoping_list_goods;
@@ -66,12 +72,18 @@ public class Controller {
 
     @FXML
     void load_map(MouseEvent event) {
-
+        String m_path = map_path.getText();
+        store.getManager().set_map_path(m_path);
+        store.getManager().setUP_Store();
     }
 
     @FXML
     void load_goods(MouseEvent event) {
-
+        String g_path = goods_path.getText();
+        store.getManager().set_goods_path(g_path);
+        g_path = store.getManager().get_goods_path();
+        System.out.println(g_path);
+        store.setGoods(g_path);
     }
 
     @FXML
@@ -98,5 +110,6 @@ public class Controller {
     void remove_barrier(MouseEvent event) {
 
     }
+
 
 }
