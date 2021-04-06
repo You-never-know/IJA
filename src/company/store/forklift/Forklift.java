@@ -36,9 +36,10 @@ public class Forklift {
         }
     }
 
-    public Forklift(){
+    public Forklift() {
         this.coordinates = new Coordinates(2, 0);
     }
+
     public Forklift(int id, int x, int y, Store store) {
         this.id = id;
         this.coordinates = new Coordinates(x, y);
@@ -71,13 +72,12 @@ public class Forklift {
         return status;
     }
 
-    // TODO A star baby
     public void countPath(Coordinates destination) {
         Coordinates position = this.coordinates;
         List<Coordinates> open = new ArrayList<>();
         List<Coordinates> closed = new ArrayList<>();
-        ArrayList<Integer> predecessorsOpen = new ArrayList<>();
-        ArrayList<Integer> predecessorsClosed = new ArrayList<>();
+        List<Coordinates> predecessorsOpen = new ArrayList<>();
+        List<Coordinates> predecessorsClosed = new ArrayList<>();
 
         Coordinates top;
         Coordinates left;
@@ -86,12 +86,7 @@ public class Forklift {
 
         open.add(position);
         predecessorsOpen.add(null);
-        /*
-        System.out.println(predecessorsOpen);
-        if(predecessorsOpen.get(0) == null){
-            System.out.println("tadah");
-         }
-         */
+
         while (!open.isEmpty()) {
 
             /* find node to be expanded */
@@ -99,6 +94,7 @@ public class Forklift {
             double heuristic = open.get(0).getHeuristicValue(destination);
             for (int i = 0; i < open.size(); i++) {
                 double tmp_heuristic = open.get(i).getHeuristicValue(destination);
+
                 if (tmp_heuristic < heuristic) {
                     heuristic = tmp_heuristic;
                     toExpand = i;
@@ -110,59 +106,90 @@ public class Forklift {
                 }
             }
 
-            /* transfer to closed list */
-            Coordinates expanding = open.get(toExpand);
-            if(expanding == destination){
-                this.path = pathRecursion(closed,predecessorsClosed,expanding);
-                System.out.println(this.path);
+            Coordinates expanding = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
+            if (expanding.equals(destination)) {
+                Coordinates predecessor = new
+                        Coordinates(predecessorsOpen.get(toExpand).getX(), predecessorsOpen.get(toExpand).getY());
+                open.remove(toExpand);
+                predecessorsOpen.remove(toExpand);
+                closed.add(expanding);
+                predecessorsClosed.add(predecessor);
+                this.path = pathRecursion(closed, predecessorsClosed, expanding);
+                /*
+                System.out.println("PATH: ");
+                for (int i = 0; i < path.size(); i++) {
+                    path.get(i).printCoordinates();
+                }*/
+                return;
             }
-            int predecessor = predecessorsOpen.get(toExpand);
+
+            /* expand */
+            List<Coordinates> expandList = new ArrayList<>();
+            top = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
+            top.setY(top.getY() - 1);
+            Coordinates topToAdd = new Coordinates(top.getX(), top.getY());
+
+            left = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
+            left.setX(left.getX() - 1);
+            Coordinates leftToAdd = new Coordinates(left.getX(), left.getY());
+
+            right = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
+            right.setX(right.getX() + 1);
+            Coordinates rightToAdd = new Coordinates(right.getX(), right.getY());
+
+            bottom = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
+            bottom.setY(bottom.getY() + 1);
+            Coordinates bottomToAdd = new Coordinates(bottom.getX(), bottom.getY());
+
+            Coordinates predecessor = null;
+            if (!this.coordinates.equals(expanding)) {
+                predecessor = new
+                        Coordinates(predecessorsOpen.get(toExpand).getX(), predecessorsOpen.get(toExpand).getY());
+            }
+
+            /* transfer expanded  to closed list */
             open.remove(toExpand);
             predecessorsOpen.remove(toExpand);
             closed.add(expanding);
             predecessorsClosed.add(predecessor);
 
-            /* expand */
-            List<Coordinates> expandList = new ArrayList<>();
-            top = open.get(toExpand);
-            top.setY(top.getY() - 1);
-            left = open.get(toExpand);
-            left.setX(left.getX() - 1);
-            right = open.get(toExpand);
-            right.setX(right.getX() + 1);
-            bottom = open.get(toExpand);
-            bottom.setY(bottom.getY() + 1);
+            expandList.add(topToAdd);
+            expandList.add(leftToAdd);
+            expandList.add(rightToAdd);
+            expandList.add(bottomToAdd);
 
-            expandList.add(top);
-            expandList.add(left);
-            expandList.add(right);
-            expandList.add(bottom);
-
+            /* add new to open list */
             for (int j = 0; j < expandList.size(); j++) {
+
                 if (isValidCoordinate(expandList.get(j)) && isNotBlocked(expandList.get(j))) {
-                    if(!open.contains(expandList.get(j)) && closed.contains(expandList.get(j))){
+
+                    if (!open.contains(expandList.get(j)) && !closed.contains(expandList.get(j))) {
+
                         open.add(expandList.get(j));
-                        predecessorsOpen.add(toExpand);
-                    }else{
-                        if(open.contains(expandList.get(j))){
-                            if(open.get(open.indexOf(expandList.get(j))).getHeuristicValue(destination) > expandList.get(j).getHeuristicValue(destination)){
-                                predecessorsOpen.add(open.indexOf(expandList.get(j)),toExpand);
+                        predecessorsOpen.add(expanding);
+                    } else {
+                        if (open.contains(expandList.get(j))) {
+                            if (open.get(open.indexOf(expandList.get(j))).getHeuristicValue(destination) > expandList.get(j).getHeuristicValue(destination)) {
+                                predecessorsOpen.add(open.indexOf(expandList.get(j)), expanding);
                             }
 
-                        }else if(closed.contains(expandList.get(j))){
-                            if(closed.get(closed.indexOf(expandList.get(j))).getHeuristicValue(destination) > expandList.get(j).getHeuristicValue(destination)){
+                        } else if (closed.contains(expandList.get(j))) {
+                            if (closed.get(closed.indexOf(expandList.get(j))).getHeuristicValue(destination) > expandList.get(j).getHeuristicValue(destination)) {
                                 Coordinates moving = closed.get(closed.indexOf(expandList.get(j)));
                                 closed.remove(expandList.get(j));
-                                int movingIndex = predecessorsClosed.get(closed.indexOf(expandList.get(j)));
-                                predecessorsClosed.remove(closed.indexOf(expandList.get(j)));
                                 open.add(moving);
-                                predecessorsOpen.add(movingIndex);
+
+                                Coordinates movingPredecessor = predecessorsClosed.get(closed.indexOf(expandList.get(j)));
+                                predecessorsClosed.remove(closed.indexOf(expandList.get(j)));
+                                predecessorsOpen.add(movingPredecessor);
                             }
                         }
                     }
+                } else if (expandList.get(j).equals(destination)) {
+                    open.add(expandList.get(j));
+                    predecessorsOpen.add(expanding);
                 }
             }
-
         }
     }
 
@@ -174,13 +201,12 @@ public class Forklift {
         return store.GetMapValue(coordinates.getX(), coordinates.getY()) != 1 && store.GetMapValue(coordinates.getX(), coordinates.getY()) != 2;
     }
 
-    public List<Coordinates> pathRecursion(List<Coordinates> list, List<Integer> predecessors, Coordinates node){
+    public List<Coordinates> pathRecursion(List<Coordinates> list, List<Coordinates> predecessors, Coordinates node) {
+        Coordinates parent = predecessors.get(list.indexOf(node));
 
-        Integer parent = (predecessors.get(list.indexOf(node)));
-
-        if(parent != null){
-            pathRecursion(list, predecessors, list.get(predecessors.get(list.indexOf(node))));
-        }else{
+        if (!this.coordinates.equals(parent)) {
+            pathRecursion(list, predecessors, parent);
+        }else {
             List<Coordinates> path = new ArrayList<>();
         }
         path.add(node);

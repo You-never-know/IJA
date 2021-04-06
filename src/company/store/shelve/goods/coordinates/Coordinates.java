@@ -1,6 +1,7 @@
 package company.store.shelve.goods.coordinates;
 
 import java.lang.Math;
+import java.util.Objects;
 
 public class Coordinates {
     private int x;
@@ -27,15 +28,32 @@ public class Coordinates {
         this.y = y;
     }
 
-    public int getMoveValue (Coordinates origin){
-        return this.x - origin.getX() + this.y - origin.getY();
+    public void printCoordinates() {
+        System.out.println(this.getX() + ", " + this.getY());
     }
 
-    public double getCostValue (Coordinates destination){
-        return (Math.sqrt(Math.pow(this.x - destination.getX(),2) + Math.pow(this.y - destination.getY(),2)));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coordinates that = (Coordinates) o;
+        return x == that.x && y == that.y;
     }
 
-    public double getHeuristicValue(Coordinates coordinates){
-        return this.getMoveValue(coordinates)+this.getCostValue(coordinates);
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+    public int getMoveValue(Coordinates origin) {
+        return Math.abs(this.x - origin.getX()) + Math.abs(this.y - origin.getY());
+    }
+
+    public double getCostValue(Coordinates destination) {
+        return (Math.sqrt(Math.pow(Math.abs(this.x - destination.getX()), 2) + Math.pow(Math.abs(this.y - destination.getY()), 2)));
+    }
+
+    public double getHeuristicValue(Coordinates coordinates) {
+        return this.getMoveValue(coordinates) + this.getCostValue(coordinates);
     }
 }
