@@ -6,6 +6,9 @@ import company.store.request.action.Action;
 import company.store.shelve.Shelve;
 import company.store.request.Request;
 import company.store.shelve.goods.Goods;
+import company.store.shelve.goods.coordinates.Coordinates;
+import controller.Controller;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -131,6 +134,7 @@ public class Store {
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
 			System.err.println("Map file not found, try again"); // TODO write this in GUI
+			manager.logMessageTA("Map file not found, try again");
 			return false;
 		}
 		String[] strSizeArray = null;
@@ -140,9 +144,11 @@ public class Store {
 			height = Integer.parseInt(strSizeArray[1]);
 		} catch (IOException e) {
 			System.err.println("Error while reading a file"); // TODO write this in GUI
+			manager.logMessageTA("Error while reading a file");
 			return false;
 		} catch (NumberFormatException e) {
 			System.err.println("Wrong format of the input file"); // TODO write this in GUI
+			manager.logMessageTA("Wrong format of the input file");
 			return false;
 		}
 		this.map = new int[width][height];
@@ -152,11 +158,13 @@ public class Store {
 			while ((line = br.readLine()) != null) {
 				if (lineCounter >= height) {
 					System.err.println("Wrong number of rows given, check the input map file"); // TODO write this in GUI
+					manager.logMessageTA("Wrong number of rows given, check the input map file");
 					return false;
 				}
 				String[] strMapContent = line.split(" ");
 				if (strMapContent.length != width) {
 					System.err.println("Wrong number of cols given, check the input map file"); // TODO write this in GUI
+					manager.logMessageTA("Wrong number of cols given, check the input map file");
 					return false;
 				}
 				for (int x = 0; x < width; x++) {
@@ -166,9 +174,11 @@ public class Store {
 			}
 		} catch (IOException e) {
 			System.err.println("Error while reading a file"); // TODO write this in GUI
+			manager.logMessageTA("Error while reading a file");
 			return false;
 		} catch (NumberFormatException e) {
 			System.err.println("Wrong format of the input file"); // TODO write this in GUI
+			manager.logMessageTA("Wrong format of the input file");
 			return false;
 		}
 		return true;
@@ -180,6 +190,7 @@ public class Store {
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
 			System.err.println("Goods file not found, try again"); // TODO write this in GUI
+			manager.logMessageTA("Goods file not found, try again");
 			return false;
 		}
 
@@ -191,10 +202,12 @@ public class Store {
 				Shelve shelve = pick_shelf();
 				if (shelve == null) {
 					System.out.println("Not enough space for all goods");
+					manager.logMessageTA("Not enough space for all goods");
 					break;
 				}
 				if (item.length != 4) {
 					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
+					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
 				String name = item[0];
@@ -204,10 +217,12 @@ public class Store {
 				Double good_weight = 0.0;
 				if (weight.length != 2) {
 					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
+					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
 				if (weight[1].strip() == "kg") {
 					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
+					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
 				try {
@@ -216,6 +231,7 @@ public class Store {
 					good_weight = Double.parseDouble(weight[0].strip());
 				} catch (NumberFormatException e) {
 					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
+					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
 				int x = shelve.getCoordinates().getX();
@@ -227,9 +243,9 @@ public class Store {
 			}
 		} catch (IOException e) {
 			System.err.println("Error while reading a file"); // TODO write this in GUI
+			manager.logMessageTA("Error while reading a file");
 			return false;
 		}
 		return true;
 	}
-
 }

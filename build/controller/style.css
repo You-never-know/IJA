@@ -54,6 +54,8 @@
 }
 .text-area .scroll-pane .content{
     -fx-background-color: #454545;
+    -fx-text-fill: #a56161;
+    -fx-font-size: 11;
 }
 .text-area .content{
 
@@ -64,13 +66,16 @@
     -fx-border-color: transparent;
     -fx-stroke: transparent;
     -fx-border-style: none;
-    -fx-background-color: #454545;
+    -fx-background-color: #a56161;
+    -fx-font-size: 11;
 }
 .text-area{
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-stroke: transparent;
     -fx-border-style: none;
+    -fx-text-fill: #a56161;
+    -fx-font-size: 11;
 }
 
 
