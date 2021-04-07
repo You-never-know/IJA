@@ -103,7 +103,6 @@ public class StoreManager extends Application {
         Pane pane = (Pane) root.getItems().get(0);
         NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
         NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
-        store_plan.setStyle("-fx-background-color: white;");
         int shelve_id = 1;
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
