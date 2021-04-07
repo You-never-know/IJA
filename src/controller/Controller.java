@@ -1,10 +1,19 @@
 package controller;
 
 import company.store.Store;
+import company.store.request.Request;
+import company.store.request.action.Action;
+import company.store.shelve.Shelve;
 import company.store.shelve.goods.Goods;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+
+import java.util.ArrayList;
 
 public class Controller {
 
@@ -14,15 +23,33 @@ public class Controller {
         this.store = store;
     }
 
+    private ArrayList<Action> action_list = new ArrayList<>();
+
     public void ShowGoodsContent (MouseEvent event) {
-        System.out.println(event.getX());
+       Node rect = event.getPickResult().getIntersectedNode();
+       Integer x = GridPane.getColumnIndex(rect);
+       Integer y = GridPane.getRowIndex(rect);
+       Shelve shelve = store.get_shelve(x,y);
+       if (shelve == null) {
+           return;
+       }
+       Goods goods = shelve.getGoods();
+       if (goods == null) {
+            ;//selected_name.g;
+       }
+       else {
+            ;//selected_name.setCellValueFactory();
+       }
+
+
     }
 
     @FXML
-    private TableColumn<?, ?> shoping_list_goods;
+    private TableColumn<?, ?> shopping_list_goods;
 
     @FXML
-    private TableColumn<?, ?> selected_name;
+    private TableColumn<Goods, String> selected_name;
+
 
     @FXML
     private TableColumn<?, ?> selected_weight;
@@ -102,16 +129,37 @@ public class Controller {
 
     @FXML
     void add_item_to_list(MouseEvent event) {
-
+        String count = add_goods_count.getText();
+        int c;
+        try {
+            c = Integer.parseInt(count.strip());
+        } catch (NumberFormatException e) {
+            System.out.println("Wrong count given");
+            return;
+        }
+        Action action;
+        String good = add_goods_name.getText();
+        Integer ID = 0;
+        try {
+            ID = Integer.parseInt(good.strip());
+        } catch (Exception e) {
+            action = new Action(good.strip(),c);
+            action_list.add(action);
+            return;
+        }
+        action = new Action(ID, c);
+        action_list.add(action);
     }
 
     @FXML
-    void submit_shoping_list(MouseEvent event) {
-
+    void submit_shopping_list(MouseEvent event) {
+        Request request = new Request(action_list);
+        store.add_request(request);
+        action_list.clear();
     }
 
     @FXML
-    void clear_shoping_list(MouseEvent event) {
+    void clear_shopping_list(MouseEvent event) {
 
     }
 

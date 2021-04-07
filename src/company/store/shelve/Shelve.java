@@ -24,8 +24,6 @@ public class Shelve {
         OCCUPIED
     }
 
-    // TODO showGoods
-
 
     @Override
     public boolean equals(Object o) {

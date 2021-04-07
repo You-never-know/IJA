@@ -102,6 +102,14 @@ public class Store {
 		doneRequestsList.add(0,req);
 	}
 
+	public Shelve get_shelve(int x, int y) {
+		for (Shelve shelve:shelvesList) {
+			if (shelve.getCoordinates().getX() == x && shelve.getCoordinates().getY() == y) {
+				return shelve;
+			}
+		}
+		return null;
+	}
 
 	private Shelve pick_shelf() {
 		int i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
