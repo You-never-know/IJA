@@ -39,13 +39,40 @@
     -fx-background-color: linear-gradient(to bottom, #454545,#4e4e4e,#454545);
 }
 
-.fill_label {
+.fill_label{
     -fx-background-color: #5f5f5f;
-    -fx-text-inner-color: #2b2b2c;
-    -fx-text-fill: #2b2b2c;
+    -fx-text-inner-color: #cccccc;
+    -fx-text-fill: #cccccc;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
 }
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .content{
+    -fx-background-color: #454545;
+}
+.text-area .content{
+
+    -fx-text-inner-color: #cccccc;
+    -fx-text-fill: #cccccc;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: transparent;
+    -fx-stroke: transparent;
+    -fx-border-style: none;
+    -fx-background-color: #454545;
+}
+.text-area{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-stroke: transparent;
+    -fx-border-style: none;
+}
+
 
 .tables {
     -fx-background-color: transparent;
@@ -144,5 +171,6 @@
     -fx-background-color: linear-gradient(to right, #454545, #4e4e4e);
 }
 .full_shelve{
-    -fx-fill: orange;-fx-stroke: black; -fx-stroke-width: 1;
+    -fx-fill: #dcb94f;
 }
+

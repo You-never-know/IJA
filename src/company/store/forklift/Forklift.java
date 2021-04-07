@@ -216,6 +216,7 @@ public class Forklift {
     public void doAction() {
         Action action = this.request.popFirstActionsList();
         // TODO + how to GUI?
+
         this.request.pushActionsDoneList(action);
     }
 }

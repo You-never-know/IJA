@@ -135,6 +135,7 @@ public class Controller {
             c = Integer.parseInt(count.strip());
         } catch (NumberFormatException e) {
             System.out.println("Wrong count given");
+            logMessage("Wrong count given");
             return;
         }
         Action action;
@@ -146,11 +147,15 @@ public class Controller {
             action = new Action(good.strip(),c);
             System.out.println(good);
             action_list.add(action);
+            System.out.println(action.getName());
+            System.out.println(action.getID());
             return;
         }
         action = new Action(ID, c);
         System.out.println(ID);
         action_list.add(action);
+        System.out.println(action.getName());
+        System.out.println(action.getID());
     }
 
     @FXML
@@ -175,5 +180,14 @@ public class Controller {
 
     }
 
+    @FXML
+    public void logMessage(String msg){
 
+        if(log_label.getText().isEmpty() || log_label.getText().isBlank()){
+            log_label.setText(msg);
+        }
+        else{
+            log_label.setText( msg + "\n" + log_label.getText());
+        }
+    }
 }

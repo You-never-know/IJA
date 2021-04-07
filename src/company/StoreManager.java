@@ -124,9 +124,12 @@ public class StoreManager extends Application {
         pane.getChildren().add(store_plan);
     }
 
-
     public static void main(String[] args) {
         launch(args);
         Runtime.getRuntime().exit(0);
+    }
+
+    public void logMessageTA(String msg){
+        controller.logMessage(msg);
     }
 }
