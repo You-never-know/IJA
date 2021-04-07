@@ -6,9 +6,11 @@ import company.store.Store;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -115,6 +117,12 @@ public class StoreManager extends Application {
                     store.create_shelf(shelve_id, i, j);
                     shelve_id++;
                     rec.getStyleClass().add("shelve");
+                    rec.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            controller.ShowGoodsContent(mouseEvent);
+                        }
+                    });
                 }
                 store_plan.addColumn(i, rec);
             }

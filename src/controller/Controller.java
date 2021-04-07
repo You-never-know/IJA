@@ -1,6 +1,7 @@
 package controller;
 
 import company.store.Store;
+import company.store.shelve.goods.Goods;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -14,6 +15,10 @@ public class Controller {
 
     public void SetStore(Store store) {
         this.store = store;
+    }
+
+    public void ShowGoodsContent (MouseEvent event) {
+        System.out.println(event.getX());
     }
 
     @FXML

@@ -2,6 +2,7 @@ package company.store;
 
 import company.StoreManager;
 import company.store.forklift.Forklift;
+import company.store.request.action.Action;
 import company.store.shelve.Shelve;
 import company.store.request.Request;
 import company.store.shelve.goods.Goods;
@@ -42,7 +43,9 @@ public class Store {
 			setGoods(manager.get_default_goods_path());
 		}
 
-		//while (true) {;}
+		while (true) {
+			;
+		}
 	}
 
 	public void setManager(StoreManager manager) { this.manager = manager; }
@@ -64,6 +67,41 @@ public class Store {
 		Shelve shelf = new Shelve(id,x,y);
 		shelvesList.add(shelf);
 	}
+
+	public Shelve get_goods_shelve(Action action) {
+		String name = action.getName();
+		Integer ID = action.getID();
+		for (Goods good: goodsList) {
+			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
+				return good.getShelve();
+			}
+		}
+		return null;
+	}
+
+	public void add_request (Request request) {
+		requestsList.add(request);
+	}
+
+	public boolean delegate_request() {
+		if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
+			return false;
+		}
+		Forklift forklift = freeForkliftsList.get(0);
+		freeForkliftsList.remove(0);
+		Request request = requestsList.get(0);
+		requestsList.remove(0);
+
+		// TODO add the request to the forklift and start the process of doing it, maybe in a new Thread, so more forklifts can work at the same time
+		// add the request to the forklift
+		//new Thread(() -> { do_the_request });
+		return true;
+	}
+
+	public void set_request_as_done(Request req) {
+		doneRequestsList.add(0,req);
+	}
+
 
 	private Shelve pick_shelf() {
 		int i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
@@ -144,6 +182,7 @@ public class Store {
 				String[] item = line.split(";");
 				Shelve shelve = pick_shelf();
 				if (shelve == null) {
+					System.out.println("Not enough space for all goods");
 					break;
 				}
 				if (item.length != 4) {

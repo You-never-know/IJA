@@ -20,7 +20,7 @@ public class Goods {
         this.id = id;
         this.itemWeight = itemWeight;
         this.count = count;
-        this.coordinates = new Coordinates(x,y);
+        this.coordinates = new Coordinates(x, y);
         this.shelve = shelve;
     }
 
@@ -34,7 +34,7 @@ public class Goods {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Goods goods = (Goods) o;
-        return name.equals(goods.name);
+        return id == goods.id || name.equals(goods.name);
     }
 
     @Override
@@ -48,6 +48,10 @@ public class Goods {
 
     public int getId() {
         return this.id;
+    }
+
+    public Shelve getShelve() {
+        return this.shelve;
     }
 
     public double getItemWeight() {

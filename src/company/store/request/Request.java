@@ -7,18 +7,12 @@ import java.util.List;
 
 public class Request {
 
-    private int id;
     List<Action> actionsList;
     List<Action> actionsDoneList;
 
-    public Request(int id, List<Action> actionsList) {
-        this.id = id;
+    public Request(List<Action> actionsList) {
         this.actionsList = actionsList;
         this.actionsDoneList = new ArrayList<>();
-    }
-
-    public int getId() {
-        return id;
     }
 
     public Action popFirstActionsList() {

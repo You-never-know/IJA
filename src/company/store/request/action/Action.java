@@ -1,20 +1,29 @@
 package company.store.request.action;
-import company.store.shelve.goods.Goods;
+
 public class Action {
 
-    private Goods goods;
+    private String name;
+    private Integer ID;
     private int count;
 
 
-    public Action(Goods goods, int count) {
-
-        this.goods = goods;
+    public Action (int ID, int count) {
+        this.ID = ID;
+        this.name = "";
         this.count = count;
     }
 
-    public Goods getGoods() {
-        return goods;
+    public Action(String goods, int count) {
+        this.name = goods;
+        this.count = count;
+        this.ID = -1;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getID() { return ID; }
 
     public int getCount() {
         return count;
