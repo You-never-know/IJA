@@ -3,10 +3,7 @@ package controller;
 import company.store.Store;
 import company.store.shelve.goods.Goods;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 public class Controller {
@@ -37,7 +34,7 @@ public class Controller {
     private Button load_map_button;
 
     @FXML
-    private TextField add_good_count;
+    private TextField add_goods_count;
 
     @FXML
     private Button add_item_button;
@@ -73,7 +70,19 @@ public class Controller {
     private TableColumn<?, ?> selected_id;
 
     @FXML
-    private TextField add_good_name;
+    private TextField add_goods_name;
+
+    @FXML
+    private Button time_down;
+
+    @FXML
+    private Button time_up;
+
+    @FXML
+    private TextField time_label;
+
+    @FXML
+    private TextArea log_label;
 
     @FXML
     void load_map(MouseEvent event) {
