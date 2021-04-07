@@ -79,7 +79,7 @@ public class Controller {
     private Button clear_list_button;
 
     @FXML
-    private TableColumn<?, ?> shoping_list_count;
+    private TableColumn<?, ?> shopping_list_count;
 
     @FXML
     private TableView<?> selected_table;
@@ -144,10 +144,12 @@ public class Controller {
             ID = Integer.parseInt(good.strip());
         } catch (Exception e) {
             action = new Action(good.strip(),c);
+            System.out.println(good);
             action_list.add(action);
             return;
         }
         action = new Action(ID, c);
+        System.out.println(ID);
         action_list.add(action);
     }
 
