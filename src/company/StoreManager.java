@@ -1,6 +1,5 @@
 package company;
 
-import company.store.forklift.Forklift;
 import controller.Controller;
 import company.store.Store;
 import javafx.application.Application;
@@ -22,9 +21,9 @@ public class StoreManager extends Application {
 
     private Store store;
     private String class_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-    private String default_map_path = class_path + "../inputs/map1525.in";
+    private String default_map_path = class_path + "../data/map1525.in";
     private String map_path = default_map_path;
-    private String default_goods_path = class_path + "../inputs/goods.in";
+    private String default_goods_path = class_path + "../data/goods.in";
     private String goods_path = default_goods_path;
     private GridPane store_plan;
     private Controller controller;
@@ -82,12 +81,6 @@ public class StoreManager extends Application {
 
     public String get_default_goods_path() {
         return default_goods_path;
-    }
-
-    public void test_forklift() {
-        Forklift fork = new Forklift(1, 2, 0, store);
-        // volaj funkcie ake len chces
-
     }
 
     public void setUP_Goods(int index) {
