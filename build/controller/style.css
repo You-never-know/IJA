@@ -127,7 +127,7 @@
 .table-view .column-header-background{
     -fx-background-color: linear-gradient(to bottom, #4e4e4e, #454545, #4e4e4e);
     -fx-background-radius: 5px 5px 0px 0px;
-    -fx-background-insets: 0 0 0 0;
+
 }
 .table-view .table-cell{
     -fx-border-color: transparent;
@@ -137,34 +137,46 @@
 }
 .table-row-cell:odd{
     -fx-background-color: #454545;
-    -fx-background-insets: 0, 0 0 0 0;
+
     -fx-padding: 0.0em;
 }
 .table-row-cell:even{
     -fx-background-color: #4e4e4e;
-    -fx-background-insets: 0, 0 0 0 0;
+
     -fx-padding: 0.0em;
 }
-.table-view .virtual-flow .scroll-bar:vertical,
-.table-view .virtual-flow .scroll-bar:vertical .track,
-.table-view .virtual-flow .scroll-bar:vertical .track-background,
-.table-view .virtual-flow .scroll-bar:horizontal,
-.table-view .virtual-flow .scroll-bar:horizontal .track,
-.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+.scroll-bar:vertical,
+.virtual-flow .scroll-bar:vertical .track,
+.virtual-flow .scroll-bar:vertical .track-background,
+.virtual-flow .scroll-bar:horizontal,
+.virtual-flow .scroll-bar:horizontal .track,
+.virtual-flow .scroll-bar:horizontal .track-background {
     -fx-background-color: transparent;
 }
-.table-view .virtual-flow .scroll-bar .increment-button,
-.table-view .virtual-flow .scroll-bar .decrement-button {
-    -fx-opacity: 0;
-    -fx-padding: 2;
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button,
+.virtual-flow .scroll-bar .increment-button,
+.virtual-flow .scroll-bar .decrement-button {
+    -fx-opacity: 1;
+    -fx-padding: 0.49 2 0.49 2;
 }
 
-.table-view .virtual-flow .scroll-bar:vertical .thumb{
+.scroll-bar .increment-button:hover,
+.scroll-bar .decrement-button:hover,
+.virtual-flow .scroll-bar .increment-button:hover,
+.virtual-flow .scroll-bar .decrement-button:hover {
+    -fx-opacity: .5;
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb{
     -fx-background-color: linear-gradient(to bottom, #454545, #4e4e4e);
 }
-.table-view .virtual-flow .scroll-bar:horizontal .thumb {
+.scroll-bar:horizontal .thumb {
     -fx-background-color: linear-gradient(to bottom, #454545, #4e4e4e);
 }
+
 .table-view .cell{
     -fx-border-color: transparent #454545 transparent #454545;
     -fx-text-fill: #cccccc;
@@ -182,13 +194,13 @@
 }
 
 .selected_shelve{
-    -fx-fill: #c20707;
+    -fx-fill: #ea9143;
     -fx-stroke: #2b2b2c;
     -fx-stroke-width: .5;
 }
 
 .blocked{
-    -fx-fill: #2d4ecd;
+    -fx-fill: #4e4e4e;
     -fx-stroke: #2b2b2c;
     -fx-stroke-width: .5;
 }
