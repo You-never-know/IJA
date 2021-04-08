@@ -60,6 +60,7 @@ public class Controller implements Initializable {
     public void PathClicked(MouseEvent event) {
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
+            selected_table.getItems().clear();
         }
         if (add_barrier_clicked  || remove_barrier_clicked) {
             rect = event.getPickResult().getIntersectedNode();
