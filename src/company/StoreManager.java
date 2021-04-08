@@ -99,6 +99,12 @@ public class StoreManager extends Application {
                 rec.heightProperty().bind(rects_height.divide((double) h).subtract(1));
                 if (store.GetMapValue(i, j) == 0) {
                     rec.getStyleClass().add("path");
+                    rec.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            controller.PathClicked(mouseEvent);
+                        }
+                    });
                 } else {
                     store.create_shelf(shelve_id, i, j);
                     shelve_id++;

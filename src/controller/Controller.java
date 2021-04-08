@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     private Store store;
+    private Node rect = null;
 
     public void SetStore(Store store) {
         this.store = store;
@@ -28,7 +29,11 @@ public class Controller implements Initializable {
     private ArrayList<Action> action_list = new ArrayList<>();
 
     public void ShowGoodsContent(MouseEvent event) {
-        Node rect = event.getPickResult().getIntersectedNode();
+        if (rect != null) {
+            rect.getStyleClass().remove("selected_shelve");
+        }
+        rect = event.getPickResult().getIntersectedNode();
+        rect.getStyleClass().add("selected_shelve");
         Integer x = GridPane.getColumnIndex(rect);
         Integer y = GridPane.getRowIndex(rect);
         Shelve shelve = store.get_shelve(x, y);
@@ -40,6 +45,13 @@ public class Controller implements Initializable {
         if (goods != null) {
             selected_table.getItems().add(goods);
         }
+    }
+
+    public void PathClicked(MouseEvent event) {
+        if (rect != null) {
+            rect.getStyleClass().remove("selected_shelve");
+        }
+
     }
 
     @FXML
@@ -166,7 +178,7 @@ public class Controller implements Initializable {
             add_item_button.setDisable(false);
             return;
         } else if ((store.getGoodsCount(action)) < (c + action_list_goods_count(action) + store.getGoodsRequestsListCount(action))) {
-            logMessage("Sorry, only " + (store.getGoodsCount(action) - action_list_goods_count(action) - store.getGoodsRequestsListCount(action))  + " piece(s) available");
+            logMessage("Sorry, only " + (store.getGoodsCount(action) - action_list_goods_count(action) - store.getGoodsRequestsListCount(action))  + " more piece(s) available");
             add_item_button.setDisable(false);
             return;
         }

@@ -177,5 +177,19 @@
 }
 .full_shelve{
     -fx-fill: #dcb94f;
+    -fx-stroke: #2b2b2c;
+    -fx-stroke-width: .5;
+}
+
+.selected_shelve{
+    -fx-fill: #c20707;
+    -fx-stroke: #2b2b2c;
+    -fx-stroke-width: .5;
+}
+
+.blocked{
+    -fx-fill: #2d4ecd;
+    -fx-stroke: #2b2b2c;
+    -fx-stroke-width: .5;
 }
 

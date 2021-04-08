@@ -152,7 +152,7 @@
                         <Insets left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
                      <children>
-                        <TextField fx:id="add_goods_name" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="Travní směs dosev/445505" styleClass="fill_label" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="add_goods_name" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="Travní směs dosev | 445505" styleClass="fill_label" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="5.0" />
                            </HBox.margin>
