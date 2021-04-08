@@ -2,15 +2,17 @@ package company.store;
 
 import company.StoreManager;
 import company.store.forklift.Forklift;
+import company.store.request.Request;
 import company.store.request.action.Action;
 import company.store.shelve.Shelve;
-import company.store.request.Request;
 import company.store.shelve.goods.Goods;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Store {
