@@ -1,10 +1,9 @@
 package company.store.forklift;
 
-import company.store.request.action.Action;
-import company.store.shelve.goods.Goods;
-import company.StoreManager;
 import company.store.Store;
 import company.store.request.Request;
+import company.store.request.action.Action;
+import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
 
 import java.util.ArrayList;
@@ -17,13 +16,15 @@ public class Forklift {
     private List<Goods> goodsList;
     private Coordinates coordinates;
     private List<Coordinates> path;
+    private List<Coordinates> visitedCoordinates;
     private int weightBearing;
     private int piecesBearing;
     private ForkliftStatus status;
     private Store store;
+    private Action actionInProgress = null;
 
     public enum ForkliftStatus {
-        TOP(3), BOTTOM(4), LEFT(5), RIGHT(6); //TODO 8 , 9, 10 bad numbers
+        UP(3), DOWN(4), LEFT(5), RIGHT(6); //TODO 8 , 9, 10 bad numbers
 
         private int Val;
 
@@ -49,7 +50,21 @@ public class Forklift {
     }
 
     public List<Coordinates> getPath() {
-        return path;
+        return this.path;
+    }
+
+    public Coordinates popFirstPath(){
+        Coordinates coordinates = this.path.get(0);
+        this.path.remove(0);
+        return coordinates;
+    }
+
+    public Coordinates getFirstPath(){
+        return this.path.get(0);
+    }
+
+    public Request getRequest() {
+        return this.request;
     }
 
     public void setCoordinates(Coordinates coordinates) {
@@ -64,8 +79,31 @@ public class Forklift {
         this.coordinates.setY(y);
     }
 
+    public void setFirstActionInProgress(){
+        this.actionInProgress = new Action (this.request.getFirstAction());
+    }
+    public Action getActionInProgress(){
+        return this.actionInProgress;
+    }
+
     public void setStatus(ForkliftStatus status) {
         this.status = status;
+    }
+
+    private void countSetStatus(Coordinates from, Coordinates to){
+        if(from.getY() < to.getY()){
+            this.status = ForkliftStatus.UP;
+        }
+        if(from.getY() > to.getY()){
+            this.status = ForkliftStatus.DOWN;
+        }
+        if(from.getX() < to.getX()){
+            this.status = ForkliftStatus.RIGHT;
+        }
+        if(from.getX() > to.getX()){
+            this.status = ForkliftStatus.LEFT;
+        }
+
     }
 
     public ForkliftStatus getStatus() {
@@ -201,7 +239,7 @@ public class Forklift {
         return store.GetMapValue(coordinates.getX(), coordinates.getY()) != 1 && store.GetMapValue(coordinates.getX(), coordinates.getY()) != 2;
     }
 
-    public List<Coordinates> pathRecursion(List<Coordinates> list, List<Coordinates> predecessors, Coordinates node) {
+    private List<Coordinates> pathRecursion(List<Coordinates> list, List<Coordinates> predecessors, Coordinates node) {
         Coordinates parent = predecessors.get(list.indexOf(node));
 
         if (!this.coordinates.equals(parent)) {
@@ -215,8 +253,16 @@ public class Forklift {
 
     public void doAction() {
         Action action = this.request.popFirstActionsList();
+        this.popFirstPath();
         // TODO + how to GUI?
 
         this.request.pushActionsDoneList(action);
+    }
+
+    public void moveForward(){
+        Coordinates moveTo = popFirstPath();
+        this.countSetStatus(this.coordinates, moveTo);
+        visitedCoordinates.add(this.coordinates);
+        this.coordinates = new Coordinates(moveTo.getX(), moveTo.getY());
     }
 }

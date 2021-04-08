@@ -152,6 +152,40 @@ public class Store {
 		return true;
 	}
 
+	public boolean processRequests(){
+		while(requestsList.size() != 0){
+			for (Forklift forklift: workingForkliftsList) {
+				if(forklift.getPath().size() == 0 || forklift.getActionInProgress() == null){
+					forklift.setFirstActionInProgress();
+					forklift.countPath(get_goods_shelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
+				}
+
+				// move
+				//TODO crossing ?!
+
+				if(GetMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == 0){
+					forklift.moveForward();
+				}else if(GetMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == 1){ //TODO check if right shelve
+					forklift.doAction();
+					if(forklift.getRequest().getActionsList().size() != 0){
+						forklift.setFirstActionInProgress();
+						forklift.countPath(get_goods_shelve(forklift.getActionInProgress()).getCoordinates());
+						//TODO Bearings
+					}else{
+						//TODO go home : problem : no method for path to coordinates without action - rework
+						forklift.countPath(get_goods_shelve(forklift.getActionInProgress()).getCoordinates());
+					}
+
+				}else if(GetMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == 2){
+					forklift.countPath(get_goods_shelve(forklift.getActionInProgress()).getCoordinates());
+					forklift.moveForward();
+				}
+
+			}
+		}
+				return true;
+	}
+
 	public void set_request_as_done(Request req) {
 		doneRequestsList.add(0,req);
 	}

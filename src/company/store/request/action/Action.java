@@ -6,6 +6,12 @@ public class Action {
     private Integer ID;
     private int Count;
 
+    public Action (Action action) {
+        this.ID = action.getID();
+        this.Name = action.getName();
+        this.Count = action.getCount();
+    }
+
 
     public Action (int ID, int count) {
         this.ID = ID;

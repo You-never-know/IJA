@@ -1,7 +1,7 @@
 package company.store.request;
 
-import company.store.shelve.goods.Goods;
 import company.store.request.action.Action;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,10 @@ public class Request {
 
     public List<Action> getActionsList() {
         return actionsList;
+    }
+
+    public Action getFirstAction(){
+        return this.actionsList.get(0);
     }
 
     public void pushActionsDoneList(Action action) {
