@@ -138,7 +138,6 @@ public class Controller implements Initializable {
         try {
             c = Integer.parseInt(count.strip());
         } catch (NumberFormatException e) {
-            System.out.println("Wrong input data format");
             logMessage("Wrong input data format");
             add_item_button.setDisable(false);
             return;
@@ -162,19 +161,29 @@ public class Controller implements Initializable {
             good = shelve.getGoods().getName();
         }
         action = new Action(good, c);
-        System.out.println(store.getGoodsRequestsListCount(action));
         if (store.get_goods_shelve(action) == null) {
             logMessage("Item is not in warehouse, can not be added to shopping list");
             add_item_button.setDisable(false);
             return;
-        } else if ((store.getGoodsCount(action) + store.getGoodsRequestsListCount(action)) < c) {
-            logMessage("Sorry, only " + store.getGoodsCount(action) + " pieces available");
+        } else if ((store.getGoodsCount(action)) < (c + action_list_goods_count(action) + store.getGoodsRequestsListCount(action))) {
+            logMessage("Sorry, only " + (store.getGoodsCount(action) - action_list_goods_count(action) - store.getGoodsRequestsListCount(action))  + " piece(s) available");
             add_item_button.setDisable(false);
             return;
         }
         action_list.add(action);
         shopping_list.getItems().add(action);
         add_item_button.setDisable(false);
+    }
+
+    public int action_list_goods_count(Action action) {
+        int count = 0;
+        String name = action.getName();
+        for (Action act: action_list) {
+            if (act.getName().compareTo(name) == 0) {
+                count += act.getCount();
+            }
+        }
+        return count;
     }
 
     @FXML

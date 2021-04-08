@@ -96,39 +96,12 @@ public class Store {
 		int ID = action.getID();
 		for (Request request : requestsList) {
 			for (Action actionFromList : request.getActionsList()) {
-				System.out.println(actionFromList.getName());
-				System.out.println(actionFromList.getID());
 				if (actionFromList.getName().compareTo(name) == 0 || actionFromList.getID() == ID) {
 					count += actionFromList.getCount();
 				}
 			}
 		}
 		return count;
-	}
-
-	public void add_request (Request request) {
-		System.out.println(request.getActionsList().get(0).getName());
-		System.out.println(request.getActionsList().get(0).getCount());
-		requestsList.add(request);
-	}
-
-	public boolean delegate_request() {
-		if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
-			return false;
-		}
-		Forklift forklift = freeForkliftsList.get(0);
-		freeForkliftsList.remove(0);
-		Request request = requestsList.get(0);
-		requestsList.remove(0);
-
-		// TODO add the request to the forklift and start the process of doing it, maybe in a new Thread, so more forklifts can work at the same time
-		// add the request to the forklift
-		//new Thread(() -> { do_the_request });
-		return true;
-	}
-
-	public void set_request_as_done(Request req) {
-		doneRequestsList.add(0,req);
 	}
 
 	public Shelve get_shelve(int x, int y) {
@@ -151,7 +124,6 @@ public class Store {
 		for (Shelve sh: shelvesList) {
 			if (sh.getStatus() == Shelve.ShelveStatus.FREE) { return sh; }
 		}
-		System.out.println("WHY NOT");
 		return null;
 	}
 
@@ -159,12 +131,34 @@ public class Store {
 		this.shelvesList.clear();
 	}
 
+	public void add_request (Request request) {
+		requestsList.add(request);
+	}
+
+	public boolean delegate_request() {
+		if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
+			return false;
+		}
+		Forklift forklift = freeForkliftsList.get(0);
+		freeForkliftsList.remove(0);
+		Request request = requestsList.get(0);
+		requestsList.remove(0);
+
+		// TODO add the request to the forklift and start the process of doing it, maybe in a new Thread, so more forklifts can work at the same time
+		// add the request to the forklift
+		//new Thread(() -> { do_the_request });
+		return true;
+	}
+
+	public void set_request_as_done(Request req) {
+		doneRequestsList.add(0,req);
+	}
+
 	public boolean setMap(String filePath) {
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
-			System.err.println("Map file not found, try again"); // TODO write this in GUI
 			manager.logMessageTA("Map file not found, try again");
 			return false;
 		}
@@ -174,11 +168,9 @@ public class Store {
 			width = Integer.parseInt(strSizeArray[0]);
 			height = Integer.parseInt(strSizeArray[1]);
 		} catch (IOException e) {
-			System.err.println("Error while reading a file"); // TODO write this in GUI
 			manager.logMessageTA("Error while reading a file");
 			return false;
 		} catch (NumberFormatException e) {
-			System.err.println("Wrong format of the input file"); // TODO write this in GUI
 			manager.logMessageTA("Wrong format of the input file");
 			return false;
 		}
@@ -188,13 +180,11 @@ public class Store {
 		try {
 			while ((line = br.readLine()) != null) {
 				if (lineCounter >= height) {
-					System.err.println("Wrong number of rows given, check the input map file"); // TODO write this in GUI
 					manager.logMessageTA("Wrong number of rows given, check the input map file");
 					return false;
 				}
 				String[] strMapContent = line.split(" ");
 				if (strMapContent.length != width) {
-					System.err.println("Wrong number of cols given, check the input map file"); // TODO write this in GUI
 					manager.logMessageTA("Wrong number of cols given, check the input map file");
 					return false;
 				}
@@ -204,11 +194,9 @@ public class Store {
 				lineCounter++;
 			}
 		} catch (IOException e) {
-			System.err.println("Error while reading a file"); // TODO write this in GUI
 			manager.logMessageTA("Error while reading a file");
 			return false;
 		} catch (NumberFormatException e) {
-			System.err.println("Wrong format of the input file"); // TODO write this in GUI
 			manager.logMessageTA("Wrong format of the input file");
 			return false;
 		}
@@ -220,23 +208,19 @@ public class Store {
 		try {
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
-			System.err.println("Goods file not found, try again"); // TODO write this in GUI
 			manager.logMessageTA("Goods file not found, try again");
 			return false;
 		}
-
 		try {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] item = line.split(";");
 				Shelve shelve = pick_shelf();
 				if (shelve == null) {
-					System.out.println("Not enough space for all goods");
 					manager.logMessageTA("Not enough space for all goods");
 					break;
 				}
 				if (item.length != 4) {
-					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
 					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
@@ -246,12 +230,10 @@ public class Store {
 				String[] weight = item[2].strip().split(" ");
 				Double good_weight = 0.0;
 				if (weight.length != 2) {
-					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
 					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
 				if (weight[1].strip() == "kg") {
-					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
 					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
@@ -260,7 +242,6 @@ public class Store {
 					count = Integer.parseInt(item[3].strip());
 					good_weight = Double.parseDouble(weight[0].strip());
 				} catch (NumberFormatException e) {
-					System.out.println("Wrong format of the item in the Goods file"); // TODO write this in GUI
 					manager.logMessageTA("Wrong format of the item in the Goods file");
 					continue;
 				}
@@ -272,7 +253,6 @@ public class Store {
 				manager.setUP_Goods(x*height + y);
 			}
 		} catch (IOException e) {
-			System.err.println("Error while reading a file"); // TODO write this in GUI
 			manager.logMessageTA("Error while reading a file");
 			return false;
 		}

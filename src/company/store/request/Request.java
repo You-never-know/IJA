@@ -11,7 +11,7 @@ public class Request {
     List<Action> actionsDoneList;
 
     public Request(List<Action> actionsList) {
-        this.actionsList = actionsList;
+        this.actionsList = new ArrayList<>(actionsList);
         this.actionsDoneList = new ArrayList<>();
     }
 
