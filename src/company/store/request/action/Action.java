@@ -1,5 +1,7 @@
 package company.store.request.action;
 
+import java.util.Objects;
+
 public class Action {
 
     private String Name;
@@ -23,6 +25,19 @@ public class Action {
         this.Name = goods;
         this.Count = count;
         this.ID = -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Action action = (Action) o;
+        return Name.equals(action.Name) || ID.equals(action.ID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Name, ID);
     }
 
     public String getName() {

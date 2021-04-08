@@ -64,6 +64,14 @@ public class Store {
 		return map[x][y];
 	}
 
+	public boolean setMapValue(int x, int y, int value) {
+		if (y >= height || x >= width) {
+			return false;
+		}
+		map[x][y] = value;
+		return true;
+	}
+
 	public void create_shelf(int id, int x, int y) {
 		Shelve shelf = new Shelve(id,x,y);
 		shelvesList.add(shelf);

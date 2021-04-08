@@ -21,6 +21,8 @@ public class Controller implements Initializable {
 
     private Store store;
     private Node rect = null;
+    private boolean add_barrier_clicked;
+    private boolean remove_barrier_clicked;
 
     public void SetStore(Store store) {
         this.store = store;
@@ -29,6 +31,14 @@ public class Controller implements Initializable {
     private ArrayList<Action> action_list = new ArrayList<>();
 
     public void ShowGoodsContent(MouseEvent event) {
+        if (add_barrier_clicked == true) {
+            add_barrier_clicked = false;
+            logMessage("Cannot add barrier to the shelve");
+        }
+        else if ( remove_barrier_clicked == true) {
+            remove_barrier_clicked = false;
+            logMessage("Cannot remove barrier from shelve");
+        }
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
         }
@@ -50,6 +60,24 @@ public class Controller implements Initializable {
     public void PathClicked(MouseEvent event) {
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
+        }
+        if (add_barrier_clicked  || remove_barrier_clicked) {
+            rect = event.getPickResult().getIntersectedNode();
+            Integer x = GridPane.getColumnIndex(rect);
+            Integer y = GridPane.getRowIndex(rect);
+            if (add_barrier_clicked) {
+                rect.getStyleClass().clear();
+                rect.getStyleClass().add("blocked");
+                store.setMapValue(x,y,2);
+                add_barrier_clicked = false;
+            }
+            else {
+                rect.getStyleClass().clear();
+                rect.getStyleClass().add("path");
+                store.setMapValue(x,y,0);
+                remove_barrier_clicked = false;
+            }
+            System.out.println(store.GetMapValue(x,y));
         }
 
     }
@@ -182,8 +210,20 @@ public class Controller implements Initializable {
             add_item_button.setDisable(false);
             return;
         }
-        action_list.add(action);
-        shopping_list.getItems().add(action);
+        int index = action_list.indexOf(action);
+        if (index == -1) {
+            action_list.add(action);
+            Action copy = new Action(action);
+            shopping_list.getItems().add(copy);
+        }
+        else {
+            Action existing_action = action_list.get(index);
+            existing_action.setCount(existing_action.getCount() + c);
+            existing_action = shopping_list.getItems().get(index);
+            existing_action.setCount(existing_action.getCount() + c);
+            shopping_list.getItems().remove(index);
+            shopping_list.getItems().add(existing_action);
+        }
         add_item_button.setDisable(false);
     }
 
@@ -218,12 +258,18 @@ public class Controller implements Initializable {
 
     @FXML
     void add_barrier(MouseEvent event) {
-
+        add_barrier_button.setDisable(true);
+        remove_barrier_clicked = false;
+        add_barrier_clicked = true;
+        add_barrier_button.setDisable(false);
     }
 
     @FXML
     void remove_barrier(MouseEvent event) {
-
+        remove_barrier_button.setDisable(true);
+        add_barrier_clicked = false;
+        remove_barrier_clicked = true;
+        remove_barrier_button.setDisable(false);
     }
 
     @FXML
@@ -244,5 +290,7 @@ public class Controller implements Initializable {
         selected_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
         shopping_list_goods.setCellValueFactory(new PropertyValueFactory<>("Name"));
         shopping_list_count.setCellValueFactory(new PropertyValueFactory<>("Count"));
+        add_barrier_clicked = false;
+        remove_barrier_clicked = false;
     }
 }
