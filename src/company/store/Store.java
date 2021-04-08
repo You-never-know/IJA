@@ -78,7 +78,37 @@ public class Store {
 		return null;
 	}
 
+	public int getGoodsCount(Action action) {
+		int count = 0;
+		String name = action.getName();
+		int ID = action.getID();
+		for (Goods good: goodsList) {
+			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
+				count += good.getCount();
+			}
+		}
+		return count;
+	}
+
+	public int getGoodsRequestsListCount(Action action) {
+		int count = 0;
+		String name = action.getName();
+		int ID = action.getID();
+		for (Request request : requestsList) {
+			for (Action actionFromList : request.getActionsList()) {
+				System.out.println(actionFromList.getName());
+				System.out.println(actionFromList.getID());
+				if (actionFromList.getName().compareTo(name) == 0 || actionFromList.getID() == ID) {
+					count += actionFromList.getCount();
+				}
+			}
+		}
+		return count;
+	}
+
 	public void add_request (Request request) {
+		System.out.println(request.getActionsList().get(0).getName());
+		System.out.println(request.getActionsList().get(0).getCount());
 		requestsList.add(request);
 	}
 
@@ -121,7 +151,7 @@ public class Store {
 		for (Shelve sh: shelvesList) {
 			if (sh.getStatus() == Shelve.ShelveStatus.FREE) { return sh; }
 		}
-		System.out.println("WHY");
+		System.out.println("WHY NOT");
 		return null;
 	}
 

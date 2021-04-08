@@ -27,19 +27,19 @@ public class Controller implements Initializable {
 
     private ArrayList<Action> action_list = new ArrayList<>();
 
-    public void ShowGoodsContent (MouseEvent event) {
-       Node rect = event.getPickResult().getIntersectedNode();
-       Integer x = GridPane.getColumnIndex(rect);
-       Integer y = GridPane.getRowIndex(rect);
-       Shelve shelve = store.get_shelve(x,y);
-       if (shelve == null) {
-           return;
-       }
-       Goods goods = shelve.getGoods();
-       selected_table.getItems().clear();
-       if (goods != null) {
-           selected_table.getItems().add(goods);
-       }
+    public void ShowGoodsContent(MouseEvent event) {
+        Node rect = event.getPickResult().getIntersectedNode();
+        Integer x = GridPane.getColumnIndex(rect);
+        Integer y = GridPane.getRowIndex(rect);
+        Shelve shelve = store.get_shelve(x, y);
+        if (shelve == null) {
+            return;
+        }
+        Goods goods = shelve.getGoods();
+        selected_table.getItems().clear();
+        if (goods != null) {
+            selected_table.getItems().add(goods);
+        }
     }
 
     @FXML
@@ -138,8 +138,8 @@ public class Controller implements Initializable {
         try {
             c = Integer.parseInt(count.strip());
         } catch (NumberFormatException e) {
-            System.out.println("Wrong count given");
-            logMessage("Wrong count given");
+            System.out.println("Wrong input data format");
+            logMessage("Wrong input data format");
             add_item_button.setDisable(false);
             return;
         }
@@ -162,8 +162,13 @@ public class Controller implements Initializable {
             good = shelve.getGoods().getName();
         }
         action = new Action(good, c);
+        System.out.println(store.getGoodsRequestsListCount(action));
         if (store.get_goods_shelve(action) == null) {
             logMessage("Item is not in warehouse, can not be added to shopping list");
+            add_item_button.setDisable(false);
+            return;
+        } else if ((store.getGoodsCount(action) + store.getGoodsRequestsListCount(action)) < c) {
+            logMessage("Sorry, only " + store.getGoodsCount(action) + " pieces available");
             add_item_button.setDisable(false);
             return;
         }
@@ -201,13 +206,12 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void logMessage(String msg){
+    public void logMessage(String msg) {
 
-        if(log_label.getText().isEmpty() || log_label.getText().isBlank()){
+        if (log_label.getText().isEmpty() || log_label.getText().isBlank()) {
             log_label.setText(msg);
-        }
-        else{
-            log_label.setText( msg + "\n" + log_label.getText());
+        } else {
+            log_label.setText(msg + "\n" + log_label.getText());
         }
     }
 

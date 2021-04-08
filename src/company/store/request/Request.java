@@ -21,6 +21,10 @@ public class Request {
         return action;
     }
 
+    public List<Action> getActionsList() {
+        return actionsList;
+    }
+
     public void pushActionsDoneList(Action action) {
         this.actionsDoneList.add(action);
     }
