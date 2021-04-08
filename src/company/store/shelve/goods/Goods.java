@@ -7,26 +7,26 @@ import java.util.Objects;
 
 public class Goods {
 
-    private String name;
-    private int id;
-    private double itemWeight;
-    private int count;
+    private String Name;
+    private int Id;
+    private double ItemWeight;
+    private int Count;
     private Coordinates coordinates;
     private Shelve shelve;
 
 
     public Goods(String name, int id, double itemWeight, int count, int x, int y, Shelve shelve) {
-        this.name = name;
-        this.id = id;
-        this.itemWeight = itemWeight;
-        this.count = count;
+        this.Name = name;
+        this.Id = id;
+        this.ItemWeight = itemWeight;
+        this.Count = count;
         this.coordinates = new Coordinates(x, y);
         this.shelve = shelve;
     }
 
     public void sellItem(int sold) {
         // TODO < 0 ?
-        this.count = this.count - sold;
+        this.Count = this.Count - sold;
     }
 
     @Override
@@ -34,20 +34,20 @@ public class Goods {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Goods goods = (Goods) o;
-        return id == goods.id || name.equals(goods.name);
+        return Id == goods.Id || Name.equals(goods.Name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(Name);
     }
 
     public String getName() {
-        return this.name;
+        return this.Name;
     }
 
     public int getId() {
-        return this.id;
+        return this.Id;
     }
 
     public Shelve getShelve() {
@@ -55,11 +55,11 @@ public class Goods {
     }
 
     public double getItemWeight() {
-        return this.itemWeight;
+        return this.ItemWeight;
     }
 
     public int getCount() {
-        return this.count;
+        return this.Count;
     }
 
     public Coordinates getCoordinates() {

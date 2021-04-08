@@ -5,17 +5,19 @@ import company.store.request.Request;
 import company.store.request.action.Action;
 import company.store.shelve.Shelve;
 import company.store.shelve.goods.Goods;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller implements Initializable {
 
     private Store store;
 
@@ -34,25 +36,26 @@ public class Controller {
            return;
        }
        Goods goods = shelve.getGoods();
-       if (goods == null) {
-            ;//selected_name.g;
+       selected_table.getItems().clear();
+       if (goods != null) {
+           selected_table.getItems().add(goods);
        }
-       else {
-            ;//selected_name.setCellValueFactory();
-       }
-
-
     }
 
     @FXML
-    private TableColumn<?, ?> shopping_list_goods;
+    private TableView<Goods> selected_table = new TableView<>();
 
     @FXML
-    private TableColumn<Goods, String> selected_name;
-
+    private TableColumn<Goods, String> selected_name = new TableColumn<>("Name");
 
     @FXML
-    private TableColumn<?, ?> selected_weight;
+    private TableColumn<Goods, Double> selected_weight = new TableColumn<>("Weight");
+
+    @FXML
+    private TableColumn<Goods, Integer> selected_count = new TableColumn<>("Count");
+
+    @FXML
+    private TableColumn<Goods, Integer> selected_id = new TableColumn<>("ID");
 
     @FXML
     private TextField map_path;
@@ -79,22 +82,19 @@ public class Controller {
     private Button clear_list_button;
 
     @FXML
-    private TableColumn<?, ?> shopping_list_count;
+    private TableView<Action> shopping_list = new TableView<>();
 
     @FXML
-    private TableView<?> selected_table;
+    private TableColumn<Action, String> shopping_list_goods = new TableColumn<>("Goods");
+
+    @FXML
+    private TableColumn<Action, Integer> shopping_list_count = new TableColumn<>("Count");
 
     @FXML
     private Button remove_barrier_button;
 
     @FXML
     private TextField goods_path;
-
-    @FXML
-    private TableColumn<?, ?> selected_count;
-
-    @FXML
-    private TableColumn<?, ?> selected_id;
 
     @FXML
     private TextField add_goods_name;
@@ -113,22 +113,26 @@ public class Controller {
 
     @FXML
     void load_map(MouseEvent event) {
+        load_map_button.setDisable(true);
         String m_path = map_path.getText();
         store.getManager().set_map_path(m_path);
         store.getManager().setUP_Store();
+        load_map_button.setDisable(false);
     }
 
     @FXML
     void load_goods(MouseEvent event) {
+        load_goods_button.setDisable(true);
         String g_path = goods_path.getText();
         store.getManager().set_goods_path(g_path);
         g_path = store.getManager().get_goods_path();
-        System.out.println(g_path);
         store.setGoods(g_path);
+        load_goods_button.setDisable(false);
     }
 
     @FXML
     void add_item_to_list(MouseEvent event) {
+        add_item_button.setDisable(true);
         String count = add_goods_count.getText();
         int c;
         try {
@@ -136,6 +140,7 @@ public class Controller {
         } catch (NumberFormatException e) {
             System.out.println("Wrong count given");
             logMessage("Wrong count given");
+            add_item_button.setDisable(false);
             return;
         }
         Action action;
@@ -144,30 +149,45 @@ public class Controller {
         try {
             ID = Integer.parseInt(good.strip());
         } catch (Exception e) {
-            action = new Action(good.strip(),c);
-            System.out.println(good);
-            action_list.add(action);
-            System.out.println(action.getName());
-            System.out.println(action.getID());
+            ;
+        }
+        if (good.equals(String.valueOf(ID))) {
+            action = new Action(ID, c);
+            Shelve shelve = store.get_goods_shelve(action);
+            if (shelve == null) {
+                logMessage("Item is not in warehouse, can not be added to shopping list");
+                add_item_button.setDisable(false);
+                return;
+            }
+            good = shelve.getGoods().getName();
+        }
+        action = new Action(good, c);
+        if (store.get_goods_shelve(action) == null) {
+            logMessage("Item is not in warehouse, can not be added to shopping list");
+            add_item_button.setDisable(false);
             return;
         }
-        action = new Action(ID, c);
-        System.out.println(ID);
         action_list.add(action);
-        System.out.println(action.getName());
-        System.out.println(action.getID());
+        shopping_list.getItems().add(action);
+        add_item_button.setDisable(false);
     }
 
     @FXML
     void submit_shopping_list(MouseEvent event) {
+        submit_list_button.setDisable(true);
         Request request = new Request(action_list);
         store.add_request(request);
         action_list.clear();
+        shopping_list.getItems().clear();
+        submit_list_button.setDisable(false);
     }
 
     @FXML
     void clear_shopping_list(MouseEvent event) {
-
+        clear_list_button.setDisable(true);
+        action_list.clear();
+        shopping_list.getItems().clear();
+        clear_list_button.setDisable(false);
     }
 
     @FXML
@@ -189,5 +209,15 @@ public class Controller {
         else{
             log_label.setText( msg + "\n" + log_label.getText());
         }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        selected_id.setCellValueFactory(new PropertyValueFactory<>("Id"));
+        selected_count.setCellValueFactory(new PropertyValueFactory<>("Count"));
+        selected_weight.setCellValueFactory(new PropertyValueFactory<>("ItemWeight"));
+        selected_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        shopping_list_goods.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        shopping_list_count.setCellValueFactory(new PropertyValueFactory<>("Count"));
     }
 }

@@ -6,13 +6,9 @@ import company.store.request.action.Action;
 import company.store.shelve.Shelve;
 import company.store.request.Request;
 import company.store.shelve.goods.Goods;
-import company.store.shelve.goods.coordinates.Coordinates;
-import controller.Controller;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -73,7 +69,7 @@ public class Store {
 
 	public Shelve get_goods_shelve(Action action) {
 		String name = action.getName();
-		Integer ID = action.getID();
+		int ID = action.getID();
 		for (Goods good: goodsList) {
 			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
 				return good.getShelve();
@@ -125,7 +121,12 @@ public class Store {
 		for (Shelve sh: shelvesList) {
 			if (sh.getStatus() == Shelve.ShelveStatus.FREE) { return sh; }
 		}
+		System.out.println("WHY");
 		return null;
+	}
+
+	public void cleanShelves () {
+		this.shelvesList.clear();
 	}
 
 	public boolean setMap(String filePath) {
@@ -196,7 +197,6 @@ public class Store {
 
 		try {
 			String line;
-			int max_shelves = shelvesList.size();
 			while ((line = br.readLine()) != null) {
 				String[] item = line.split(";");
 				Shelve shelve = pick_shelf();

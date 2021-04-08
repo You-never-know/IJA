@@ -2,34 +2,34 @@ package company.store.request.action;
 
 public class Action {
 
-    private String name;
+    private String Name;
     private Integer ID;
-    private int count;
+    private int Count;
 
 
     public Action (int ID, int count) {
         this.ID = ID;
-        this.name = "";
-        this.count = count;
+        this.Name = "";
+        this.Count = count;
     }
 
     public Action(String goods, int count) {
-        this.name = goods;
-        this.count = count;
+        this.Name = goods;
+        this.Count = count;
         this.ID = -1;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public Integer getID() { return ID; }
 
     public int getCount() {
-        return count;
+        return Count;
     }
 
     public void setCount(int count) {
-        this.count = count;
+        this.Count = count;
     }
 }

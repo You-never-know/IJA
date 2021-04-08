@@ -132,7 +132,7 @@
                   </TableView>
                   <HBox prefHeight="25.0" prefWidth="360.0" VBox.vgrow="NEVER">
                      <children>
-                        <TextField alignment="CENTER" editable="false" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" styleClass="miniheadings" text="Goods [name]" HBox.hgrow="ALWAYS">
+                        <TextField alignment="CENTER" editable="false" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" styleClass="miniheadings" text="Goods [name or ID]" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="5.0" />
                            </HBox.margin>
@@ -152,7 +152,7 @@
                         <Insets left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
                      <children>
-                        <TextField fx:id="add_goods_name" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="Travní směs dosev" styleClass="fill_label" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="add_goods_name" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="Travní směs dosev/445505" styleClass="fill_label" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="5.0" />
                            </HBox.margin>
@@ -233,7 +233,7 @@
                         <Insets left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
                      <children>
-                        <TextField fx:id="goods_path" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="../../Goods.in" styleClass="fill_label" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="goods_path" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="../data/goods.in" styleClass="fill_label" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="5.0" />
                            </HBox.margin>
@@ -257,7 +257,7 @@
                         <Insets left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
                      <children>
-                        <TextField fx:id="map_path" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="../../Map.in" styleClass="fill_label" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="map_path" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="../data/map1025.in" styleClass="fill_label" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="5.0" />
                            </HBox.margin>

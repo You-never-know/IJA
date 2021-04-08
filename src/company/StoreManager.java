@@ -39,7 +39,7 @@ public class StoreManager extends Application {
             System.err.println(e); // TODO write this in GUI
             System.exit(1);
         }
-        controller = (Controller) loader.getController();
+        controller = loader.getController();
         controller.SetStore(store);
         setUP_Store();
         Scene scene = new Scene(root, 1200, 800);
@@ -63,14 +63,6 @@ public class StoreManager extends Application {
         map_path = class_path + path;
     }
 
-    public String get_map_path() {
-        return map_path;
-    }
-
-    public String get_default_map_path() {
-        return default_map_path;
-    }
-
     public void set_goods_path(String path) {
         this.goods_path = class_path + path;
     }
@@ -92,6 +84,7 @@ public class StoreManager extends Application {
             this.map_path = default_map_path;
             return;
         }
+        store.cleanShelves();
         int h = store.GetHeight();
         int w = store.GetWidth();
         store_plan = new GridPane();
