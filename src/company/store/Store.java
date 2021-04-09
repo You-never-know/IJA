@@ -222,6 +222,19 @@ public class Store {
         return count;
     }
 
+    public int getGoodsInForkliftsCount(Action action) {
+        int count = 0;
+        for (Forklift forklift: workingForkliftsList) {
+            Request request = forklift.getRequest();
+            List<Action> list = request.getActionsList();
+            int index = list.indexOf(action);
+            if (index != -1) {
+                count += list.get(index).getCount();
+            }
+        }
+        return count;
+    }
+
     public Shelve getShelve(int x, int y) {
         for (Shelve shelve : shelvesList) {
             if (shelve.getCoordinates().getX() == x && shelve.getCoordinates().getY() == y) {

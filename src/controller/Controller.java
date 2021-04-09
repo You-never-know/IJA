@@ -17,6 +17,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the GUI
+ */
 public class Controller implements Initializable {
 
     private Store store;
@@ -24,12 +27,19 @@ public class Controller implements Initializable {
     private boolean addBarrierClicked;
     private boolean removeBarrierClicked;
 
+    /**
+     * @param store where the actions will be performed
+     */
     public void setStore(Store store) {
         this.store = store;
     }
 
     private ArrayList<Action> action_list = new ArrayList<>();
 
+    /**
+     * Show content on the selected shelve
+     * @param event Mouse click
+     */
     public void showGoodsContent(MouseEvent event) {
         if (addBarrierClicked == true) {
             addBarrierClicked = false;
@@ -56,6 +66,10 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Do an according action when path is clicked, set/remove barrier if option selected
+     * @param event Mouse clicked
+     */
     public void pathClicked(MouseEvent event) {
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
@@ -149,6 +163,10 @@ public class Controller implements Initializable {
     @FXML
     private TextArea log_label;
 
+    /**
+     * Set a new selected map from a file given in GUI
+     * @param event Button clicked
+     */
     @FXML
     void loadMap(MouseEvent event) {
         load_map_button.setDisable(true);
@@ -158,6 +176,10 @@ public class Controller implements Initializable {
         load_map_button.setDisable(false);
     }
 
+    /**
+     * Load new goods from a file given in GUI
+     * @param event Mouse clicked
+     */
     @FXML
     void loadGoods(MouseEvent event) {
         load_goods_button.setDisable(true);
@@ -168,6 +190,10 @@ public class Controller implements Initializable {
         load_goods_button.setDisable(false);
     }
 
+    /**
+     * Add item to the shopping list, check if item is in store and if there are enough items
+     * @param event
+     */
     @FXML
     void addItemToList(MouseEvent event) {
         add_item_button.setDisable(true);
@@ -203,8 +229,8 @@ public class Controller implements Initializable {
             logMessage("Item is not in warehouse, can not be added to shopping list");
             add_item_button.setDisable(false);
             return;
-        } else if ((store.getGoodsCount(action)) < (c + actionListGoodsCount(action) + store.getGoodsRequestsListCount(action))) {
-            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action)) + " more piece(s) available");
+        } else if ((store.getGoodsCount(action)) < (c + actionListGoodsCount(action) + store.getGoodsRequestsListCount(action) + store.getGoodsInForkliftsCount(action))) {
+            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action) - store.getGoodsInForkliftsCount(action)) + " more piece(s) available");
             add_item_button.setDisable(false);
             return;
         }
@@ -224,6 +250,11 @@ public class Controller implements Initializable {
         add_item_button.setDisable(false);
     }
 
+    /**
+     * Count all items with the same name as in action, that are already in the shopping list
+     * @param action action containing a name of the good
+     * @return number of items already requested
+     */
     public int actionListGoodsCount(Action action) {
         int count = 0;
         String name = action.getName();
@@ -235,8 +266,15 @@ public class Controller implements Initializable {
         return count;
     }
 
+    /**
+     * Send the shopping list to the store as a request
+     * @param event Button clicked
+     */
     @FXML
     void submitShoppingList(MouseEvent event) {
+        if (action_list.size() == 0) {
+            return;
+        }
         submit_list_button.setDisable(true);
         Request request = new Request(action_list);
         store.addRequest(request);
@@ -245,6 +283,10 @@ public class Controller implements Initializable {
         submit_list_button.setDisable(false);
     }
 
+    /**
+     * Clear the shopping list
+     * @param event Button clicked
+     */
     @FXML
     void clearShoppingList(MouseEvent event) {
         clear_list_button.setDisable(true);
@@ -253,6 +295,10 @@ public class Controller implements Initializable {
         clear_list_button.setDisable(false);
     }
 
+    /**
+     * Make next click on the map add a barrier
+     * @param event Button clicked
+     */
     @FXML
     void addBarrier(MouseEvent event) {
         add_barrier_button.setDisable(true);
@@ -261,6 +307,10 @@ public class Controller implements Initializable {
         add_barrier_button.setDisable(false);
     }
 
+    /**
+     * Make next click on the map remove a barrier
+     * @param event Button clicked
+     */
     @FXML
     void removeBarrier(MouseEvent event) {
         remove_barrier_button.setDisable(true);
@@ -269,6 +319,10 @@ public class Controller implements Initializable {
         remove_barrier_button.setDisable(false);
     }
 
+    /**
+     * Display an error message in GUI
+     * @param msg Message that will be displayed
+     */
     @FXML
     public void logMessage(String msg) {
 
@@ -279,6 +333,9 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Initialize the controller
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selected_id.setCellValueFactory(new PropertyValueFactory<>("Id"));

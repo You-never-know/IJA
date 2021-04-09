@@ -94,6 +94,7 @@ public class Shelve {
         }
         this.goods.setCount(goods.getCount() - count);
         Goods sold_goods = new Goods(this.goods);
+        sold_goods.setCount(count);
         if (getGoodsCount() == 0) {
             removeGoods();
         }
