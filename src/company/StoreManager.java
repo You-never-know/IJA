@@ -20,12 +20,12 @@ import java.io.IOException;
 public class StoreManager extends Application {
 
     private Store store;
-    private String class_path = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-    private String default_map_path = class_path + "../data/map1525.in";
-    private String map_path = default_map_path;
-    private String default_goods_path = class_path + "../data/goods.in";
-    private String goods_path = default_goods_path;
-    private GridPane store_plan;
+    private String classPath = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    private String defaultMapPath = classPath + "../data/map1525.in";
+    private String mapPath = defaultMapPath;
+    private String defaultGoodsPath = classPath + "../data/goods.in";
+    private String goodsPath = defaultGoodsPath;
+    private GridPane storePlan;
     private Controller controller;
     private FXMLLoader loader;
     private SplitPane root;
@@ -40,8 +40,8 @@ public class StoreManager extends Application {
             System.exit(1);
         }
         controller = loader.getController();
-        controller.SetStore(store);
-        setUP_Store();
+        controller.setStore(store);
+        setUPStore();
         Scene scene = new Scene(root, 1200, 800);
         scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("../controller/style.css")));
         primaryStage.setTitle("Warehouse manager");
@@ -59,35 +59,35 @@ public class StoreManager extends Application {
         loader.setLocation(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
     }
 
-    public void set_map_path(String path) {
-        map_path = class_path + path;
+    public void setMapPath(String path) {
+        mapPath = classPath + path;
     }
 
-    public void set_goods_path(String path) {
-        this.goods_path = class_path + path;
+    public void setGoodsPath(String path) {
+        this.goodsPath = classPath + path;
     }
 
-    public String get_goods_path() {
-        return this.goods_path;
+    public String getGoodsPath() {
+        return this.goodsPath;
     }
 
-    public String get_default_goods_path() {
-        return default_goods_path;
+    public String getDefaultGoodsPath() {
+        return defaultGoodsPath;
     }
 
-    public void setUP_Goods(int index) {
-        store_plan.getChildren().get(index).getStyleClass().add("full_shelve");
+    public void setUPGoods(int index) {
+        storePlan.getChildren().get(index).getStyleClass().add("full_shelve");
     }
 
-    public void setUP_Store() {
-        if (!store.setMap(map_path)) {
-            this.map_path = default_map_path;
+    public void setUPStore() {
+        if (!store.setMap(mapPath)) {
+            this.mapPath = defaultMapPath;
             return;
         }
         store.cleanShelves();
-        int h = store.GetHeight();
-        int w = store.GetWidth();
-        store_plan = new GridPane();
+        int h = store.getHeight();
+        int w = store.getWidth();
+        storePlan = new GridPane();
         Pane pane = (Pane) root.getItems().get(0);
         NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
         NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
@@ -97,30 +97,30 @@ public class StoreManager extends Application {
                 Rectangle rec = new Rectangle(20, 40);
                 rec.widthProperty().bind(rects_width.divide((double) w).subtract(1));
                 rec.heightProperty().bind(rects_height.divide((double) h).subtract(1));
-                if (store.GetMapValue(i, j) == 0) {
+                if (store.getMapValue(i, j) == 0) {
                     rec.getStyleClass().add("path");
                     rec.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            controller.PathClicked(mouseEvent);
+                            controller.pathClicked(mouseEvent);
                         }
                     });
                 } else {
-                    store.create_shelf(shelve_id, i, j);
+                    store.createShelve(shelve_id, i, j);
                     shelve_id++;
                     rec.getStyleClass().add("shelve");
                     rec.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            controller.ShowGoodsContent(mouseEvent);
+                            controller.showGoodsContent(mouseEvent);
                         }
                     });
                 }
-                store_plan.addColumn(i, rec);
+                storePlan.addColumn(i, rec);
             }
         }
         pane.getChildren().remove(0);
-        pane.getChildren().add(store_plan);
+        pane.getChildren().add(storePlan);
     }
 
     public static void main(String[] args) {

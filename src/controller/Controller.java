@@ -21,22 +21,22 @@ public class Controller implements Initializable {
 
     private Store store;
     private Node rect = null;
-    private boolean add_barrier_clicked;
-    private boolean remove_barrier_clicked;
+    private boolean addBarrierClicked;
+    private boolean removeBarrierClicked;
 
-    public void SetStore(Store store) {
+    public void setStore(Store store) {
         this.store = store;
     }
 
     private ArrayList<Action> action_list = new ArrayList<>();
 
-    public void ShowGoodsContent(MouseEvent event) {
-        if (add_barrier_clicked == true) {
-            add_barrier_clicked = false;
+    public void showGoodsContent(MouseEvent event) {
+        if (addBarrierClicked == true) {
+            addBarrierClicked = false;
             logMessage("Cannot add barrier to the shelve");
         }
-        else if ( remove_barrier_clicked == true) {
-            remove_barrier_clicked = false;
+        else if ( removeBarrierClicked == true) {
+            removeBarrierClicked = false;
             logMessage("Cannot remove barrier from shelve");
         }
         if (rect != null) {
@@ -46,7 +46,7 @@ public class Controller implements Initializable {
         rect.getStyleClass().add("selected_shelve");
         Integer x = GridPane.getColumnIndex(rect);
         Integer y = GridPane.getRowIndex(rect);
-        Shelve shelve = store.get_shelve(x, y);
+        Shelve shelve = store.getShelve(x, y);
         if (shelve == null) {
             return;
         }
@@ -57,26 +57,26 @@ public class Controller implements Initializable {
         }
     }
 
-    public void PathClicked(MouseEvent event) {
+    public void pathClicked(MouseEvent event) {
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
             selected_table.getItems().clear();
         }
-        if (add_barrier_clicked  || remove_barrier_clicked) {
+        if (addBarrierClicked || removeBarrierClicked) {
             rect = event.getPickResult().getIntersectedNode();
             Integer x = GridPane.getColumnIndex(rect);
             Integer y = GridPane.getRowIndex(rect);
-            if (add_barrier_clicked) {
+            if (addBarrierClicked) {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("blocked");
                 store.setMapValue(x,y,2);
-                add_barrier_clicked = false;
+                addBarrierClicked = false;
             }
             else {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("path");
                 store.setMapValue(x, y, 0);
-                remove_barrier_clicked = false;
+                removeBarrierClicked = false;
             }
         }
 
@@ -152,26 +152,26 @@ public class Controller implements Initializable {
     private TextArea log_label;
 
     @FXML
-    void load_map(MouseEvent event) {
+    void loadMap(MouseEvent event) {
         load_map_button.setDisable(true);
         String m_path = map_path.getText();
-        store.getManager().set_map_path(m_path);
-        store.getManager().setUP_Store();
+        store.getManager().setMapPath(m_path);
+        store.getManager().setUPStore();
         load_map_button.setDisable(false);
     }
 
     @FXML
-    void load_goods(MouseEvent event) {
+    void loadGoods(MouseEvent event) {
         load_goods_button.setDisable(true);
         String g_path = goods_path.getText();
-        store.getManager().set_goods_path(g_path);
-        g_path = store.getManager().get_goods_path();
+        store.getManager().setGoodsPath(g_path);
+        g_path = store.getManager().getGoodsPath();
         store.setGoods(g_path);
         load_goods_button.setDisable(false);
     }
 
     @FXML
-    void add_item_to_list(MouseEvent event) {
+    void addItemToList(MouseEvent event) {
         add_item_button.setDisable(true);
         String count = add_goods_count.getText();
         int c;
@@ -192,7 +192,7 @@ public class Controller implements Initializable {
         }
         if (good.equals(String.valueOf(ID))) {
             action = new Action(ID, c);
-            Shelve shelve = store.get_goods_shelve(action);
+            Shelve shelve = store.getGoodsShelve(action);
             if (shelve == null) {
                 logMessage("Item is not in warehouse, can not be added to shopping list");
                 add_item_button.setDisable(false);
@@ -201,12 +201,12 @@ public class Controller implements Initializable {
             good = shelve.getGoods().getName();
         }
         action = new Action(good, c);
-        if (store.get_goods_shelve(action) == null) {
+        if (store.getGoodsShelve(action) == null) {
             logMessage("Item is not in warehouse, can not be added to shopping list");
             add_item_button.setDisable(false);
             return;
-        } else if ((store.getGoodsCount(action)) < (c + action_list_goods_count(action) + store.getGoodsRequestsListCount(action))) {
-            logMessage("Sorry, only " + (store.getGoodsCount(action) - action_list_goods_count(action) - store.getGoodsRequestsListCount(action))  + " more piece(s) available");
+        } else if ((store.getGoodsCount(action)) < (c + actionListGoodsCount(action) + store.getGoodsRequestsListCount(action))) {
+            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action))  + " more piece(s) available");
             add_item_button.setDisable(false);
             return;
         }
@@ -227,7 +227,7 @@ public class Controller implements Initializable {
         add_item_button.setDisable(false);
     }
 
-    public int action_list_goods_count(Action action) {
+    public int actionListGoodsCount(Action action) {
         int count = 0;
         String name = action.getName();
         for (Action act: action_list) {
@@ -239,17 +239,17 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    void submit_shopping_list(MouseEvent event) {
+    void submitShoppingList(MouseEvent event) {
         submit_list_button.setDisable(true);
         Request request = new Request(action_list);
-        store.add_request(request);
+        store.addRequest(request);
         action_list.clear();
         shopping_list.getItems().clear();
         submit_list_button.setDisable(false);
     }
 
     @FXML
-    void clear_shopping_list(MouseEvent event) {
+    void clearShoppingList(MouseEvent event) {
         clear_list_button.setDisable(true);
         action_list.clear();
         shopping_list.getItems().clear();
@@ -257,18 +257,18 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    void add_barrier(MouseEvent event) {
+    void addBarrier(MouseEvent event) {
         add_barrier_button.setDisable(true);
-        remove_barrier_clicked = false;
-        add_barrier_clicked = true;
+        removeBarrierClicked = false;
+        addBarrierClicked = true;
         add_barrier_button.setDisable(false);
     }
 
     @FXML
-    void remove_barrier(MouseEvent event) {
+    void removeBarrier(MouseEvent event) {
         remove_barrier_button.setDisable(true);
-        add_barrier_clicked = false;
-        remove_barrier_clicked = true;
+        addBarrierClicked = false;
+        removeBarrierClicked = true;
         remove_barrier_button.setDisable(false);
     }
 
@@ -290,7 +290,7 @@ public class Controller implements Initializable {
         selected_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
         shopping_list_goods.setCellValueFactory(new PropertyValueFactory<>("Name"));
         shopping_list_count.setCellValueFactory(new PropertyValueFactory<>("Count"));
-        add_barrier_clicked = false;
-        remove_barrier_clicked = false;
+        addBarrierClicked = false;
+        removeBarrierClicked = false;
     }
 }

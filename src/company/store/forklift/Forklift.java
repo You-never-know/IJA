@@ -232,11 +232,11 @@ public class Forklift {
     }
 
     public boolean isValidCoordinate(Coordinates coordinates) {
-        return coordinates.getX() < store.GetWidth() && coordinates.getX() >= 0 && coordinates.getY() < store.GetHeight() && coordinates.getY() >= 0;
+        return coordinates.getX() < store.getWidth() && coordinates.getX() >= 0 && coordinates.getY() < store.getHeight() && coordinates.getY() >= 0;
     }
 
     public boolean isNotBlocked(Coordinates coordinates) {
-        return store.GetMapValue(coordinates.getX(), coordinates.getY()) != 1 && store.GetMapValue(coordinates.getX(), coordinates.getY()) != 2;
+        return store.getMapValue(coordinates.getX(), coordinates.getY()) != 1 && store.getMapValue(coordinates.getX(), coordinates.getY()) != 2;
     }
 
     private List<Coordinates> pathRecursion(List<Coordinates> list, List<Coordinates> predecessors, Coordinates node) {
