@@ -70,9 +70,10 @@ public class Shelve {
     }
 
     /**
-     * Removes goods from the shelve
+     * Removes goods from the shelve and empty goods from the store
      */
     public void removeGoods() {
+        store.removeEmptyGoods();
         goods = null;
     }
 
