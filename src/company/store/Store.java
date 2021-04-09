@@ -28,6 +28,7 @@ public class Store {
     private int[][] map;
     private int width;
     private int height;
+    private Coordinates homeCoordinates;
 
     public Store() {
         shelvesList = new ArrayList<>();
@@ -38,6 +39,7 @@ public class Store {
         doneRequestsList = new ArrayList<>();
         width = 0;
         height = 0;
+        homeCoordinates = new Coordinates(0, 0);
     }
 
     public void main() {
@@ -46,17 +48,17 @@ public class Store {
         }
 
         while (true) {
-            if (requestsList.size() != 0) {
 
-                // TODO new requests
-                Coordinates homeCoordinates = new Coordinates(0, 0);
+            if (workingForkliftsList.size() != 0) {
                 for (Forklift forklift : workingForkliftsList) {
-
+                    delegateRequest();  // TODO new requests is this enough?
                     if (forklift.getPath().size() == 0 || forklift.getActionInProgress() == null) {
                         forklift.setFirstActionInProgress();
                         forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
                     }
-
+                    if(forklift.getFirstPath().equals(homeCoordinates)){
+                        // TODO empty forklift goods list, action done, request done if action count 0 and actionList empty?
+                    }
                     // move
                     if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //is shelve -> do action
                         //TODO check if right shelve
@@ -69,8 +71,11 @@ public class Store {
                             forklift.countPath(homeCoordinates);
                             forklift.printPath();
                         }
-
-
+                        if(forklift.getPath() == null){
+                            // TODO add request at the end of waiting list
+                            forklift.countPath(homeCoordinates);
+                            // TODO what if blocked path to home fml
+                        }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
                         forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
                         forklift.moveForward();
@@ -392,5 +397,9 @@ public class Store {
             return false;
         }
         return true;
+    }
+
+    public Coordinates getHomeCoordinates() {
+        return homeCoordinates;
     }
 }

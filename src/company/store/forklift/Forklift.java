@@ -3,6 +3,7 @@ package company.store.forklift;
 import company.store.Store;
 import company.store.request.Request;
 import company.store.request.action.Action;
+import company.store.shelve.Shelve;
 import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
 
@@ -17,7 +18,6 @@ public class Forklift {
     private Coordinates coordinates;
     private List<Coordinates> path;
     private List<Coordinates> visitedCoordinates;
-    private int weightBearing;
     private int piecesBearing;
     private ForkliftStatus status;
     private Store store;
@@ -244,6 +244,8 @@ public class Forklift {
                 }
             }
         }
+
+        this.path = null;
     }
 
     public boolean isValidCoordinate(Coordinates coordinates) {
@@ -268,8 +270,33 @@ public class Forklift {
 
     public void doAction() {
         Action action = this.request.popFirstActionsList();
-        this.popFirstPath();
-        // TODO + how to GUI? sell item, check bearings, next occurrences, append goods
+        Coordinates shelveLocation = this.popFirstPath();
+        // TODO + how to GUI?
+        Shelve shelve = this.store.getShelve(shelveLocation.getX(), shelveLocation.getY());
+        if (action.getCount() > shelve.getGoodsCount()) {
+            int toSell = 0;
+            if (shelve.getGoodsCount() < this.piecesBearing) {
+                toSell = shelve.getGoodsCount();
+            } else {
+                toSell = this.piecesBearing;
+            }
+            Goods sold = shelve.sellGoods(toSell);
+            action.setCount(action.getCount() - toSell);
+            this.goodsList.add(sold);
+            this.countPath(store.getHomeCoordinates());
+        } else if (action.getCount() >= this.piecesBearing) {
+            Goods sold = shelve.sellGoods(this.piecesBearing);
+            action.setCount(action.getCount() - this.piecesBearing);
+            this.goodsList.add(sold);
+            this.countPath(store.getHomeCoordinates());
+        } else {
+            Goods sold = shelve.sellGoods(action.getCount());
+            action.setCount(0);
+            this.goodsList.add(sold);
+            this.countPath(store.getGoodsShelve(this.request.getFirstAction()).getCoordinates());
+        }
+
+        // TODO null path due to block?
 
         this.request.pushActionsDoneList(action);
     }
