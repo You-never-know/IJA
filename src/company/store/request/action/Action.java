@@ -2,55 +2,88 @@ package company.store.request.action;
 
 import java.util.Objects;
 
+/**
+ * Class for storing actions of requests
+ */
 public class Action {
 
-    private String Name;
-    private Integer ID;
-    private int Count;
+    private String name;
+    private Integer id;
+    private int count;
 
+    /**
+     * @param action action to be set as new instance
+     */
     public Action (Action action) {
-        this.ID = action.getID();
-        this.Name = action.getName();
-        this.Count = action.getCount();
+        this.id = action.getId();
+        this.name = action.getName();
+        this.count = action.getCount();
     }
 
 
-    public Action (int ID, int count) {
-        this.ID = ID;
-        this.Name = "";
-        this.Count = count;
+    /**
+     * @param id int value to be set as id of the Action class instance object
+     * @param count int value to be set as count of the Action class instance object
+     */
+    public Action (int id, int count) {
+        this.id = id;
+        this.name = "";
+        this.count = count;
     }
 
+    /**
+     * @param goods string to be set as name of the Action class instance object
+     * @param count int value to be set as count of the Action class instance object
+     */
     public Action(String goods, int count) {
-        this.Name = goods;
-        this.Count = count;
-        this.ID = -1;
+        this.name = goods;
+        this.count = count;
+        this.id = -1;
     }
 
+    /**
+     * @param o Action object for comparison with this Action class instance
+     * @return boolean value corresponding to equality
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Action action = (Action) o;
-        return Name.equals(action.Name) || ID.equals(action.ID);
+        return name.equals(action.name) || id.equals(action.id);
     }
 
+    /**
+     * @return hash value of the Action class instance object name and id
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(Name, ID);
+        return Objects.hash(name, id);
     }
 
+    /**
+     * @return name of goods bonded to action
+     */
     public String getName() {
-        return Name;
+        return name;
     }
 
-    public Integer getID() { return ID; }
+    /**
+     * @return id of goods bonded to action
+     */
+    public Integer getId() { return id; }
 
+    /**
+     * @return count of goods bonded to action
+     */
     public int getCount() {
-        return Count;
+        return count;
     }
 
+    /**
+     * @param count int value to be set as count of the Action class instance object
+     */
     public void setCount(int count) {
-        this.Count = count;
+        this.count = count;
     }
 }

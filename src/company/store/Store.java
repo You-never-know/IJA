@@ -79,7 +79,7 @@ public class Store {
 
 	public Shelve getGoodsShelve(Action action) {
 		String name = action.getName();
-		int ID = action.getID();
+		int ID = action.getId();
 		for (Goods good: goodsList) {
 			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
 				return good.getShelve();
@@ -91,7 +91,7 @@ public class Store {
 	public int getGoodsCount(Action action) {
 		int count = 0;
 		String name = action.getName();
-		int ID = action.getID();
+		int ID = action.getId();
 		for (Goods good: goodsList) {
 			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
 				count += good.getCount();
@@ -103,10 +103,10 @@ public class Store {
 	public int getGoodsRequestsListCount(Action action) {
 		int count = 0;
 		String name = action.getName();
-		int ID = action.getID();
+		int ID = action.getId();
 		for (Request request : requestsList) {
 			for (Action actionFromList : request.getActionsList()) {
-				if (actionFromList.getName().compareTo(name) == 0 || actionFromList.getID() == ID) {
+				if (actionFromList.getName().compareTo(name) == 0 || actionFromList.getId() == ID) {
 					count += actionFromList.getCount();
 				}
 			}
