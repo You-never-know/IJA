@@ -17,6 +17,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Class for connecting program with its GUI
+ */
 public class StoreManager extends Application {
 
     private Store store;
@@ -30,6 +33,10 @@ public class StoreManager extends Application {
     private FXMLLoader loader;
     private SplitPane root;
 
+    /**
+     * Start the app, load GUI
+     * @param primaryStage Stage that will be displayed in the app
+     */
     @Override
     public void start(Stage primaryStage) {
         SetUpManager();
@@ -52,6 +59,9 @@ public class StoreManager extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Initialize StoreManager
+     */
     public void SetUpManager() {
         store = new Store();
         store.setManager(this);
@@ -59,26 +69,45 @@ public class StoreManager extends Application {
         loader.setLocation(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
     }
 
+    /**
+     * @param path Set path to the Map file
+     */
     public void setMapPath(String path) {
         mapPath = classPath + path;
     }
 
+    /**
+     * @param path Set path to the goods file
+     */
     public void setGoodsPath(String path) {
         this.goodsPath = classPath + path;
     }
 
+    /**
+     * @return Path to the goods, that has been set by user
+     */
     public String getGoodsPath() {
         return this.goodsPath;
     }
 
+    /**
+     * @return Default path to goods file
+     */
     public String getDefaultGoodsPath() {
         return defaultGoodsPath;
     }
 
+    /**
+     * Show that a shelve is occupied in GUI
+     * @param index index in GridPane where the good shall be displayed
+     */
     public void setUPGoods(int index) {
         storePlan.getChildren().get(index).getStyleClass().add("full_shelve");
     }
 
+    /**
+     * Create visual representation of the Store in the GUI
+     */
     public void setUPStore() {
         if (!store.setMap(mapPath)) {
             this.mapPath = defaultMapPath;
@@ -128,6 +157,10 @@ public class StoreManager extends Application {
         Runtime.getRuntime().exit(0);
     }
 
+    /**
+     * Display message in the GUI
+     * @param msg Message to be displayed
+     */
     public void logMessageTA(String msg){
         controller.logMessage(msg);
     }
