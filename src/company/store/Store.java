@@ -46,12 +46,47 @@ public class Store {
         }
 
         while (true) {
-            ;
+            if (requestsList.size() != 0) {
+
+                // TODO new requests
+                Coordinates homeCoordinates = new Coordinates(0, 0);
+                for (Forklift forklift : workingForkliftsList) {
+
+                    if (forklift.getPath().size() == 0 || forklift.getActionInProgress() == null) {
+                        forklift.setFirstActionInProgress();
+                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
+                    }
+
+                    // move
+                    if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //is shelve -> do action
+                        //TODO check if right shelve
+                        forklift.doAction();
+                        if (forklift.getRequest().getActionsList().size() != 0) { // request has some actions left
+                            forklift.setFirstActionInProgress();
+                            forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            forklift.printPath();
+                        } else { // request done
+                            forklift.countPath(homeCoordinates);
+                            forklift.printPath();
+                        }
+
+
+                    } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
+                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                        forklift.moveForward();
+                        setMapValue(forklift.getCoordinates().getX(), forklift.getCoordinates().getY(), statusMapper(forklift.getStatus()));
+                    } else { //is free path or forklift
+                        forklift.moveForward();
+
+                    }
+
+                }
+            }
         }
     }
 
     public enum MapCoordinateStatus {
-        PATH(0), SHELVE(1), BLOCK(2), FORKLIFT_UP(3), FORKLIFT_DOWN(4), FORKLIFT_LEFT(5),
+        FREE_PATH(0), SHELVE(1), BLOCK(2), FORKLIFT_UP(3), FORKLIFT_DOWN(4), FORKLIFT_LEFT(5),
         FORKLIFT_RIGHT(6), FORKLIFTS_UP_DOWN(7), FORKLIFTS_LEFT_RIGHT(11);
 
         private int Val;
@@ -109,6 +144,33 @@ public class Store {
         return true;
     }
 
+    public void updateMapValueAdd(int x, int y, Forklift.ForkliftStatus forkliftStatus) {
+        if (y >= height || x >= width) {
+            return;
+        }
+        if (map[x][y] == MapCoordinateStatus.FREE_PATH.getNumVal()) {
+            map[x][y] = statusMapper(forkliftStatus).getNumVal();
+            return;
+        }
+        if ((forkliftStatus == Forklift.ForkliftStatus.UP && map[x][y] == MapCoordinateStatus.FORKLIFT_DOWN.getNumVal()) ||
+                (forkliftStatus == Forklift.ForkliftStatus.DOWN && map[x][y] == MapCoordinateStatus.FORKLIFT_UP.getNumVal())) {
+            map[x][y] = MapCoordinateStatus.FORKLIFTS_UP_DOWN.getNumVal();
+            return;
+        }
+
+        if ((forkliftStatus == Forklift.ForkliftStatus.LEFT && map[x][y] == MapCoordinateStatus.FORKLIFT_RIGHT.getNumVal()) ||
+                (forkliftStatus == Forklift.ForkliftStatus.RIGHT && map[x][y] == MapCoordinateStatus.FORKLIFT_LEFT.getNumVal())) {
+            map[x][y] = MapCoordinateStatus.FORKLIFTS_LEFT_RIGHT.getNumVal();
+        }
+    }
+
+    public void updateMapValueRemove(int x, int y, Forklift.ForkliftStatus forkliftStatus) {
+        if (y >= height || x >= width) {
+            return;
+        }
+        map[x][y] -= forkliftStatus.getNumVal();
+    }
+
     public void createShelve(int id, int x, int y) {
         Shelve shelf = new Shelve(id, x, y, this);
         shelvesList.add(shelf);
@@ -126,7 +188,7 @@ public class Store {
     }
 
     public void removeEmptyGoods() {
-        for (int i = 0; i<goodsList.size(); i++) {
+        for (int i = 0; i < goodsList.size(); i++) {
             Goods remove = goodsList.get(i);
             if (remove.getCount() == 0) {
                 goodsList.remove(i);
@@ -197,7 +259,7 @@ public class Store {
         requestsList.add(request);
     }
 
-    public boolean delegate_request() {
+    public boolean delegateRequest() {
         if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
             return false;
         }
@@ -207,45 +269,6 @@ public class Store {
         requestsList.remove(0);
         forklift.setRequest(request);
         workingForkliftsList.add(forklift);
-        return true;
-    }
-
-    public boolean processRequests() {
-        Coordinates homeCoordinates = new Coordinates(0, 0);
-        while (requestsList.size() != 0) {
-            for (Forklift forklift : workingForkliftsList) {
-                if (forklift.getPath().size() == 0 || forklift.getActionInProgress() == null) {
-                    forklift.setFirstActionInProgress();
-                    forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
-                }
-
-                // move
-                //TODO crossing ?!
-
-                if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.PATH.Val) {
-                    forklift.moveForward();
-                } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //TODO check if right shelve
-                    forklift.doAction();
-                    if (forklift.getRequest().getActionsList().size() != 0) {
-                        forklift.setFirstActionInProgress();
-                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-                        //TODO Bearings
-                    } else {
-                        //TODO go home : problem : no method for path to coordinates without action - rework
-                        forklift.countPath(homeCoordinates);
-                    }
-                    forklift.printPath();
-
-                } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
-                    forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-                    forklift.moveForward();
-                    setMapValue(forklift.getCoordinates().getX(), forklift.getCoordinates().getY(), statusMapper(forklift.getStatus()));
-                } else { //is forklift
-
-                }
-
-            }
-        }
         return true;
     }
 

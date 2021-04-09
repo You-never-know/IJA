@@ -95,6 +95,10 @@ public class Forklift {
         return this.actionInProgress;
     }
 
+    public void nullActionInProgress() {
+        this.actionInProgress = null;
+    }
+
     public void setStatus(ForkliftStatus status) {
         this.status = status;
     }
@@ -155,7 +159,6 @@ public class Forklift {
                     toExpand = i;
                 } else if (tmp_heuristic == heuristic) {
                     if (open.get(i).getCostValue(destination) < open.get(toExpand).getCostValue(destination)) {
-                        heuristic = tmp_heuristic;
                         toExpand = i;
                     }
                 }
@@ -266,15 +269,18 @@ public class Forklift {
     public void doAction() {
         Action action = this.request.popFirstActionsList();
         this.popFirstPath();
-        // TODO + how to GUI?
+        // TODO + how to GUI? sell item, check bearings, next occurrences, append goods
 
         this.request.pushActionsDoneList(action);
     }
 
     public void moveForward() {
         Coordinates moveTo = popFirstPath();
-        this.countSetStatus(this.coordinates, moveTo);
+        store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), this.status);
         visitedCoordinates.add(this.coordinates);
         this.coordinates = new Coordinates(moveTo.getX(), moveTo.getY());
+        this.countSetStatus(this.coordinates, getFirstPath());
+        store.updateMapValueAdd(this.coordinates.getX(), this.coordinates.getY(), this.status);
+
     }
 }

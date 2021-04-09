@@ -34,8 +34,7 @@ public class Controller implements Initializable {
         if (addBarrierClicked == true) {
             addBarrierClicked = false;
             logMessage("Cannot add barrier to the shelve");
-        }
-        else if ( removeBarrierClicked == true) {
+        } else if (removeBarrierClicked == true) {
             removeBarrierClicked = false;
             logMessage("Cannot remove barrier from shelve");
         }
@@ -69,13 +68,12 @@ public class Controller implements Initializable {
             if (addBarrierClicked) {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("blocked");
-                store.setMapValue(x,y, Store.MapCoordinateStatus.BLOCK);
+                store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
                 addBarrierClicked = false;
-            }
-            else {
+            } else {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("path");
-                store.setMapValue(x, y, Store.MapCoordinateStatus.PATH);
+                store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
                 removeBarrierClicked = false;
             }
         }
@@ -206,7 +204,7 @@ public class Controller implements Initializable {
             add_item_button.setDisable(false);
             return;
         } else if ((store.getGoodsCount(action)) < (c + actionListGoodsCount(action) + store.getGoodsRequestsListCount(action))) {
-            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action))  + " more piece(s) available");
+            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action)) + " more piece(s) available");
             add_item_button.setDisable(false);
             return;
         }
@@ -215,8 +213,7 @@ public class Controller implements Initializable {
             action_list.add(action);
             Action copy = new Action(action);
             shopping_list.getItems().add(copy);
-        }
-        else {
+        } else {
             Action existing_action = action_list.get(index);
             existing_action.setCount(existing_action.getCount() + c);
             existing_action = shopping_list.getItems().get(index);
@@ -230,7 +227,7 @@ public class Controller implements Initializable {
     public int actionListGoodsCount(Action action) {
         int count = 0;
         String name = action.getName();
-        for (Action act: action_list) {
+        for (Action act : action_list) {
             if (act.getName().compareTo(name) == 0) {
                 count += act.getCount();
             }
