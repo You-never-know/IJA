@@ -56,6 +56,9 @@ public class Store {
                         forklift.setFirstActionInProgress();
                         forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
                     }
+                    if(forklift.getFirstPath().equals(homeCoordinates)){
+                        // TODO empty forklift goods list, action done, request done if action count 0 and actionList empty?
+                    }
                     // move
                     if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //is shelve -> do action
                         //TODO check if right shelve
