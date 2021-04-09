@@ -69,13 +69,13 @@ public class Controller implements Initializable {
             if (addBarrierClicked) {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("blocked");
-                store.setMapValue(x,y,2);
+                store.setMapValue(x,y, Store.MapCoordinateStatus.BLOCK);
                 addBarrierClicked = false;
             }
             else {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("path");
-                store.setMapValue(x, y, 0);
+                store.setMapValue(x, y, Store.MapCoordinateStatus.PATH);
                 removeBarrierClicked = false;
             }
         }

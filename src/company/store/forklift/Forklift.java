@@ -53,13 +53,13 @@ public class Forklift {
         return this.path;
     }
 
-    public Coordinates popFirstPath(){
+    public Coordinates popFirstPath() {
         Coordinates coordinates = this.path.get(0);
         this.path.remove(0);
         return coordinates;
     }
 
-    public Coordinates getFirstPath(){
+    public Coordinates getFirstPath() {
         return this.path.get(0);
     }
 
@@ -71,6 +71,10 @@ public class Forklift {
         this.coordinates = coordinates;
     }
 
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
     public void setXCoordinate(int x) {
         this.coordinates.setX(x);
     }
@@ -79,10 +83,11 @@ public class Forklift {
         this.coordinates.setY(y);
     }
 
-    public void setFirstActionInProgress(){
-        this.actionInProgress = new Action (this.request.getFirstAction());
+    public void setFirstActionInProgress() {
+        this.actionInProgress = new Action(this.request.getFirstAction());
     }
-    public Action getActionInProgress(){
+
+    public Action getActionInProgress() {
         return this.actionInProgress;
     }
 
@@ -90,17 +95,17 @@ public class Forklift {
         this.status = status;
     }
 
-    private void countSetStatus(Coordinates from, Coordinates to){
-        if(from.getY() < to.getY()){
+    private void countSetStatus(Coordinates from, Coordinates to) {
+        if (from.getY() < to.getY()) {
             this.status = ForkliftStatus.UP;
         }
-        if(from.getY() > to.getY()){
+        if (from.getY() > to.getY()) {
             this.status = ForkliftStatus.DOWN;
         }
-        if(from.getX() < to.getX()){
+        if (from.getX() < to.getX()) {
             this.status = ForkliftStatus.RIGHT;
         }
-        if(from.getX() > to.getX()){
+        if (from.getX() > to.getX()) {
             this.status = ForkliftStatus.LEFT;
         }
 
@@ -108,6 +113,14 @@ public class Forklift {
 
     public ForkliftStatus getStatus() {
         return status;
+    }
+
+    public void printPath() {
+
+        System.out.println("PATH: ");
+        for (int i = 0; i < this.path.size(); i++) {
+            path.get(i).printCoordinates();
+        }
     }
 
     public void countPath(Coordinates destination) {
@@ -153,11 +166,6 @@ public class Forklift {
                 closed.add(expanding);
                 predecessorsClosed.add(predecessor);
                 this.path = pathRecursion(closed, predecessorsClosed, expanding);
-                /*
-                System.out.println("PATH: ");
-                for (int i = 0; i < path.size(); i++) {
-                    path.get(i).printCoordinates();
-                }*/
                 return;
             }
 
@@ -244,7 +252,7 @@ public class Forklift {
 
         if (!this.coordinates.equals(parent)) {
             pathRecursion(list, predecessors, parent);
-        }else {
+        } else {
             List<Coordinates> path = new ArrayList<>();
         }
         path.add(node);
@@ -259,7 +267,7 @@ public class Forklift {
         this.request.pushActionsDoneList(action);
     }
 
-    public void moveForward(){
+    public void moveForward() {
         Coordinates moveTo = popFirstPath();
         this.countSetStatus(this.coordinates, moveTo);
         visitedCoordinates.add(this.coordinates);

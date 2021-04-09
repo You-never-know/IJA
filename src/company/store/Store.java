@@ -6,6 +6,7 @@ import company.store.request.Request;
 import company.store.request.action.Action;
 import company.store.shelve.Shelve;
 import company.store.shelve.goods.Goods;
+import company.store.shelve.goods.coordinates.Coordinates;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,289 +18,336 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Store {
 
-	private List<Shelve> shelvesList;
-	private List<Goods> goodsList;
-	private List<Forklift> freeForkliftsList;
-	private List<Forklift> workingForkliftsList;
-	private List<Request> requestsList;
-	private List<Request> doneRequestsList;
-	private StoreManager manager;
-	private int[][] map;
-	private int width;
-	private int height;
+    private List<Shelve> shelvesList;
+    private List<Goods> goodsList;
+    private List<Forklift> freeForkliftsList;
+    private List<Forklift> workingForkliftsList;
+    private List<Request> requestsList;
+    private List<Request> doneRequestsList;
+    private StoreManager manager;
+    private int[][] map;
+    private int width;
+    private int height;
 
-	public Store () {
-		shelvesList = new ArrayList<>();
-		goodsList = new ArrayList<>();
-		freeForkliftsList = new ArrayList<>();
-		workingForkliftsList = new ArrayList<>();
-		requestsList = new ArrayList<>();
-		doneRequestsList = new ArrayList<>();
-		width = 0;
-		height = 0;
-	}
+    public Store() {
+        shelvesList = new ArrayList<>();
+        goodsList = new ArrayList<>();
+        freeForkliftsList = new ArrayList<>();
+        workingForkliftsList = new ArrayList<>();
+        requestsList = new ArrayList<>();
+        doneRequestsList = new ArrayList<>();
+        width = 0;
+        height = 0;
+    }
 
-	public void main () {
-		if (! setGoods(manager.getGoodsPath())) {
-			setGoods(manager.getDefaultGoodsPath());
-		}
+    public void main() {
+        if (!setGoods(manager.getGoodsPath())) {
+            setGoods(manager.getDefaultGoodsPath());
+        }
 
-		while (true) {
-			;
-		}
-	}
+        while (true) {
+            ;
+        }
+    }
 
-	public void setManager(StoreManager manager) { this.manager = manager; }
-	public StoreManager getManager() { return manager; }
+    public enum MapCoordinateStatus {
+        PATH(0), SHELVE(1), BLOCK(2), FORKLIFT_UP(3), FORKLIFT_DOWN(4), FORKLIFT_LEFT(5),
+        FORKLIFT_RIGHT(6), FORKLIFTS_UP_DOWN(7), FORKLIFTS_LEFT_RIGHT(11);
 
-	public int getWidth() { return width; }
+        private int Val;
 
-	public int getHeight() { return height; }
+        MapCoordinateStatus(int Val) {
+            this.Val = Val;
+        }
 
-	public int getMapValue(int x, int y)
-	{
-		if (y >= height || x >= width) {
-			return -1;
-		}
-		return map[x][y];
-	}
+        public int getNumVal() {
+            return Val;
+        }
+    }
 
-	public boolean setMapValue(int x, int y, int value) {
-		if (y >= height || x >= width) {
-			return false;
-		}
-		map[x][y] = value;
-		return true;
-	}
+    public MapCoordinateStatus statusMapper(Forklift.ForkliftStatus forkliftStatus) {
+        if (forkliftStatus == Forklift.ForkliftStatus.UP) {
+            return MapCoordinateStatus.FORKLIFT_UP;
+        } else if (forkliftStatus == Forklift.ForkliftStatus.DOWN) {
+            return MapCoordinateStatus.FORKLIFT_DOWN;
+        } else if (forkliftStatus == Forklift.ForkliftStatus.LEFT) {
+            return MapCoordinateStatus.FORKLIFT_LEFT;
+        } else if (forkliftStatus == Forklift.ForkliftStatus.RIGHT) {
+            return MapCoordinateStatus.FORKLIFT_RIGHT;
+        }
+        return null;
+    }
 
-	public void createShelve(int id, int x, int y) {
-		Shelve shelf = new Shelve(id,x,y);
-		shelvesList.add(shelf);
-	}
+    public void setManager(StoreManager manager) {
+        this.manager = manager;
+    }
 
-	public Shelve getGoodsShelve(Action action) {
-		String name = action.getName();
-		int ID = action.getId();
-		for (Goods good: goodsList) {
-			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
-				return good.getShelve();
-			}
-		}
-		return null;
-	}
+    public StoreManager getManager() {
+        return manager;
+    }
 
-	public int getGoodsCount(Action action) {
-		int count = 0;
-		String name = action.getName();
-		int ID = action.getId();
-		for (Goods good: goodsList) {
-			if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
-				count += good.getCount();
-			}
-		}
-		return count;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public int getGoodsRequestsListCount(Action action) {
-		int count = 0;
-		String name = action.getName();
-		int ID = action.getId();
-		for (Request request : requestsList) {
-			for (Action actionFromList : request.getActionsList()) {
-				if (actionFromList.getName().compareTo(name) == 0 || actionFromList.getId() == ID) {
-					count += actionFromList.getCount();
-				}
-			}
-		}
-		return count;
-	}
+    public int getHeight() {
+        return height;
+    }
 
-	public Shelve getShelve(int x, int y) {
-		for (Shelve shelve:shelvesList) {
-			if (shelve.getCoordinates().getX() == x && shelve.getCoordinates().getY() == y) {
-				return shelve;
-			}
-		}
-		return null;
-	}
+    public int getMapValue(int x, int y) {
+        if (y >= height || x >= width) {
+            return -1;
+        }
+        return map[x][y];
+    }
 
-	private Shelve pickShelve() {
-		int i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
-		Shelve s = shelvesList.get(i);
-		if (s.getStatus() == Shelve.ShelveStatus.FREE) { return s; }
-		i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
-		s = shelvesList.get(i);
-		if (s.getStatus() == Shelve.ShelveStatus.FREE) { return s; }
+    public boolean setMapValue(int x, int y, MapCoordinateStatus mapStatus) {
+        if (y >= height || x >= width) {
+            return false;
+        }
+        map[x][y] = mapStatus.getNumVal();
+        return true;
+    }
 
-		for (Shelve sh: shelvesList) {
-			if (sh.getStatus() == Shelve.ShelveStatus.FREE) { return sh; }
-		}
-		return null;
-	}
+    public void createShelve(int id, int x, int y) {
+        Shelve shelf = new Shelve(id, x, y);
+        shelvesList.add(shelf);
+    }
 
-	public void cleanShelves () {
-		this.shelvesList.clear();
-	}
+    public Shelve getGoodsShelve(Action action) {
+        String name = action.getName();
+        int ID = action.getId();
+        for (Goods good : goodsList) {
+            if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
+                return good.getShelve();
+            }
+        }
+        return null;
+    }
 
-	public void addRequest(Request request) {
-		requestsList.add(request);
-	}
+    public int getGoodsCount(Action action) {
+        int count = 0;
+        String name = action.getName();
+        int ID = action.getId();
+        for (Goods good : goodsList) {
+            if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
+                count += good.getCount();
+            }
+        }
+        return count;
+    }
 
-	public boolean delegate_request() {
-		if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
-			return false;
-		}
-		Forklift forklift = freeForkliftsList.get(0);
-		freeForkliftsList.remove(0);
-		Request request = requestsList.get(0);
-		requestsList.remove(0);
+    public int getGoodsRequestsListCount(Action action) {
+        int count = 0;
+        String name = action.getName();
+        int ID = action.getId();
+        for (Request request : requestsList) {
+            for (Action actionFromList : request.getActionsList()) {
+                if (actionFromList.getName().compareTo(name) == 0 || actionFromList.getId() == ID) {
+                    count += actionFromList.getCount();
+                }
+            }
+        }
+        return count;
+    }
 
-		// TODO add the request to the forklift and start the process of doing it, maybe in a new Thread, so more forklifts can work at the same time
-		// add the request to the forklift
-		//new Thread(() -> { do_the_request });
-		return true;
-	}
+    public Shelve getShelve(int x, int y) {
+        for (Shelve shelve : shelvesList) {
+            if (shelve.getCoordinates().getX() == x && shelve.getCoordinates().getY() == y) {
+                return shelve;
+            }
+        }
+        return null;
+    }
 
-	public boolean processRequests(){
-		while(requestsList.size() != 0){
-			for (Forklift forklift: workingForkliftsList) {
-				if(forklift.getPath().size() == 0 || forklift.getActionInProgress() == null){
-					forklift.setFirstActionInProgress();
-					forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
-				}
+    private Shelve pickShelve() {
+        int i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
+        Shelve s = shelvesList.get(i);
+        if (s.getStatus() == Shelve.ShelveStatus.FREE) {
+            return s;
+        }
+        i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
+        s = shelvesList.get(i);
+        if (s.getStatus() == Shelve.ShelveStatus.FREE) {
+            return s;
+        }
 
-				// move
-				//TODO crossing ?!
+        for (Shelve sh : shelvesList) {
+            if (sh.getStatus() == Shelve.ShelveStatus.FREE) {
+                return sh;
+            }
+        }
+        return null;
+    }
 
-				if(getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == 0){
-					forklift.moveForward();
-				}else if(getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == 1){ //TODO check if right shelve
-					forklift.doAction();
-					if(forklift.getRequest().getActionsList().size() != 0){
-						forklift.setFirstActionInProgress();
-						forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-						//TODO Bearings
-					}else{
-						//TODO go home : problem : no method for path to coordinates without action - rework
-						forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-					}
+    public void cleanShelves() {
+        this.shelvesList.clear();
+    }
 
-				}else if(getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == 2){
-					forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-					forklift.moveForward();
-				}
+    public void addRequest(Request request) {
+        requestsList.add(request);
+    }
 
-			}
-		}
-				return true;
-	}
+    public boolean delegate_request() {
+        if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
+            return false;
+        }
+        Forklift forklift = freeForkliftsList.get(0);
+        freeForkliftsList.remove(0);
+        Request request = requestsList.get(0);
+        requestsList.remove(0);
 
-	public void setRequestAsDone(Request req) {
-		doneRequestsList.add(0,req);
-	}
+        // TODO add the request to the forklift and start the process of doing it, maybe in a new Thread, so more forklifts can work at the same time
+        // add the request to the forklift
+        //new Thread(() -> { do_the_request });
+        return true;
+    }
 
-	public boolean setMap(String filePath) {
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(filePath));
-		} catch (FileNotFoundException e) {
-			manager.logMessageTA("Map file not found, try again");
-			return false;
-		}
-		String[] strSizeArray = null;
-		try {
-			strSizeArray = (br.readLine()).split(" ");
-			width = Integer.parseInt(strSizeArray[0]);
-			height = Integer.parseInt(strSizeArray[1]);
-		} catch (IOException e) {
-			manager.logMessageTA("Error while reading a file");
-			return false;
-		} catch (NumberFormatException e) {
-			manager.logMessageTA("Wrong format of the input file");
-			return false;
-		}
-		this.map = new int[width][height];
-		String line;
-		int lineCounter = 0;
-		try {
-			while ((line = br.readLine()) != null) {
-				if (lineCounter >= height) {
-					manager.logMessageTA("Wrong number of rows given, check the input map file");
-					return false;
-				}
-				String[] strMapContent = line.split(" ");
-				if (strMapContent.length != width) {
-					manager.logMessageTA("Wrong number of cols given, check the input map file");
-					return false;
-				}
-				for (int x = 0; x < width; x++) {
-					this.map[x][lineCounter] = Integer.parseInt(strMapContent[x]);
-				}
-				lineCounter++;
-			}
-		} catch (IOException e) {
-			manager.logMessageTA("Error while reading a file");
-			return false;
-		} catch (NumberFormatException e) {
-			manager.logMessageTA("Wrong format of the input file");
-			return false;
-		}
-		return true;
-	}
+    public boolean processRequests() {
+        Coordinates homeCoordinates = new Coordinates(0, 0);
+        while (requestsList.size() != 0) {
+            for (Forklift forklift : workingForkliftsList) {
+                if (forklift.getPath().size() == 0 || forklift.getActionInProgress() == null) {
+                    forklift.setFirstActionInProgress();
+                    forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
+                }
 
-	public boolean setGoods(String filePath) {
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(filePath));
-		} catch (FileNotFoundException e) {
-			manager.logMessageTA("Goods file not found, try again");
-			return false;
-		}
-		try {
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] item = line.split(";");
-				Shelve shelve = pickShelve();
-				if (shelve == null) {
-					manager.logMessageTA("Not enough space for all goods");
-					break;
-				}
-				if (item.length != 4) {
-					manager.logMessageTA("Wrong format of the item in the Goods file");
-					continue;
-				}
-				String name = item[0];
-				Integer ID = 0;
-				Integer count = 0;
-				String[] weight = item[2].strip().split(" ");
-				Double good_weight = 0.0;
-				if (weight.length != 2) {
-					manager.logMessageTA("Wrong format of the item in the Goods file");
-					continue;
-				}
-				if (weight[1].strip() == "kg") {
-					manager.logMessageTA("Wrong format of the item in the Goods file");
-					continue;
-				}
-				try {
-					ID = Integer.parseInt(item[1].strip());
-					count = Integer.parseInt(item[3].strip());
-					good_weight = Double.parseDouble(weight[0].strip());
-				} catch (NumberFormatException e) {
-					manager.logMessageTA("Wrong format of the item in the Goods file");
-					continue;
-				}
-				int x = shelve.getCoordinates().getX();
-				int y = shelve.getCoordinates().getY();
-				Goods good = new Goods(name,ID,good_weight,count,x,y,shelve);
-				shelve.setGoods(good);
-				goodsList.add(good);
-				manager.setUPGoods(x*height + y);
-			}
-		} catch (IOException e) {
-			manager.logMessageTA("Error while reading a file");
-			return false;
-		}
-		return true;
-	}
+                // move
+                //TODO crossing ?!
+
+                if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.PATH.Val) {
+                    forklift.moveForward();
+                } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //TODO check if right shelve
+                    forklift.doAction();
+                    if (forklift.getRequest().getActionsList().size() != 0) {
+                        forklift.setFirstActionInProgress();
+                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                        //TODO Bearings
+                    } else {
+                        //TODO go home : problem : no method for path to coordinates without action - rework
+                        forklift.countPath(homeCoordinates);
+                    }
+                    forklift.printPath();
+
+                } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
+                    forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                    forklift.moveForward();
+                    setMapValue(forklift.getCoordinates().getX(), forklift.getCoordinates().getY(), statusMapper(forklift.getStatus()));
+                } else { //is forklift
+
+                }
+
+            }
+        }
+        return true;
+    }
+
+    public void setRequestAsDone(Request req) {
+        doneRequestsList.add(0, req);
+    }
+
+    public boolean setMap(String filePath) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            manager.logMessageTA("Map file not found, try again");
+            return false;
+        }
+        String[] strSizeArray = null;
+        try {
+            strSizeArray = (br.readLine()).split(" ");
+            width = Integer.parseInt(strSizeArray[0]);
+            height = Integer.parseInt(strSizeArray[1]);
+        } catch (IOException e) {
+            manager.logMessageTA("Error while reading a file");
+            return false;
+        } catch (NumberFormatException e) {
+            manager.logMessageTA("Wrong format of the input file");
+            return false;
+        }
+        this.map = new int[width][height];
+        String line;
+        int lineCounter = 0;
+        try {
+            while ((line = br.readLine()) != null) {
+                if (lineCounter >= height) {
+                    manager.logMessageTA("Wrong number of rows given, check the input map file");
+                    return false;
+                }
+                String[] strMapContent = line.split(" ");
+                if (strMapContent.length != width) {
+                    manager.logMessageTA("Wrong number of cols given, check the input map file");
+                    return false;
+                }
+                for (int x = 0; x < width; x++) {
+                    this.map[x][lineCounter] = Integer.parseInt(strMapContent[x]);
+                }
+                lineCounter++;
+            }
+        } catch (IOException e) {
+            manager.logMessageTA("Error while reading a file");
+            return false;
+        } catch (NumberFormatException e) {
+            manager.logMessageTA("Wrong format of the input file");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean setGoods(String filePath) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            manager.logMessageTA("Goods file not found, try again");
+            return false;
+        }
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] item = line.split(";");
+                Shelve shelve = pickShelve();
+                if (shelve == null) {
+                    manager.logMessageTA("Not enough space for all goods");
+                    break;
+                }
+                if (item.length != 4) {
+                    manager.logMessageTA("Wrong format of the item in the Goods file");
+                    continue;
+                }
+                String name = item[0];
+                Integer ID = 0;
+                Integer count = 0;
+                String[] weight = item[2].strip().split(" ");
+                Double good_weight = 0.0;
+                if (weight.length != 2) {
+                    manager.logMessageTA("Wrong format of the item in the Goods file");
+                    continue;
+                }
+                if (weight[1].strip() == "kg") {
+                    manager.logMessageTA("Wrong format of the item in the Goods file");
+                    continue;
+                }
+                try {
+                    ID = Integer.parseInt(item[1].strip());
+                    count = Integer.parseInt(item[3].strip());
+                    good_weight = Double.parseDouble(weight[0].strip());
+                } catch (NumberFormatException e) {
+                    manager.logMessageTA("Wrong format of the item in the Goods file");
+                    continue;
+                }
+                int x = shelve.getCoordinates().getX();
+                int y = shelve.getCoordinates().getY();
+                Goods good = new Goods(name, ID, good_weight, count, x, y, shelve);
+                shelve.setGoods(good);
+                goodsList.add(good);
+                manager.setUPGoods(x * height + y);
+            }
+        } catch (IOException e) {
+            manager.logMessageTA("Error while reading a file");
+            return false;
+        }
+        return true;
+    }
 }
