@@ -75,10 +75,9 @@ public class Controller implements Initializable {
             else {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("path");
-                store.setMapValue(x,y,0);
+                store.setMapValue(x, y, 0);
                 remove_barrier_clicked = false;
             }
-            System.out.println(store.GetMapValue(x,y));
         }
 
     }
