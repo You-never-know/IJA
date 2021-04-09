@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Main class of the Store, assigns actions to the other components, holds all the data needed for its operation
+ */
 public class Store {
 
     private List<Shelve> shelvesList;
@@ -30,6 +33,9 @@ public class Store {
     private int height;
     private Coordinates homeCoordinates;
 
+    /**
+     * Initialize the Store
+     */
     public Store() {
         shelvesList = new ArrayList<>();
         goodsList = new ArrayList<>();
@@ -48,16 +54,15 @@ public class Store {
         }
 
         while (true) {
-
-            if (workingForkliftsList.size() != 0) {
+            delegateRequest(); // TODO needs to be here so Requests have a chance to get assigned, plus 1 new Forklift per one cycle is not bad
+            if (workingForkliftsList.size() > 0) {
                 for (Forklift forklift : workingForkliftsList) {
-                    delegateRequest();  // TODO new requests is this enough?
                     if (forklift.getPath().size() == 0 || forklift.getActionInProgress() == null) {
                         forklift.setFirstActionInProgress();
-                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh?
+                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh? TBH that does not give enough info
                     }
                     if(forklift.getFirstPath().equals(homeCoordinates)){
-                        // TODO empty forklift goods list, action done, request done if action count 0 and actionList empty?
+                        // TODO empty forklift goods list, action done, request done if action count 0 and actionList empty? -> I think so, Forklift can declare itself ass free after
                     }
                     // move
                     if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //is shelve -> do action
@@ -118,22 +123,39 @@ public class Store {
         return null;
     }
 
+    /**
+     * @param manager StoreManger assigned to this store
+     */
     public void setManager(StoreManager manager) {
         this.manager = manager;
     }
 
+    /**
+     * @return StoreManager of the shop
+     */
     public StoreManager getManager() {
         return manager;
     }
 
+    /**
+     * @return Width of the map
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return Height of the map
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * @param x x-coordinate in the map
+     * @param y y-coordinate in the map
+     * @return Value in the map on given coordinates
+     */
     public int getMapValue(int x, int y) {
         if (y >= height || x >= width) {
             return -1;
@@ -141,6 +163,12 @@ public class Store {
         return map[x][y];
     }
 
+    /**
+     * Update a value in a map
+     * @param x x-coordinate in the map
+     * @param y y-coordinate in the map
+     * @param mapStatus New value for the map
+     */
     public boolean setMapValue(int x, int y, MapCoordinateStatus mapStatus) {
         if (y >= height || x >= width) {
             return false;
@@ -176,11 +204,20 @@ public class Store {
         map[x][y] -= forkliftStatus.getNumVal();
     }
 
+    /**
+     * @param id ID of the shelve
+     * @param x x-coordinate of the shelve
+     * @param y y-coordinate of the shelve
+     */
     public void createShelve(int id, int x, int y) {
         Shelve shelf = new Shelve(id, x, y, this);
         shelvesList.add(shelf);
     }
 
+    /**
+     * @param action Action that specifies searched Goods
+     * @return Shelve where the Goods specified by Action are stored or null if no such Goods are in the store
+     */
     public Shelve getGoodsShelve(Action action) {
         String name = action.getName();
         int ID = action.getId();
@@ -192,6 +229,9 @@ public class Store {
         return null;
     }
 
+    /**
+     * Remove goods that have 0 pieces left from the Store
+     */
     public void removeEmptyGoods() {
         for (int i = 0; i < goodsList.size(); i++) {
             Goods remove = goodsList.get(i);
@@ -201,6 +241,10 @@ public class Store {
         }
     }
 
+    /**
+     * @param action Action that specifies searched Goods
+     * @return Count of the Goods specified by the action in the store
+     */
     public int getGoodsCount(Action action) {
         int count = 0;
         String name = action.getName();
@@ -213,6 +257,10 @@ public class Store {
         return count;
     }
 
+    /**
+     * @param action Action that specifies searched Goods
+     * @return Count of the Goods specified by action in not yet assigned requests
+     */
     public int getGoodsRequestsListCount(Action action) {
         int count = 0;
         String name = action.getName();
@@ -227,6 +275,10 @@ public class Store {
         return count;
     }
 
+    /**
+     * @param action Action that specifies searched Goods
+     * @return Count of the Goods specified by action in already assigned requests
+     */
     public int getGoodsInForkliftsCount(Action action) {
         int count = 0;
         for (Forklift forklift: workingForkliftsList) {
@@ -240,6 +292,11 @@ public class Store {
         return count;
     }
 
+    /**
+     * @param x x-coordinate of the shelve in the shop
+     * @param y y-coordinate of the shelve in the shop
+     * @return Shelve Shelve located on these coordinates or null, if no shelve exists there
+     */
     public Shelve getShelve(int x, int y) {
         for (Shelve shelve : shelvesList) {
             if (shelve.getCoordinates().getX() == x && shelve.getCoordinates().getY() == y) {
@@ -249,6 +306,10 @@ public class Store {
         return null;
     }
 
+    /**
+     * Return a free shelve for Goods
+     * @return Shelve where Goods will be placed
+     */
     private Shelve pickShelve() {
         int i = ThreadLocalRandom.current().nextInt(0, shelvesList.size());
         Shelve s = shelvesList.get(i);
@@ -269,14 +330,25 @@ public class Store {
         return null;
     }
 
+    /**
+     * Remove all shelves from the store
+     */
     public void cleanShelves() {
         this.shelvesList.clear();
     }
 
+    /**
+     * Add request to the request list to be done by forklift
+     * @param request Request to be done
+     */
     public void addRequest(Request request) {
         requestsList.add(request);
     }
 
+    /**
+     * Check if there are any requests and free forklifts,if there are give request to a free forklift
+     * @return true if Request was given to a free forklift
+     */
     public boolean delegateRequest() {
         if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
             return false;
@@ -290,10 +362,19 @@ public class Store {
         return true;
     }
 
+    /**
+     * Mark request as done
+     * @param req Request that has been completed
+     */
     public void setRequestAsDone(Request req) {
         doneRequestsList.add(0, req);
     }
 
+    /**
+     * Load store from the given file
+     * @param filePath Path to the map file
+     * @return True if store was successfully set
+     */
     public boolean setMap(String filePath) {
         BufferedReader br = null;
         try {
@@ -343,6 +424,11 @@ public class Store {
         return true;
     }
 
+    /**
+     * Load goods from the given file
+     * @param filePath Path to the goods file
+     * @return True if goods were successfully set
+     */
     public boolean setGoods(String filePath) {
         BufferedReader br = null;
         try {
@@ -399,6 +485,9 @@ public class Store {
         return true;
     }
 
+    /**
+     * @return Coordinates of the starting point in the map
+     */
     public Coordinates getHomeCoordinates() {
         return homeCoordinates;
     }

@@ -270,12 +270,12 @@ public class Forklift {
 
     public void doAction() {
         Action action = this.request.popFirstActionsList();
-        Coordinates shelveLocation = this.popFirstPath();
+        Coordinates shelveLocation = this.popFirstPath(); // TODO This does not guarantee that it will be a shelve, "store.getGoodsShelve(action)" would be better, you can get the shelve location from the shelve itself
         // TODO + how to GUI?
-        Shelve shelve = this.store.getShelve(shelveLocation.getX(), shelveLocation.getY());
+        Shelve shelve = this.store.getShelve(shelveLocation.getX(), shelveLocation.getY()); // TODO This will probably not work, because the coordinates may not be of some Shelve ( If I understand correctly, that path is the whole path to the shelve), "store.getGoodsShelve(action)" gives Shelve straight away
         if (action.getCount() > shelve.getGoodsCount()) {
             int toSell = 0;
-            if (shelve.getGoodsCount() < this.piecesBearing) {
+            if (shelve.getGoodsCount() < this.piecesBearing) { // TODO look at the next TODO, the same principle applies here
                 toSell = shelve.getGoodsCount();
             } else {
                 toSell = this.piecesBearing;
@@ -284,7 +284,7 @@ public class Forklift {
             action.setCount(action.getCount() - toSell);
             this.goodsList.add(sold);
             this.countPath(store.getHomeCoordinates());
-        } else if (action.getCount() >= this.piecesBearing) {
+        } else if (action.getCount() >= this.piecesBearing) { // TODO you should subtract the pieces already on the Forklift, because for example 4 pieces are already in forklift, max for forklift is for example 6, we want another 4, this would allow it, even though we would have 8 pieces in one forklift
             Goods sold = shelve.sellGoods(this.piecesBearing);
             action.setCount(action.getCount() - this.piecesBearing);
             this.goodsList.add(sold);
