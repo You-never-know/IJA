@@ -24,7 +24,7 @@ public class Forklift {
     private Action actionInProgress = null;
 
     public enum ForkliftStatus {
-        UP(3), DOWN(4), LEFT(5), RIGHT(6); //TODO 8 , 9, 10 bad numbers
+        UP(3), DOWN(4), LEFT(5), RIGHT(6);
 
         private int Val;
 
@@ -65,6 +65,10 @@ public class Forklift {
 
     public Request getRequest() {
         return this.request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 
     public void setCoordinates(Coordinates coordinates) {

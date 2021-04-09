@@ -36,7 +36,7 @@ public class StoreManager extends Application {
         try {
             root = loader.load();
         } catch (IOException e) {
-            System.err.println(e); // TODO write this in GUI
+            System.out.println(e);
             System.exit(1);
         }
         controller = loader.getController();

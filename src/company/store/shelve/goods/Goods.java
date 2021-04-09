@@ -37,10 +37,15 @@ public class Goods {
     }
 
     /**
-     * @param sold count of items to be sold
+     * @param goods goods to be set as new instance
      */
-    public void sellItem(int sold) {
-        this.Count = this.Count - sold;
+    public Goods(Goods goods) {
+        this.name = goods.getName();
+        this.id = goods.getId();
+        this.itemWeight = goods.getItemWeight();
+        this.Count = goods.getCount();
+        this.coordinates = goods.getCoordinates();
+        this.shelve = goods.getShelve();
     }
 
     /**
@@ -97,6 +102,11 @@ public class Goods {
     public int getCount() {
         return this.Count;
     }
+
+    /**
+     * @param count new count of goods
+     */
+    public void setCount(int count) {this.Count = count; }
 
     /**
      * @return coordinates where this Goods class instance is located

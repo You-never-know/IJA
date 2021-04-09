@@ -110,7 +110,7 @@ public class Store {
     }
 
     public void createShelve(int id, int x, int y) {
-        Shelve shelf = new Shelve(id, x, y);
+        Shelve shelf = new Shelve(id, x, y, this);
         shelvesList.add(shelf);
     }
 
@@ -123,6 +123,15 @@ public class Store {
             }
         }
         return null;
+    }
+
+    public void removeEmptyGoods() {
+        for (int i = 0; i<goodsList.size(); i++) {
+            Goods remove = goodsList.get(i);
+            if (remove.getCount() == 0) {
+                goodsList.remove(i);
+            }
+        }
     }
 
     public int getGoodsCount(Action action) {
@@ -196,10 +205,8 @@ public class Store {
         freeForkliftsList.remove(0);
         Request request = requestsList.get(0);
         requestsList.remove(0);
-
-        // TODO add the request to the forklift and start the process of doing it, maybe in a new Thread, so more forklifts can work at the same time
-        // add the request to the forklift
-        //new Thread(() -> { do_the_request });
+        forklift.setRequest(request);
+        workingForkliftsList.add(forklift);
         return true;
     }
 
