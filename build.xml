@@ -34,4 +34,29 @@
         </exec>
     </target>
 
+    <target name="doc" description="Generate the documentation">
+        <exec executable="javadoc" >
+            <arg value="-private"/>
+            <arg value="-sourcepath"/>
+            <arg value="src"/>
+            <arg value="--module-path"/>
+            <arg value="lib/javafx-sdk-16/lib"/>
+            <arg value="--add-modules"/>
+            <arg value="javafx.controls,javafx.fxml"/>
+            <arg value="-classpath"/>
+            <arg value="build"/>
+            <arg value="-d"/>
+            <arg value="doc"/>
+            <arg value="company"/>
+            <arg value="controller"/>
+            <arg value="company.store"/>
+            <arg value="company.store.forklift"/>
+            <arg value="company.store.shelve"/>
+            <arg value="company.store.shelve.goods"/>
+            <arg value="company.store.shelve.goods.coordinates"/>
+            <arg value="company.store.request"/>
+            <arg value="company.store.request.action"/>
+        </exec>
+    </target>
+
 </project>
