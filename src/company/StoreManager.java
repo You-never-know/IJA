@@ -106,6 +106,15 @@ public class StoreManager extends Application {
     }
 
     /**
+     * Show that a shelve is free in GUI
+     * @param index index in GridPane where the good shall be displayed
+     */
+    public void freeShelve(int index) {
+        storePlan.getChildren().get(index).getStyleClass().remove("full_shelve");
+        storePlan.getChildren().get(index).getStyleClass().add("shelve");
+    }
+
+    /**
      * Create visual representation of the Store in the GUI
      */
     public void setUPStore() {

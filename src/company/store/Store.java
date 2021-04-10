@@ -271,8 +271,6 @@ public class Store {
         return null;
     }
 
-
-    //TODO empty shelves to green
     /**
      * Remove goods that have 0 pieces left from the Store
      */
@@ -280,6 +278,8 @@ public class Store {
         for (int i = 0; i < goodsList.size(); i++) {
             Goods remove = goodsList.get(i);
             if (remove.getCount() == 0) {
+                Coordinates place = remove.getCoordinates();
+                manager.freeShelve(place.getX() * height + place.getY());
                 goodsList.remove(i);
             }
         }

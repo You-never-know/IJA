@@ -50,7 +50,7 @@ public class Action {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Action action = (Action) o;
-        return name.equals(action.name) || id.equals(action.id);
+        return name.equals(action.name) && id.equals(action.id);
     }
 
     /**
@@ -69,9 +69,19 @@ public class Action {
     }
 
     /**
+     * @param name name of goods bonded to action
+     */
+    public void setName(String name) { this.name = name; }
+
+    /**
      * @return id of goods bonded to action
      */
     public Integer getId() { return id; }
+
+    /**
+     * @param ID id of goods bonded to action
+     */
+    public void setId(int ID) { this.id = ID; }
 
     /**
      * @return count of goods bonded to action

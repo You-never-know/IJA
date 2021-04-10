@@ -38,6 +38,7 @@ public class Controller implements Initializable {
 
     /**
      * Show content on the selected shelve
+     *
      * @param event Mouse click
      */
     public void showGoodsContent(MouseEvent event) {
@@ -68,10 +69,9 @@ public class Controller implements Initializable {
 
     /**
      * Do an according action when path is clicked, set/remove barrier if option selected
+     *
      * @param event Mouse clicked
      */
-
-    //TODO check block on forklift
     public void pathClicked(MouseEvent event) {
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
@@ -84,7 +84,11 @@ public class Controller implements Initializable {
             if (addBarrierClicked) {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("blocked");
-                store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
+                if (store.getMapValue(x, y) == 0) {
+                    store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
+                } else {
+                    logMessage("Cannot add barrier here");
+                }
                 addBarrierClicked = false;
             } else {
                 rect.getStyleClass().clear();
@@ -167,6 +171,7 @@ public class Controller implements Initializable {
 
     /**
      * Set a new selected map from a file given in GUI
+     *
      * @param event Button clicked
      */
     @FXML
@@ -180,6 +185,7 @@ public class Controller implements Initializable {
 
     /**
      * Load new goods from a file given in GUI
+     *
      * @param event Mouse clicked
      */
     @FXML
@@ -194,66 +200,72 @@ public class Controller implements Initializable {
 
     /**
      * Add item to the shopping list, check if item is in store and if there are enough items
+     *
      * @param event
      */
     @FXML
     void addItemToList(MouseEvent event) {
         add_item_button.setDisable(true);
-        String count = add_goods_count.getText();
-        int c;
+        String count_string = add_goods_count.getText().strip();
+        String good = add_goods_name.getText().strip();
+        Action action;
+        int count;
         try {
-            c = Integer.parseInt(count.strip());
+            count = Integer.parseInt(count_string);
         } catch (NumberFormatException e) {
             logMessage("Wrong input data format");
             add_item_button.setDisable(false);
             return;
         }
-        Action action;
-        String good = add_goods_name.getText();
         Integer ID = 0;
         try {
-            ID = Integer.parseInt(good.strip());
+            ID = Integer.parseInt(good);
         } catch (Exception e) {
             ;
         }
-        if (good.equals(String.valueOf(ID))) {
-            action = new Action(ID, c);
-            Shelve shelve = store.getGoodsShelve(action);
-            if (shelve == null) {
-                logMessage("Item is not in warehouse, unable to add to shopping list");
-                add_item_button.setDisable(false);
-                return;
-            }
-            good = shelve.getGoods().getName();
+        if (ID != 0) {
+            action = new Action(ID, count);
+        } else {
+            action = new Action(good, count);
         }
-        action = new Action(good, c);
-        if (store.getGoodsShelve(action) == null) {
+        Shelve shelve = store.getGoodsShelve(action);
+        if (shelve == null) {
             logMessage("Item is not in warehouse, unable to add to shopping list");
             add_item_button.setDisable(false);
             return;
-        } else if ((store.getGoodsCount(action)) < (c + actionListGoodsCount(action) + store.getGoodsRequestsListCount(action) + store.getGoodsInForkliftsCount(action))) {
+        }
+        action.setId(shelve.getGoodsId());
+        action.setName(shelve.getGoods().getName());
+
+        if ((store.getGoodsCount(action)) < (count +
+
+                actionListGoodsCount(action) + store.getGoodsRequestsListCount(action) + store.getGoodsInForkliftsCount(action))) {
             logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action) - store.getGoodsInForkliftsCount(action)) + " more piece(s) available");
             add_item_button.setDisable(false);
             return;
         }
+
         int index = action_list.indexOf(action);
+        System.out.println(index);
         if (index == -1) {
             action_list.add(action);
             Action copy = new Action(action);
             shopping_list.getItems().add(copy);
         } else {
             Action existing_action = action_list.get(index);
-            existing_action.setCount(existing_action.getCount() + c);
+            existing_action.setCount(existing_action.getCount() + count);
+            // -----------------------------------------------------------
             existing_action = shopping_list.getItems().get(index);
-            existing_action.setCount(existing_action.getCount() + c);
-            shopping_list.getItems().remove(index);
-            shopping_list.getItems().add(existing_action);
+            existing_action.setCount(existing_action.getCount() + count);
+            //----------------------------------------------------------
+            shopping_list.refresh();
         }
         add_item_button.setDisable(false);
     }
 
     /**
      * Count all items with the same name as in action, that are already in the shopping list
+     *
      * @param action action containing a name of the good
      * @return number of items already requested
      */
@@ -270,6 +282,7 @@ public class Controller implements Initializable {
 
     /**
      * Send the shopping list to the store as a request
+     *
      * @param event Button clicked
      */
     @FXML
@@ -288,6 +301,7 @@ public class Controller implements Initializable {
 
     /**
      * Clear the shopping list
+     *
      * @param event Button clicked
      */
     @FXML
@@ -300,6 +314,7 @@ public class Controller implements Initializable {
 
     /**
      * Make next click on the map add a barrier
+     *
      * @param event Button clicked
      */
     @FXML
@@ -312,6 +327,7 @@ public class Controller implements Initializable {
 
     /**
      * Make next click on the map remove a barrier
+     *
      * @param event Button clicked
      */
     @FXML
@@ -324,6 +340,7 @@ public class Controller implements Initializable {
 
     /**
      * Display an error message in GUI
+     *
      * @param msg Message that will be displayed
      */
     @FXML

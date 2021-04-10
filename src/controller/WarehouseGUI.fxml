@@ -137,7 +137,7 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </TextField>
-                        <TextField alignment="CENTER" editable="false" minHeight="25.0" prefHeight="25.0" prefWidth="80.0" promptText="2" styleClass="miniheadings" text="Count">
+                        <TextField alignment="CENTER" editable="false" minHeight="25.0" prefHeight="25.0" prefWidth="80.0" promptText="0" styleClass="miniheadings" text="Count">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -157,7 +157,7 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </TextField>
-                        <TextField fx:id="add_goods_count" minHeight="25.0" prefHeight="25.0" prefWidth="80.0" promptText="2" styleClass="fill_label">
+                        <TextField fx:id="add_goods_count" minHeight="25.0" prefHeight="25.0" prefWidth="80.0" promptText="0" styleClass="fill_label">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
