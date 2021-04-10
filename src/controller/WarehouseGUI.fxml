@@ -35,7 +35,7 @@
                <children>
                   <HBox alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="350.0" VBox.vgrow="NEVER">
                      <children>
-                        <Text boundsType="LOGICAL_VERTICAL_CENTER" fill="#cccccc" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h1_warehouse" text="WAREHOUSE" textAlignment="CENTER" wrappingWidth="175.0" HBox.hgrow="ALWAYS">
+                        <Text boundsType="LOGICAL_VERTICAL_CENTER" fill="#cccccc" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h1_warehouse" text="WAREHOUSE" textAlignment="CENTER" wrappingWidth="200.0" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -48,7 +48,7 @@
                               <Font size="10.0" />
                            </font>
                         </Button>
-                        <TextField fx:id="time_label" alignment="CENTER" prefHeight="25.0" prefWidth="80.0" styleClass="miniheadings" text="Time">
+                        <TextField fx:id="time_label" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="50.0" styleClass="miniheadings" text="1x">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin>
@@ -93,12 +93,12 @@
                         <Insets top="5.0" />
                      </padding>
                   </TextField>
-                  <TableView fx:id="selected_table" minHeight="60.0" prefHeight="60.0" prefWidth="350.0" styleClass="tables" VBox.vgrow="SOMETIMES">
+                  <TableView fx:id="selected_table" editable="true" minHeight="60.0" prefHeight="60.0" prefWidth="350.0" styleClass="tables" VBox.vgrow="SOMETIMES">
                      <columns>
                         <TableColumn fx:id="selected_name" prefWidth="148.0" styleClass="tables_heading" text="Name" />
-                        <TableColumn fx:id="selected_id" prefWidth="70.0" styleClass="tables_heading" text="ID" />
-                        <TableColumn fx:id="selected_weight" prefWidth="65.0" styleClass="tables_heading" text="Weight " />
-                        <TableColumn fx:id="selected_count" prefWidth="65.0" styleClass="tables_heading" text="Count" />
+                        <TableColumn fx:id="selected_id" maxWidth="3000.0" prefWidth="70.0" styleClass="tables_heading" text="ID" />
+                        <TableColumn fx:id="selected_weight" maxWidth="3000.0" prefWidth="65.0" styleClass="tables_heading" text="Weight " />
+                        <TableColumn fx:id="selected_count" maxWidth="2000.0" prefWidth="65.0" styleClass="tables_heading" text="Count" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

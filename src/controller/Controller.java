@@ -70,6 +70,8 @@ public class Controller implements Initializable {
      * Do an according action when path is clicked, set/remove barrier if option selected
      * @param event Mouse clicked
      */
+
+    //TODO check block on forklift
     public void pathClicked(MouseEvent event) {
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
@@ -218,7 +220,7 @@ public class Controller implements Initializable {
             action = new Action(ID, c);
             Shelve shelve = store.getGoodsShelve(action);
             if (shelve == null) {
-                logMessage("Item is not in warehouse, can not be added to shopping list");
+                logMessage("Item is not in warehouse, unable to add to shopping list");
                 add_item_button.setDisable(false);
                 return;
             }
@@ -226,7 +228,7 @@ public class Controller implements Initializable {
         }
         action = new Action(good, c);
         if (store.getGoodsShelve(action) == null) {
-            logMessage("Item is not in warehouse, can not be added to shopping list");
+            logMessage("Item is not in warehouse, unable to add to shopping list");
             add_item_button.setDisable(false);
             return;
         } else if ((store.getGoodsCount(action)) < (c + actionListGoodsCount(action) + store.getGoodsRequestsListCount(action) + store.getGoodsInForkliftsCount(action))) {
@@ -281,6 +283,7 @@ public class Controller implements Initializable {
         action_list.clear();
         shopping_list.getItems().clear();
         submit_list_button.setDisable(false);
+        System.out.println("ShoppingList submitted");
     }
 
     /**

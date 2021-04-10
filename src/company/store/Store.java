@@ -48,53 +48,78 @@ public class Store {
         homeCoordinates = new Coordinates(0, 0);
     }
 
+    /**
+     * Main method where requests are processed
+     */
     public void main() {
+
         if (!setGoods(manager.getGoodsPath())) {
             setGoods(manager.getDefaultGoodsPath());
         }
 
+        initForklifts(4);
+
         while (true) {
-            delegateRequest(); // TODO needs to be here so Requests have a chance to get assigned, plus 1 new Forklift per one cycle is not bad
+            delegateRequest();
             if (workingForkliftsList.size() > 0) {
+                // TODO blocked path to home in every ways
                 for (Forklift forklift : workingForkliftsList) {
-                    if (forklift.getPath().size() == 0 || forklift.getActionInProgress() == null) {
+                    if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null) {
                         forklift.setFirstActionInProgress();
-                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates()); // TODO uh oh? TBH that does not give enough info
                     }
-                    if(forklift.getFirstPath().equals(homeCoordinates)){
-                        // TODO empty forklift goods list, action done, request done if action count 0 and actionList empty? -> I think so, Forklift can declare itself ass free after
+                    if (forklift.getFirstPath().equals(homeCoordinates)) {
+                        forklift.moveToHome();
+                        forklift.unloadGoods();
+                        if (forklift.getRequest().getActionsList().size() != 0) {
+                            if (forklift.getPath().size() == 0) {
+                                forklift.countPath(this.getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            }
+                            continue;
+                        } else {
+                            this.setRequestAsDone(forklift.nullGetRequest());
+                            forklift.nullActionInProgress();
+                            setForkliftFree(forklift);
+                            if (workingForkliftsList.size() > 0) {
+                                continue;
+                            }
+                            break;
+                        }
                     }
                     // move
                     if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.SHELVE.Val) { //is shelve -> do action
-                        //TODO check if right shelve
                         forklift.doAction();
-                        if (forklift.getRequest().getActionsList().size() != 0) { // request has some actions left
+                        if ((forklift.getRequest().getActionsList().size() != 0) && (forklift.getActionInProgress() == null)) { // request has some actions left
                             forklift.setFirstActionInProgress();
-                            forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-                            forklift.printPath();
-                        } else { // request done
-                            forklift.countPath(homeCoordinates);
-                            forklift.printPath();
+
                         }
-                        if(forklift.getPath() == null){
-                            // TODO add request at the end of waiting list
+                        if (forklift.getPath() == null) {
                             forklift.countPath(homeCoordinates);
-                            // TODO what if blocked path to home fml
                         }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
-                        forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+
+                        if (forklift.getPath().get(forklift.getPath().size()-1) == this.getHomeCoordinates()) {
+                            forklift.countPath(this.homeCoordinates);
+                        } else {
+                            forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                        }
                         forklift.moveForward();
-                        setMapValue(forklift.getCoordinates().getX(), forklift.getCoordinates().getY(), statusMapper(forklift.getStatus()));
                     } else { //is free path or forklift
                         forklift.moveForward();
 
                     }
-
                 }
+            }
+            try {
+                Thread.sleep(1250);
+            } catch (InterruptedException e) {
+                ;
             }
         }
     }
 
+    /**
+     * Enumeration of states for map
+     */
     public enum MapCoordinateStatus {
         FREE_PATH(0), SHELVE(1), BLOCK(2), FORKLIFT_UP(3), FORKLIFT_DOWN(4), FORKLIFT_LEFT(5),
         FORKLIFT_RIGHT(6), FORKLIFTS_UP_DOWN(7), FORKLIFTS_LEFT_RIGHT(11);
@@ -110,6 +135,10 @@ public class Store {
         }
     }
 
+    /**
+     * @param forkliftStatus ForkliftStatus to be mapped to MapCoordinateStatus
+     * @return MapCoordinateStatus corresponding to ForkliftStatus given
+     */
     public MapCoordinateStatus statusMapper(Forklift.ForkliftStatus forkliftStatus) {
         if (forkliftStatus == Forklift.ForkliftStatus.UP) {
             return MapCoordinateStatus.FORKLIFT_UP;
@@ -165,8 +194,9 @@ public class Store {
 
     /**
      * Update a value in a map
-     * @param x x-coordinate in the map
-     * @param y y-coordinate in the map
+     *
+     * @param x         x-coordinate in the map
+     * @param y         y-coordinate in the map
      * @param mapStatus New value for the map
      */
     public boolean setMapValue(int x, int y, MapCoordinateStatus mapStatus) {
@@ -177,6 +207,12 @@ public class Store {
         return true;
     }
 
+    /**
+     * Add value according to current state to the x, y position on map
+     * @param x x-coordinate in the map
+     * @param y y-coordinate in the map
+     * @param forkliftStatus New value for the map by forklift
+     */
     public void updateMapValueAdd(int x, int y, Forklift.ForkliftStatus forkliftStatus) {
         if (y >= height || x >= width) {
             return;
@@ -197,6 +233,12 @@ public class Store {
         }
     }
 
+    /**
+     * Remove value according to current state to the x, y position on map
+     * @param x x-coordinate in the map
+     * @param y y-coordinate in the map
+     * @param forkliftStatus New value for the map by forklift
+     */
     public void updateMapValueRemove(int x, int y, Forklift.ForkliftStatus forkliftStatus) {
         if (y >= height || x >= width) {
             return;
@@ -206,8 +248,8 @@ public class Store {
 
     /**
      * @param id ID of the shelve
-     * @param x x-coordinate of the shelve
-     * @param y y-coordinate of the shelve
+     * @param x  x-coordinate of the shelve
+     * @param y  y-coordinate of the shelve
      */
     public void createShelve(int id, int x, int y) {
         Shelve shelf = new Shelve(id, x, y, this);
@@ -229,6 +271,8 @@ public class Store {
         return null;
     }
 
+
+    //TODO empty shelves to green
     /**
      * Remove goods that have 0 pieces left from the Store
      */
@@ -281,7 +325,7 @@ public class Store {
      */
     public int getGoodsInForkliftsCount(Action action) {
         int count = 0;
-        for (Forklift forklift: workingForkliftsList) {
+        for (Forklift forklift : workingForkliftsList) {
             Request request = forklift.getRequest();
             List<Action> list = request.getActionsList();
             int index = list.indexOf(action);
@@ -308,6 +352,7 @@ public class Store {
 
     /**
      * Return a free shelve for Goods
+     *
      * @return Shelve where Goods will be placed
      */
     private Shelve pickShelve() {
@@ -339,6 +384,7 @@ public class Store {
 
     /**
      * Add request to the request list to be done by forklift
+     *
      * @param request Request to be done
      */
     public void addRequest(Request request) {
@@ -347,23 +393,45 @@ public class Store {
 
     /**
      * Check if there are any requests and free forklifts,if there are give request to a free forklift
+     *
      * @return true if Request was given to a free forklift
      */
     public boolean delegateRequest() {
         if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
             return false;
         }
+        System.out.println("Delegating request");
         Forklift forklift = freeForkliftsList.get(0);
         freeForkliftsList.remove(0);
         Request request = requestsList.get(0);
         requestsList.remove(0);
         forklift.setRequest(request);
+        forklift.setFirstActionInProgress();
         workingForkliftsList.add(forklift);
         return true;
     }
 
     /**
+     * @param count Number of forklifts to be made
+     */
+    public void initForklifts(int count) {
+        for (int i = 0; i < count; i++) {
+            Forklift newForklift = new Forklift(i, 0, 0, this, i + 4);
+            freeForkliftsList.add(newForklift);
+        }
+    }
+
+    /**
+     * @param forklift Forklift to be marked as free
+     */
+    public void setForkliftFree(Forklift forklift) {
+        this.workingForkliftsList.remove(forklift);
+        this.freeForkliftsList.add(forklift);
+    }
+
+    /**
      * Mark request as done
+     *
      * @param req Request that has been completed
      */
     public void setRequestAsDone(Request req) {
@@ -372,6 +440,7 @@ public class Store {
 
     /**
      * Load store from the given file
+     *
      * @param filePath Path to the map file
      * @return True if store was successfully set
      */
@@ -426,6 +495,7 @@ public class Store {
 
     /**
      * Load goods from the given file
+     *
      * @param filePath Path to the goods file
      * @return True if goods were successfully set
      */

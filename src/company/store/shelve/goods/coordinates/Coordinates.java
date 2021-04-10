@@ -64,7 +64,7 @@ public class Coordinates {
     }
 
     /**
-     * @return hash value of the Coordinates class instance object
+     * @return Hash value of the Coordinates class instance object
      */
     @Override
     public int hashCode() {
@@ -73,7 +73,7 @@ public class Coordinates {
 
     /**
      * @param origin Coordinates of the start position
-     * @return move value of the A* algorithm for start and current position
+     * @return Move value of the A* algorithm for start and current position
      */
     public int getMoveValue(Coordinates origin) {
         return Math.abs(this.x - origin.getX()) + Math.abs(this.y - origin.getY());
@@ -81,7 +81,7 @@ public class Coordinates {
 
     /**
      * @param destination Coordinates of the final position
-     * @return cost value of the A* algorithm for start and final position
+     * @return Cost value of the A* algorithm for start and final position
      */
     public double getCostValue(Coordinates destination) {
         return (Math.sqrt(Math.pow(Math.abs(this.x - destination.getX()), 2) + Math.pow(Math.abs(this.y - destination.getY()), 2)));
@@ -89,7 +89,7 @@ public class Coordinates {
 
     /**
      * @param coordinates Coordinates for computing the heuristic value
-     * @return heuristic value of the A* algorithm for start and final position
+     * @return Heuristic value of the A* algorithm for start and final position
      */
     public double getHeuristicValue(Coordinates coordinates) {
         return this.getMoveValue(coordinates) + this.getCostValue(coordinates);

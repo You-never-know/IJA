@@ -5,7 +5,7 @@
 
 .path {
     -fx-fill: #2b2b2c;
-    -fx-stroke-width: 0;
+    -fx-stroke-width: .5;
     -fx-border-color: transparent;
     -fx-stroke: transparent;
     -fx-border-style: none;
@@ -145,7 +145,7 @@
 
     -fx-padding: 0.0em;
 }
-.scroll-bar:vertical,
+.scroll-bar:vertical, .scroll-bar:horizontal,
 .virtual-flow .scroll-bar:vertical .track,
 .virtual-flow .scroll-bar:vertical .track-background,
 .virtual-flow .scroll-bar:horizontal,
