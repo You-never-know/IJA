@@ -416,7 +416,12 @@ public class Forklift {
             if (this.request.getActionsList().size() == 1) {
                 this.countPath(store.getHomeCoordinates());
             } else {
+                if (actionInProgress.getCount() == 0) {
+                    nullActionInProgress();
+                    this.request.pushActionsDoneList(this.request.popFirstActionsList());
+                }
                 this.countPath(store.getGoodsShelve(this.request.getFirstAction()).getCoordinates());
+                return;
             }
         }
         if (actionInProgress.getCount() == 0) {

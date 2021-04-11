@@ -246,7 +246,6 @@ public class Controller implements Initializable {
         }
 
         int index = action_list.indexOf(action);
-        System.out.println(index);
         if (index == -1) {
             action_list.add(action);
             Action copy = new Action(action);
