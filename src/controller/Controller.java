@@ -217,6 +217,11 @@ public class Controller implements Initializable {
             add_item_button.setDisable(false);
             return;
         }
+        if (count < 1) {
+            logMessage("Incorrect count given");
+            add_item_button.setDisable(false);
+            return;
+        }
         Integer ID = 0;
         try {
             ID = Integer.parseInt(good);

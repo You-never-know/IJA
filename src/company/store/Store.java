@@ -376,10 +376,11 @@ public class Store {
     }
 
     /**
-     * Remove all shelves from the store
+     * Remove all shelves from the store and goods that were on them
      */
     public void cleanShelves() {
         this.shelvesList.clear();
+        this.goodsList.clear();
     }
 
     /**
