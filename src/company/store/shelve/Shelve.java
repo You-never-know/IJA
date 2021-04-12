@@ -73,6 +73,7 @@ public class Shelve {
      */
     public void removeGoods() {
         store.removeEmptyGoods();
+        status = ShelveStatus.FREE;
         goods = null;
     }
 

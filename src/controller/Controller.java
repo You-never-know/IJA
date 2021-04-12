@@ -201,7 +201,7 @@ public class Controller implements Initializable {
     /**
      * Add item to the shopping list, check if item is in store and if there are enough items
      *
-     * @param event
+     * @param event Mouse clicked
      */
     @FXML
     void addItemToList(MouseEvent event) {
