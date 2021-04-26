@@ -136,6 +136,13 @@ public class Forklift {
     }
 
     /**
+     * @return Id of the forklift
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
      * Unloads goods from the forklift, resets its bearing capacity
      */
     public void unloadGoods() {
@@ -150,7 +157,12 @@ public class Forklift {
     public void setFirstActionInProgress() {
         this.actionInProgress = new Action(this.request.getFirstAction());
         this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
-        this.countSetStatus(this.getCoordinates(), this.getFirstPath());
+        if(this.getPath().size() != 0){
+            this.countSetStatus(this.getCoordinates(), this.getFirstPath());
+        }else{
+            store.queueRequest(this);
+            store.logMessageStore("Path to goods of forklift n." + this.getId() + " is blocked");
+        }
     }
 
     /**
@@ -253,8 +265,15 @@ public class Forklift {
 
             Coordinates expanding = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
             if (expanding.equals(destination)) {
-                Coordinates predecessor = new
-                        Coordinates(predecessorsOpen.get(toExpand).getX(), predecessorsOpen.get(toExpand).getY());
+                Coordinates predecessor;
+                try{
+                    predecessor = new
+                            Coordinates(predecessorsOpen.get(toExpand).getX(), predecessorsOpen.get(toExpand).getY());
+                }catch(NullPointerException e){
+                    this.path = new ArrayList<>();
+                    return;
+                }
+
                 open.remove(toExpand);
                 predecessorsOpen.remove(toExpand);
                 closed.add(expanding);
@@ -333,7 +352,7 @@ public class Forklift {
             }
         }
 
-        this.path = null;
+        this.path = new ArrayList<>();
     }
 
     /**

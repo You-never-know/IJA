@@ -25,6 +25,7 @@ public class Store {
     private List<Goods> goodsList;
     private List<Forklift> freeForkliftsList;
     private List<Forklift> workingForkliftsList;
+    private List<Forklift> blockedForkliftsList;
     private List<Request> requestsList;
     private List<Request> doneRequestsList;
     private StoreManager manager;
@@ -41,6 +42,7 @@ public class Store {
         goodsList = new ArrayList<>();
         freeForkliftsList = new ArrayList<>();
         workingForkliftsList = new ArrayList<>();
+        blockedForkliftsList = new ArrayList<>();
         requestsList = new ArrayList<>();
         doneRequestsList = new ArrayList<>();
         width = 0;
@@ -62,11 +64,25 @@ public class Store {
         while (true) {
             delegateRequest();
             if (workingForkliftsList.size() > 0) {
-                // TODO blocked path to home in every ways
+                // TODO blocked path to home in every way
                 for (Forklift forklift : workingForkliftsList) {
-                    if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null) {
+                    if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null && forklift.getRequest().getActionsList().size() != 0) {
                         forklift.setFirstActionInProgress();
                     }
+                    if (forklift.getPath().size() == 0) {
+
+                        forklift.countPath(this.homeCoordinates);
+                        if (forklift.getPath().size() == 0) {
+                            this.blockedForkliftsList.add(forklift);
+                            this.workingForkliftsList.remove(forklift);
+                            logMessageStore("Forklift n." + forklift.getId() + " is blocked");
+                            if (workingForkliftsList.size() == 0) {
+                                break;
+                            }
+                            continue;
+                        }
+                    }
+
                     if (forklift.getFirstPath().equals(homeCoordinates)) {
                         forklift.moveToHome();
                         forklift.unloadGoods();
@@ -97,10 +113,33 @@ public class Store {
                         }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
 
-                        if (forklift.getPath().get(forklift.getPath().size()-1) == this.getHomeCoordinates()) {
+                        //System.out.println("ERR?");
+                        forklift.getPath().get(forklift.getPath().size() - 1).printCoordinates();
+                        if (forklift.getPath().get(forklift.getPath().size() - 1) == this.getHomeCoordinates()) {
                             forklift.countPath(this.homeCoordinates);
+                            if (forklift.getPath().size() == 0) {
+                                this.blockedForkliftsList.add(forklift);
+                                this.workingForkliftsList.remove(forklift);
+                                logMessageStore("Forklift n." + forklift.getId() + " is blocked");
+                                if (workingForkliftsList.size() == 0) {
+                                    break;
+                                }
+                                continue;
+                            }
                         } else {
                             forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            if (forklift.getPath().size() == 0) {
+                                forklift.countPath(this.homeCoordinates);
+                                if (forklift.getPath().size() == 0) {
+                                    this.blockedForkliftsList.add(forklift);
+                                    this.workingForkliftsList.remove(forklift);
+                                    logMessageStore("Forklift n." + forklift.getId() + " is blocked");
+                                    if (workingForkliftsList.size() == 0) {
+                                        break;
+                                    }
+                                    continue;
+                                }
+                            }
                         }
                         forklift.moveForward();
                     } else { //is free path or forklift
@@ -110,7 +149,7 @@ public class Store {
                 }
             }
             try {
-                Thread.sleep(1250);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 ;
             }
@@ -209,8 +248,9 @@ public class Store {
 
     /**
      * Add value according to current state to the x, y position on map
-     * @param x x-coordinate in the map
-     * @param y y-coordinate in the map
+     *
+     * @param x              x-coordinate in the map
+     * @param y              y-coordinate in the map
      * @param forkliftStatus New value for the map by forklift
      */
     public void updateMapValueAdd(int x, int y, Forklift.ForkliftStatus forkliftStatus) {
@@ -235,8 +275,9 @@ public class Store {
 
     /**
      * Remove value according to current state to the x, y position on map
-     * @param x x-coordinate in the map
-     * @param y y-coordinate in the map
+     *
+     * @param x              x-coordinate in the map
+     * @param y              y-coordinate in the map
      * @param forkliftStatus New value for the map by forklift
      */
     public void updateMapValueRemove(int x, int y, Forklift.ForkliftStatus forkliftStatus) {
@@ -384,6 +425,12 @@ public class Store {
     }
 
     /**
+     * Logs in app message given
+     */
+    public void logMessageStore(String msg){
+        manager.logMessageTA(msg);
+    }
+    /**
      * Add request to the request list to be done by forklift
      *
      * @param request Request to be done
@@ -413,6 +460,16 @@ public class Store {
     }
 
     /**
+     * Add request at the end of the store request list
+     *
+     * @param forklift Forklift whose request is to be queued
+     */
+    public void queueRequest(Forklift forklift){
+        this.requestsList.add(forklift.nullGetRequest());
+        setForkliftFree(forklift);
+    }
+
+    /**
      * @param count Number of forklifts to be made
      */
     public void initForklifts(int count) {
@@ -428,6 +485,12 @@ public class Store {
     public void setForkliftFree(Forklift forklift) {
         this.workingForkliftsList.remove(forklift);
         this.freeForkliftsList.add(forklift);
+    }
+
+    public void checkBlockedForklifts(){
+        for (Forklift forklift:blockedForkliftsList) {
+            forklift.setFirstActionInProgress(); // TODo is this ok?
+        }
     }
 
     /**
