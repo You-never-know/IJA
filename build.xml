@@ -20,6 +20,10 @@
             <arg value="src/controller/style.css" />
             <arg value="build/controller/"/>
         </exec>
+        <exec executable="cp" >
+            <arg value="src/controller/WMico.png" />
+            <arg value="build/controller/"/>
+        </exec>
     </target>
 
     <target name="run" description="run the app">

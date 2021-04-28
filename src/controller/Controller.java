@@ -42,10 +42,10 @@ public class Controller implements Initializable {
      * @param event Mouse click
      */
     public void showGoodsContent(MouseEvent event) {
-        if (addBarrierClicked == true) {
+        if (addBarrierClicked) {
             addBarrierClicked = false;
             logMessage("Cannot add barrier to the shelve");
-        } else if (removeBarrierClicked == true) {
+        } else if (removeBarrierClicked) {
             removeBarrierClicked = false;
             logMessage("Cannot remove barrier from shelve");
         }
@@ -81,6 +81,12 @@ public class Controller implements Initializable {
             rect = event.getPickResult().getIntersectedNode();
             Integer x = GridPane.getColumnIndex(rect);
             Integer y = GridPane.getRowIndex(rect);
+            if (x <= 1 && y <= 1) {
+                logMessage("Cannot add or remove barrier at the loading bay");
+                addBarrierClicked = false;
+                removeBarrierClicked = false;
+                return;
+            }
             if (addBarrierClicked) {
                 rect.getStyleClass().clear();
                 rect.getStyleClass().add("blocked");

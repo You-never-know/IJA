@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -21,18 +22,18 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Store {
 
-    private List<Shelve> shelvesList;
-    private List<Goods> goodsList;
-    private List<Forklift> freeForkliftsList;
-    private List<Forklift> workingForkliftsList;
-    private List<Forklift> blockedForkliftsList;
-    private List<Request> requestsList;
-    private List<Request> doneRequestsList;
+    private final List<Shelve> shelvesList;
+    private final List<Goods> goodsList;
+    private final List<Forklift> freeForkliftsList;
+    private final List<Forklift> workingForkliftsList;
+    private final List<Forklift> blockedForkliftsList;
+    private final List<Request> requestsList;
+    private final List<Request> doneRequestsList;
     private StoreManager manager;
     private int[][] map;
     private int width;
     private int height;
-    private Coordinates homeCoordinates;
+    private final Coordinates homeCoordinates;
 
     /**
      * Initialize the Store
@@ -148,10 +149,26 @@ public class Store {
                     }
                 }
             }
+            for (Forklift forklift : workingForkliftsList) {
+                int x = forklift.getCoordinates().getX();
+                int y = forklift.getCoordinates().getY();
+                int map_value = getMapValue(x, y);
+                MapCoordinateStatus status = MapCoordinateStatus.values()[map_value];
+                manager.draw_forklift(forklift.getCoordinates(), status);
+            }
+            try {
+                manager.FreeVisitedPath();
+            } catch (ConcurrentModificationException e) {
+                try {
+                    manager.FreeVisitedPath();
+                } catch (ConcurrentModificationException ex) {
+
+                }
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                ;
+
             }
         }
     }
@@ -173,6 +190,7 @@ public class Store {
             return Val;
         }
     }
+
 
     /**
      * @param forkliftStatus ForkliftStatus to be mapped to MapCoordinateStatus
@@ -427,9 +445,10 @@ public class Store {
     /**
      * Logs in app message given
      */
-    public void logMessageStore(String msg){
+    public void logMessageStore(String msg) {
         manager.logMessageTA(msg);
     }
+
     /**
      * Add request to the request list to be done by forklift
      *
@@ -464,7 +483,7 @@ public class Store {
      *
      * @param forklift Forklift whose request is to be queued
      */
-    public void queueRequest(Forklift forklift){
+    public void queueRequest(Forklift forklift) {
         this.requestsList.add(forklift.nullGetRequest());
         setForkliftFree(forklift);
     }
@@ -487,8 +506,8 @@ public class Store {
         this.freeForkliftsList.add(forklift);
     }
 
-    public void checkBlockedForklifts(){
-        for (Forklift forklift:blockedForkliftsList) {
+    public void checkBlockedForklifts() {
+        for (Forklift forklift : blockedForkliftsList) {
             forklift.setFirstActionInProgress(); // TODo is this ok?
         }
     }
@@ -509,14 +528,14 @@ public class Store {
      * @return True if store was successfully set
      */
     public boolean setMap(String filePath) {
-        BufferedReader br = null;
+        BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
             manager.logMessageTA("Map file not found, try again");
             return false;
         }
-        String[] strSizeArray = null;
+        String[] strSizeArray;
         try {
             strSizeArray = (br.readLine()).split(" ");
             width = Integer.parseInt(strSizeArray[0]);
@@ -564,7 +583,7 @@ public class Store {
      * @return True if goods were successfully set
      */
     public boolean setGoods(String filePath) {
-        BufferedReader br = null;
+        BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
@@ -585,10 +604,10 @@ public class Store {
                     continue;
                 }
                 String name = item[0];
-                Integer ID = 0;
-                Integer count = 0;
+                int ID;
+                int count;
                 String[] weight = item[2].strip().split(" ");
-                Double good_weight = 0.0;
+                double good_weight;
                 if (weight.length != 2) {
                     manager.logMessageTA("Wrong format of the item in the Goods file");
                     continue;

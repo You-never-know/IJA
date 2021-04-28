@@ -15,16 +15,16 @@ import java.util.List;
  */
 public class Forklift {
 
-    private int id;
+    private final int id;
     private Request request;
-    private List<Goods> goodsList;
+    private final List<Goods> goodsList;
     private Coordinates coordinates;
     private List<Coordinates> path;
-    private List<Coordinates> visitedCoordinates;
+    private final List<Coordinates> visitedCoordinates;
     private int piecesBearing;
     private int piecesBearingLeft;
     private ForkliftStatus status;
-    private Store store;
+    private final Store store;
     private Action actionInProgress;
 
     /**
@@ -400,7 +400,7 @@ public class Forklift {
 
         Shelve shelve = this.store.getShelve(shelveLocation.getX(), shelveLocation.getY());
         if (actionInProgress.getCount() > shelve.getGoodsCount()) {
-            int toSell = 0;
+            int toSell;
             if (shelve.getGoodsCount() < this.piecesBearingLeft) {
                 toSell = shelve.getGoodsCount();
                 Goods sold = shelve.sellGoods(toSell);
