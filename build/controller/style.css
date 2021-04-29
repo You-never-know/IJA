@@ -219,7 +219,7 @@
 
 .blocked {
     -fx-fill: #4e4e4e;
-    -fx-stroke: #2b2b2c;
+    -fx-stroke: #4e4e4e;
     -fx-stroke-width: .5;
 }
 
@@ -229,30 +229,12 @@
 
 .home {
     -fx-fill: #8a929c;
-    -fx-stroke: #2b2b2c;
+    -fx-stroke: #8a929c;
     -fx-stroke-width: .5;
 }
 
-.forklift_up {
-    -fx-graphic: url("WMico.png");
-}
-
-.forklift_down {
-    -fx-graphic: url("WMico.png");
-}
-
-.forklift_left {
-    -fx-graphic: url("WMico.png");
-}
-
-.forklift_right {
-    -fx-graphic: url("WMico.png");
-}
-
-.forklift_up_and_down {
-    -fx-graphic: url("WMico.png");
-}
-
-.forklift_left_and_right {
-    -fx-graphic: url("WMico.png");
+.forklift {
+    -fx-fill: #95a89d;
+    -fx-stroke: #8a929c;
+    -fx-stroke-width: .5;
 }

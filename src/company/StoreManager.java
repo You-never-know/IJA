@@ -13,10 +13,13 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
@@ -57,7 +60,6 @@ public class StoreManager extends Application {
         controller = loader.getController();
         controller.setStore(store);
         setUPStore();
-        draw_home();
         Scene scene = new Scene(root, 1200, 800);
         scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("../controller/style.css")));
         primaryStage.setTitle("Warehouse manager");
@@ -127,37 +129,122 @@ public class StoreManager extends Application {
 
 
     /**
+     * Draw a forklift facing up
+     * @param index on the grid pane
+     */
+    public void draw_up(int index) {
+        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        for (int i = 16; i < 19; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+        for (int i = 21; i < 24; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+    }
+
+
+    /**
+     * Draw a forklift facing down
+     * @param index on the grid pane
+     */
+    public void draw_down(int index) {
+        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        for (int i = 1; i < 4; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+        for (int i = 6; i < 9; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+    }
+
+    /**
+     * Draw a forklift facing left
+     * @param index on the grid pane
+     */
+    public void draw_left(int index) {
+        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        tile.getChildren().get(5).getStyleClass().clear();
+        tile.getChildren().get(5).getStyleClass().add("forklift");
+        tile.getChildren().get(6).getStyleClass().clear();
+        tile.getChildren().get(6).getStyleClass().add("forklift");
+        tile.getChildren().get(10).getStyleClass().clear();
+        tile.getChildren().get(10).getStyleClass().add("forklift");
+        tile.getChildren().get(11).getStyleClass().clear();
+        tile.getChildren().get(11).getStyleClass().add("forklift");
+        tile.getChildren().get(15).getStyleClass().clear();
+        tile.getChildren().get(15).getStyleClass().add("forklift");
+        tile.getChildren().get(16).getStyleClass().clear();
+        tile.getChildren().get(16).getStyleClass().add("forklift");
+    }
+
+    /**
+     * Draw a forklift facing right
+     * @param index on the grid pane
+     */
+    public void draw_right(int index) {
+        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        tile.getChildren().get(8).getStyleClass().clear();
+        tile.getChildren().get(8).getStyleClass().add("forklift");
+        tile.getChildren().get(9).getStyleClass().clear();
+        tile.getChildren().get(9).getStyleClass().add("forklift");
+        tile.getChildren().get(13).getStyleClass().clear();
+        tile.getChildren().get(13).getStyleClass().add("forklift");
+        tile.getChildren().get(14).getStyleClass().clear();
+        tile.getChildren().get(14).getStyleClass().add("forklift");
+        tile.getChildren().get(18).getStyleClass().clear();
+        tile.getChildren().get(18).getStyleClass().add("forklift");
+        tile.getChildren().get(19).getStyleClass().clear();
+        tile.getChildren().get(19).getStyleClass().add("forklift");
+    }
+
+    /**
+     * Clear the tile
+     * @param index on the grid pane
+     */
+    private void clear(int index) {
+        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        for (int i = 0; i < 25; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("path");
+        }
+    }
+
+
+    /**
      * Create a string representing the style class
      *
      * @param status of the map
-     * @return style class string
      */
-    public String GetStyle(Store.MapCoordinateStatus status) {
-        String style;
+    public void drawTile(Store.MapCoordinateStatus status, int index) {
         switch (status) {
             case FORKLIFT_UP:
-                style = "forklift_up";
+                draw_up(index);
                 break;
             case FORKLIFT_DOWN:
-                style = "forklift_down";
+                draw_down(index);
                 break;
             case FORKLIFT_LEFT:
-                style = "forklift_left";
+                draw_left(index);
                 break;
             case FORKLIFT_RIGHT:
-                style = "forklift_right";
+                draw_right(index);
                 break;
             case FORKLIFTS_LEFT_RIGHT:
-                style = "forklift_left_and_right";
+                draw_left(index);
+                draw_right(index);
                 break;
             case FORKLIFTS_UP_DOWN:
-                style = "forklift_up_and_down";
+                draw_up(index);
+                draw_down(index);
                 break;
             default:
-                style = "path";
+                clear(index);
                 break;
         }
-        return style;
     }
 
 
@@ -176,7 +263,7 @@ public class StoreManager extends Application {
             if (map_value == 0) {
                 int inner_index = i.getX() * store.getHeight() + i.getY();
                 Store.MapCoordinateStatus status_inner = Store.MapCoordinateStatus.values()[map_value];
-                String inner_style = GetStyle(status_inner);
+                String inner_style = "forklift down";
                 storePlan.getChildren().get(inner_index).getStyleClass().remove(inner_style);
                 storePlan.getChildren().get(inner_index).getStyleClass().add("path");
                 visited_indexes.remove(i);
@@ -197,21 +284,42 @@ public class StoreManager extends Application {
             return;
         }
         visited_indexes.add(new Coordinates(coords.getX(), coords.getY()));
-        String style = GetStyle(status);
-        try {
-            storePlan.getChildren().get(index).getStyleClass().remove("path");
-            storePlan.getChildren().get(index).getStyleClass().add(style);
-        } catch (Exception e) {
-
-        }
+        drawTile(status, index);
     }
 
     /**
      * Draw home tile on the map
      */
     public void draw_home() {
-        storePlan.getChildren().get(0).getStyleClass().remove("path");
-        storePlan.getChildren().get(0).getStyleClass().add("home");
+        int number_of_sub_grids = 25;
+        for (int i = 0; i < number_of_sub_grids; i++) {
+            GridPane home = (GridPane)storePlan.getChildren().get(0);
+            home.getChildren().get(i).getStyleClass().remove("path");
+            home.getChildren().get(i).getStyleClass().add("home");
+        }
+    }
+
+
+    private GridPane createPath() {
+        GridPane path = new GridPane();
+        Pane pane = (Pane) root.getItems().get(0);
+        int number_of_rows = 5;
+        int number_of_cols = 5;
+        NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
+        NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
+        NumberBinding width = rects_width.divide((double) store.getWidth()).divide((double)number_of_cols-0.01).subtract(1.0);
+        NumberBinding height = rects_height.divide((double) store.getHeight()).divide((double)number_of_rows-0.01).subtract(1.0);
+        for (int col = 0; col < number_of_cols; col++) {
+            for (int row = 0; row < number_of_rows; row++) {
+                Rectangle rec = new Rectangle(20, 40);
+                rec.widthProperty().bind(width);
+                rec.heightProperty().bind(height);
+                rec.getStyleClass().add("path");
+                rec.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
+                path.addColumn(col, rec);
+            }
+        }
+        return path;
     }
 
 
@@ -230,26 +338,30 @@ public class StoreManager extends Application {
         Pane pane = (Pane) root.getItems().get(0);
         NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
         NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
+        NumberBinding width = rects_width.divide((double) w).subtract(1);
+        NumberBinding height = rects_height.divide((double) h).subtract(1);
         int shelve_id = 1;
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                Rectangle rec = new Rectangle(20, 40);
-                rec.widthProperty().bind(rects_width.divide((double) w).subtract(1));
-                rec.heightProperty().bind(rects_height.divide((double) h).subtract(1));
                 if (store.getMapValue(i, j) == 0) {
-                    rec.getStyleClass().add("path");
-                    rec.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
+                    GridPane path = createPath();
+                    storePlan.addColumn(i, path);
                 } else {
+                    Rectangle rec = new Rectangle(20, 40);
+                    rec.widthProperty().bind(width);
+                    rec.heightProperty().bind(height);
                     store.createShelve(shelve_id, i, j);
                     shelve_id++;
                     rec.getStyleClass().add("shelve");
                     rec.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.showGoodsContent(mouseEvent));
+                    storePlan.addColumn(i, rec);
                 }
-                storePlan.addColumn(i, rec);
             }
         }
+        // remove an old map
         pane.getChildren().remove(0);
         pane.getChildren().add(storePlan);
+        draw_home();
     }
 
     public static void main(String[] args) {

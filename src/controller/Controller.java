@@ -26,6 +26,9 @@ public class Controller implements Initializable {
     private Node rect = null;
     private boolean addBarrierClicked;
     private boolean removeBarrierClicked;
+    private double speed_of_time;
+    private double max_speed;
+    private double min_speed;
 
     /**
      * @param store where the actions will be performed
@@ -78,7 +81,7 @@ public class Controller implements Initializable {
             selected_table.getItems().clear();
         }
         if (addBarrierClicked || removeBarrierClicked) {
-            rect = event.getPickResult().getIntersectedNode();
+            rect = (GridPane) event.getPickResult().getIntersectedNode().getParent();
             Integer x = GridPane.getColumnIndex(rect);
             Integer y = GridPane.getRowIndex(rect);
             if (x <= 1 && y <= 1) {
@@ -88,8 +91,10 @@ public class Controller implements Initializable {
                 return;
             }
             if (addBarrierClicked) {
-                rect.getStyleClass().clear();
-                rect.getStyleClass().add("blocked");
+                for (int i = 0; i < 25; i++) {
+                    ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
+                    ((GridPane) rect).getChildren().get(i).getStyleClass().add("blocked");
+                }
                 if (store.getMapValue(x, y) == 0) {
                     store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
                 } else {
@@ -97,8 +102,10 @@ public class Controller implements Initializable {
                 }
                 addBarrierClicked = false;
             } else {
-                rect.getStyleClass().clear();
-                rect.getStyleClass().add("path");
+                for (int i = 0; i < 25; i++) {
+                    ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
+                    ((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
+                }
                 store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
                 removeBarrierClicked = false;
             }
@@ -174,6 +181,43 @@ public class Controller implements Initializable {
 
     @FXML
     private TextArea log_label;
+
+
+    /**
+     * Speed up the animations
+     *
+     * @param event Button clicked
+     */
+    @FXML
+    void speedUP(MouseEvent event) {
+        time_up.setDisable(true);
+        if (speed_of_time < max_speed) {
+            speed_of_time *= 2.0;
+            time_label.setText(String.valueOf(speed_of_time) + "x");
+            store.setSpeed_of_time(speed_of_time);
+        } else {
+            logMessage("Max speed reached");
+        }
+        time_up.setDisable(false);
+    }
+
+    /**
+     * Slow down the animation
+     *
+     * @param event Button clicked
+     */
+    @FXML
+    void slowDown(MouseEvent event) {
+        time_down.setDisable(true);
+        if (speed_of_time > min_speed) {
+            speed_of_time /= 2.0;
+            time_label.setText(String.valueOf(speed_of_time) + "x");
+            store.setSpeed_of_time(speed_of_time);
+        } else {
+            logMessage("Minimum speed reached");
+        }
+        time_down.setDisable(false);
+    }
 
     /**
      * Set a new selected map from a file given in GUI
@@ -376,5 +420,8 @@ public class Controller implements Initializable {
         shopping_list_count.setCellValueFactory(new PropertyValueFactory<>("Count"));
         addBarrierClicked = false;
         removeBarrierClicked = false;
+        speed_of_time = 1.0;
+        max_speed = 32.0;
+        min_speed = 1.0 / 32.0;
     }
 }

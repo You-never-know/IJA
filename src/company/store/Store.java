@@ -34,6 +34,8 @@ public class Store {
     private int width;
     private int height;
     private final Coordinates homeCoordinates;
+    private int base_sleep;
+    private double speed_of_time;
 
     /**
      * Initialize the Store
@@ -49,6 +51,8 @@ public class Store {
         width = 0;
         height = 0;
         homeCoordinates = new Coordinates(0, 0);
+        base_sleep = 1000;
+        speed_of_time = 1.0;
     }
 
     /**
@@ -156,7 +160,7 @@ public class Store {
                 MapCoordinateStatus status = MapCoordinateStatus.values()[map_value];
                 manager.draw_forklift(forklift.getCoordinates(), status);
             }
-            try {
+            /*try {
                 manager.FreeVisitedPath();
             } catch (ConcurrentModificationException e) {
                 try {
@@ -164,11 +168,22 @@ public class Store {
                 } catch (ConcurrentModificationException ex) {
 
                 }
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
+            }*/
+            if (workingForkliftsList.size() > 0) {
+                try {
+                    if (speed_of_time == 0) {
+                        speed_of_time = 1.0 / 32.0;
+                    }
+                    Thread.sleep((long) Math.ceil(base_sleep / speed_of_time));
+                } catch (InterruptedException e) {
 
+                }
+            } else {
+                try {
+                    Thread.sleep(base_sleep);
+                } catch (InterruptedException e) {
+
+                }
             }
         }
     }
@@ -235,6 +250,13 @@ public class Store {
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * @param speed of time
+     */
+    public void setSpeed_of_time(double speed) {
+        this.speed_of_time = speed;
     }
 
     /**
