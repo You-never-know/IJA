@@ -107,6 +107,7 @@ public class Controller implements Initializable {
                     ((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
                 }
                 store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
+                store.checkBlockedForklifts();
                 removeBarrierClicked = false;
             }
         }

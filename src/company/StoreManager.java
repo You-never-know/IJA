@@ -211,7 +211,7 @@ public class StoreManager extends Application {
     public void drawTile(Store.MapCoordinateStatus status, int index) {
         switch (status) {
             case FORKLIFT_UP:
-                draw_down(index);
+                draw_down(index); //TODO Check number in map -> Status
                 break;
             case FORKLIFT_DOWN:
                 draw_up(index);

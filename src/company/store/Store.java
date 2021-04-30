@@ -531,6 +531,7 @@ public class Store {
     public void checkBlockedForklifts() {
         for (Forklift forklift : blockedForkliftsList) {
             forklift.setFirstActionInProgress(); // TODo is this ok?
+            // TODO remove forklift from blocked
         }
     }
 
