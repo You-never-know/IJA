@@ -198,6 +198,8 @@ public class StoreManager extends Application {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
         for (int i = 0; i < 25; i++) {
             tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent));
+            tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
             tile.getChildren().get(i).getStyleClass().add("path");
         }
     }
@@ -245,16 +247,10 @@ public class StoreManager extends Application {
             return;
         }
         for (Coordinates i : visited_indexes) {
-            lock.lock();
             int map_value = store.getMapValue(i.getX(), i.getY());
-            lock.unlock();
-            System.out.println(map_value);
             if (map_value == 0) {
                 int inner_index = i.getX() * store.getHeight() + i.getY();
-                Store.MapCoordinateStatus status_inner = Store.MapCoordinateStatus.values()[map_value];
-                String inner_style = "forklift down";
-                storePlan.getChildren().get(inner_index).getStyleClass().remove(inner_style);
-                storePlan.getChildren().get(inner_index).getStyleClass().add("path");
+                clear(inner_index);
                 visited_indexes.remove(i);
             }
         }

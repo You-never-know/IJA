@@ -154,10 +154,13 @@ public class Store {
                 int x = forklift.getCoordinates().getX();
                 int y = forklift.getCoordinates().getY();
                 int map_value = getMapValue(x, y);
+                if (map_value == 11) {
+                    map_value = 8;
+                }
                 MapCoordinateStatus status = MapCoordinateStatus.values()[map_value];
                 manager.draw_forklift(forklift.getCoordinates(), status);
             }
-            /*try {
+            try {
                 manager.FreeVisitedPath();
             } catch (ConcurrentModificationException e) {
                 try {
@@ -165,7 +168,7 @@ public class Store {
                 } catch (ConcurrentModificationException ex) {
 
                 }
-            }*/
+            }
             if (workingForkliftsList.size() > 0) {
                 try {
                     if (speed_of_time == 0) {
