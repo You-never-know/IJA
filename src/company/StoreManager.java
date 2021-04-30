@@ -134,11 +134,11 @@ public class StoreManager extends Application {
      */
     public void draw_up(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 16; i < 19; i++) {
+        for (int i = 15; i < 18; i++) {
             tile.getChildren().get(i).getStyleClass().clear();
             tile.getChildren().get(i).getStyleClass().add("forklift");
         }
-        for (int i = 21; i < 24; i++) {
+        for (int i = 20; i < 23; i++) {
             tile.getChildren().get(i).getStyleClass().clear();
             tile.getChildren().get(i).getStyleClass().add("forklift");
         }
@@ -151,11 +151,11 @@ public class StoreManager extends Application {
      */
     public void draw_down(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 1; i < 4; i++) {
+        for (int i = 2; i < 5; i++) {
             tile.getChildren().get(i).getStyleClass().clear();
             tile.getChildren().get(i).getStyleClass().add("forklift");
         }
-        for (int i = 6; i < 9; i++) {
+        for (int i = 7; i < 10; i++) {
             tile.getChildren().get(i).getStyleClass().clear();
             tile.getChildren().get(i).getStyleClass().add("forklift");
         }
@@ -167,18 +167,18 @@ public class StoreManager extends Application {
      */
     public void draw_left(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        tile.getChildren().get(5).getStyleClass().clear();
-        tile.getChildren().get(5).getStyleClass().add("forklift");
-        tile.getChildren().get(6).getStyleClass().clear();
-        tile.getChildren().get(6).getStyleClass().add("forklift");
-        tile.getChildren().get(10).getStyleClass().clear();
-        tile.getChildren().get(10).getStyleClass().add("forklift");
-        tile.getChildren().get(11).getStyleClass().clear();
-        tile.getChildren().get(11).getStyleClass().add("forklift");
-        tile.getChildren().get(15).getStyleClass().clear();
-        tile.getChildren().get(15).getStyleClass().add("forklift");
-        tile.getChildren().get(16).getStyleClass().clear();
-        tile.getChildren().get(16).getStyleClass().add("forklift");
+        for (int i = 0; i < 2; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+        for (int i = 5; i < 7; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+        for (int i = 10; i < 12; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
     }
 
     /**
@@ -187,18 +187,18 @@ public class StoreManager extends Application {
      */
     public void draw_right(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        tile.getChildren().get(8).getStyleClass().clear();
-        tile.getChildren().get(8).getStyleClass().add("forklift");
-        tile.getChildren().get(9).getStyleClass().clear();
-        tile.getChildren().get(9).getStyleClass().add("forklift");
-        tile.getChildren().get(13).getStyleClass().clear();
-        tile.getChildren().get(13).getStyleClass().add("forklift");
-        tile.getChildren().get(14).getStyleClass().clear();
-        tile.getChildren().get(14).getStyleClass().add("forklift");
-        tile.getChildren().get(18).getStyleClass().clear();
-        tile.getChildren().get(18).getStyleClass().add("forklift");
-        tile.getChildren().get(19).getStyleClass().clear();
-        tile.getChildren().get(19).getStyleClass().add("forklift");
+        for (int i = 13; i < 15; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+        for (int i = 18; i < 20; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
+        for (int i = 23; i < 25; i++) {
+            tile.getChildren().get(i).getStyleClass().clear();
+            tile.getChildren().get(i).getStyleClass().add("forklift");
+        }
     }
 
     /**
@@ -222,10 +222,10 @@ public class StoreManager extends Application {
     public void drawTile(Store.MapCoordinateStatus status, int index) {
         switch (status) {
             case FORKLIFT_UP:
-                draw_up(index);
+                draw_down(index);
                 break;
             case FORKLIFT_DOWN:
-                draw_down(index);
+                draw_up(index);
                 break;
             case FORKLIFT_LEFT:
                 draw_left(index);
