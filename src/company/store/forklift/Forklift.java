@@ -155,8 +155,12 @@ public class Forklift {
      * Makes the first action of list of actions to be done in the assigned request the action in progress
      */
     public void setFirstActionInProgress() {
-        this.actionInProgress = new Action(this.request.getFirstAction());
-        this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
+        if (this.request.getFirstAction() != null) {
+            this.actionInProgress = new Action(this.request.getFirstAction());
+            this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
+        } else {
+            this.countPath(store.getHomeCoordinates());
+        }
         if (this.getPath().size() != 0) {
             this.countSetStatus(this.getCoordinates(), this.getFirstPath());
         } else {
@@ -169,8 +173,13 @@ public class Forklift {
      * Tries unblocking forklift
      */
     public void tryUnblockForklift() {
-        this.actionInProgress = new Action(this.request.getFirstAction());
-        this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
+        if (this.request.getFirstAction() != null) {
+            this.actionInProgress = new Action(this.request.getFirstAction());
+            this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
+        } else {
+            this.countPath(store.getHomeCoordinates());
+        }
+
         if (this.getPath().size() != 0) {
             this.countSetStatus(this.getCoordinates(), this.getFirstPath());
             store.fromBlocklist(this);

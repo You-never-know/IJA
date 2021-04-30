@@ -41,7 +41,11 @@ public class Request {
      * @return action from the top of the actionsList
      */
     public Action getFirstAction(){
-        return this.actionsList.get(0);
+        try{
+            return this.actionsList.get(0);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     /**

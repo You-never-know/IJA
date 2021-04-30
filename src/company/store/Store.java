@@ -131,9 +131,7 @@ public class Store {
                                 continue;
                             }
                         } else {
-                            if (getGoodsShelve(forklift.getActionInProgress()).getCoordinates() != null) {
-                                forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-                            }
+                            forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
                             if (forklift.getPath().size() == 0) {
                                 forklift.countPath(this.homeCoordinates);
                                 if (forklift.getPath().size() == 0) {
@@ -345,18 +343,13 @@ public class Store {
      * @return Shelve where the Goods specified by Action are stored or null if no such Goods are in the store
      */
     public Shelve getGoodsShelve(Action action) {
-        try {
-            String name = action.getName();
-            int ID = action.getId();
-            for (Goods good : goodsList) {
-                if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
-                    return good.getShelve();
-                }
+        String name = action.getName();
+        int ID = action.getId();
+        for (Goods good : goodsList) {
+            if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
+                return good.getShelve();
             }
-        } catch (Exception e) {
-            return null;
         }
-
         return null;
     }
 
@@ -537,8 +530,10 @@ public class Store {
     }
 
     public void checkBlockedForklifts() {
-        for (Forklift forklift : blockedForkliftsList) {
-            forklift.tryUnblockForklift(); // TODo is this ok?
+        for (int i = 0; i< blockedForkliftsList.size(); i++) {
+            blockedForkliftsList.get(i).tryUnblockForklift(); // TODo is this ok?
+            continue;
+
         }
     }
 
