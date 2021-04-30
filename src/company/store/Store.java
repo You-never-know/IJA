@@ -162,6 +162,7 @@ public class Store {
             }
             try {
                 manager.FreeVisitedPath();
+                manager.FreeVisitedPath();
             } catch (ConcurrentModificationException e) {
                 try {
                     manager.FreeVisitedPath();
