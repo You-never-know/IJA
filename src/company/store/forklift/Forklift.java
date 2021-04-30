@@ -47,10 +47,10 @@ public class Forklift {
     /**
      * Forklift class constructor
      *
-     * @param id The ID of the forklift, number according to creation order
-     * @param x x-coordinate of the forklift in the store map
-     * @param y y-coordinate of the forklift in the store map
-     * @param store Store where the forklift works
+     * @param id            The ID of the forklift, number according to creation order
+     * @param x             x-coordinate of the forklift in the store map
+     * @param y             y-coordinate of the forklift in the store map
+     * @param store         Store where the forklift works
      * @param piecesBearing Forklift bearing
      */
     public Forklift(int id, int x, int y, Store store, int piecesBearing) {
@@ -157,11 +157,35 @@ public class Forklift {
     public void setFirstActionInProgress() {
         this.actionInProgress = new Action(this.request.getFirstAction());
         this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
-        if(this.getPath().size() != 0){
+        if (this.getPath().size() != 0) {
             this.countSetStatus(this.getCoordinates(), this.getFirstPath());
-        }else{
+        } else {
             store.queueRequest(this);
             store.logMessageStore("Path to goods of forklift n." + this.getId() + " is blocked");
+        }
+    }
+
+    /**
+     * Tries unblocking forklift
+     */
+    public void tryUnblockForklift() {
+        this.actionInProgress = new Action(this.request.getFirstAction());
+        this.countPath(store.getGoodsShelve(this.actionInProgress).getCoordinates());
+        if (this.getPath().size() != 0) {
+            this.countSetStatus(this.getCoordinates(), this.getFirstPath());
+            store.fromBlocklist(this);
+        } else {
+
+            if (this.getCoordinates().equals(store.getHomeCoordinates())) {
+                store.fromBlocklist(this);
+                store.queueRequest(this);
+            } else {
+                this.countPath(store.getHomeCoordinates());
+                if (this.getPath().size() == 0) {
+                    store.logMessageStore("Path to goods of forklift n." + this.getId() + " is blocked");
+
+                }
+            }
         }
     }
 
@@ -190,13 +214,13 @@ public class Forklift {
      * Calculation of the forklift status based on its direction computed of coordinates given
      *
      * @param from origin coordinates
-     * @param to destination coordinates
+     * @param to   destination coordinates
      */
     private void countSetStatus(Coordinates from, Coordinates to) {
         if (from.getY() < to.getY()) {
-            this.status = ForkliftStatus.UP;
-        } else if (from.getY() > to.getY()) {
             this.status = ForkliftStatus.DOWN;
+        } else if (from.getY() > to.getY()) {
+            this.status = ForkliftStatus.UP;
         } else if (from.getX() < to.getX()) {
             this.status = ForkliftStatus.RIGHT;
         } else if (from.getX() > to.getX()) {
@@ -266,10 +290,10 @@ public class Forklift {
             Coordinates expanding = new Coordinates(open.get(toExpand).getX(), open.get(toExpand).getY());
             if (expanding.equals(destination)) {
                 Coordinates predecessor;
-                try{
+                try {
                     predecessor = new
                             Coordinates(predecessorsOpen.get(toExpand).getX(), predecessorsOpen.get(toExpand).getY());
-                }catch(NullPointerException e){
+                } catch (NullPointerException e) {
                     this.path = new ArrayList<>();
                     return;
                 }
@@ -374,9 +398,9 @@ public class Forklift {
     /**
      * Auxiliary function for A* pathfinding
      *
-     * @param list Closed nodes list
+     * @param list         Closed nodes list
      * @param predecessors Predecessors of closed nodes
-     * @param node starting node
+     * @param node         starting node
      * @return valid path
      */
     private List<Coordinates> pathRecursion(List<Coordinates> list, List<Coordinates> predecessors, Coordinates node) {

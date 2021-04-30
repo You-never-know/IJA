@@ -144,6 +144,12 @@ public class Controller implements Initializable {
     private Button load_map_button;
 
     @FXML
+    private TextField shopping_list_path;
+
+    @FXML
+    private Button load_shopping_list_button;
+
+    @FXML
     private TextField add_goods_count;
 
     @FXML

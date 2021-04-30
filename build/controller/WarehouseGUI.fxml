@@ -16,9 +16,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.697" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="810.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<SplitPane dividerPositions="0.697" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="880.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
   <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="100.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="880.0" prefWidth="100.0">
          <children>
             <GridPane disable="true" layoutX="136.0" layoutY="174.0" prefHeight="808.0" prefWidth="447.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="385.0" AnchorPane.topAnchor="0.0">
               <columnConstraints>
@@ -29,9 +29,9 @@
               </rowConstraints>
             </GridPane>
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="352.0" SplitPane.resizableWithParent="false">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="880.0" prefWidth="352.0" SplitPane.resizableWithParent="false">
          <children>
-            <VBox layoutX="-10.0" layoutY="-364.0" prefHeight="800.0" prefWidth="360.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+            <VBox layoutX="-10.0" layoutY="-364.0" prefHeight="880.0" prefWidth="360.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                <children>
                   <HBox alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="350.0" VBox.vgrow="NEVER">
                      <children>
@@ -43,7 +43,7 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </Text>
-                        <Button fx:id="time_down" mnemonicParsing="false" onMouseClicked="#slowDown" prefHeight="25.0" prefWidth="40.0" styleClass="buttons" text="&lt;&lt;">
+                        <Button fx:id="time_down" mnemonicParsing="false" onMouseClicked="#slowDown" prefHeight="25.0" prefWidth="50.0" styleClass="buttons" text="&lt;&lt;">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -53,7 +53,7 @@
                               <Insets left="5.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button fx:id="time_up" mnemonicParsing="false" onMouseClicked="#speedUP" prefHeight="25.0" prefWidth="40.0" styleClass="buttons" text="&gt;&gt;">
+                        <Button fx:id="time_up" mnemonicParsing="false" onMouseClicked="#speedUP" prefHeight="25.0" prefWidth="50.0" styleClass="buttons" text="&gt;&gt;">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -264,6 +264,30 @@
                         </TextField>
                         <Button fx:id="load_map_button" contentDisplay="CENTER" graphicTextGap="8.0" minHeight="25.0" mnemonicParsing="false" onMouseClicked="#loadMap" prefHeight="25.0" prefWidth="80.0" styleClass="buttons" text="Confirm" textAlignment="CENTER" />
                      </children>
+                  </HBox>
+                  <TextField accessibleRole="TEXT" alignment="CENTER" editable="false" minHeight="35.0" prefHeight="35.0" styleClass="subheader" text="LOAD SHOPPING LIST">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="12.5" />
+                     </VBox.margin>
+                  </TextField>
+                  <HBox prefHeight="25.0" prefWidth="350.0">
+                     <children>
+                        <TextField fx:id="shopping_list_path" minHeight="25.0" prefHeight="25.0" prefWidth="265.0" promptText="../data/shopping_list.in" styleClass="fill_label" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="load_shopping_list_button" contentDisplay="CENTER" graphicTextGap="8.0" minHeight="25.0" mnemonicParsing="false" onMouseClicked="#loadMap" prefHeight="25.0" prefWidth="80.0" styleClass="buttons" text="Confirm" textAlignment="CENTER" />
+                     </children>
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>

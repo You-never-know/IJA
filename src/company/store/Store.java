@@ -78,8 +78,7 @@ public class Store {
 
                         forklift.countPath(this.homeCoordinates);
                         if (forklift.getPath().size() == 0) {
-                            this.blockedForkliftsList.add(forklift);
-                            this.workingForkliftsList.remove(forklift);
+                            toBlocklist(forklift);
                             logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                             if (workingForkliftsList.size() == 0) {
                                 break;
@@ -123,8 +122,7 @@ public class Store {
                         if (forklift.getPath().get(forklift.getPath().size() - 1) == this.getHomeCoordinates()) {
                             forklift.countPath(this.homeCoordinates);
                             if (forklift.getPath().size() == 0) {
-                                this.blockedForkliftsList.add(forklift);
-                                this.workingForkliftsList.remove(forklift);
+                                toBlocklist(forklift);
                                 logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                                 if (workingForkliftsList.size() == 0) {
                                     break;
@@ -136,8 +134,7 @@ public class Store {
                             if (forklift.getPath().size() == 0) {
                                 forklift.countPath(this.homeCoordinates);
                                 if (forklift.getPath().size() == 0) {
-                                    this.blockedForkliftsList.add(forklift);
-                                    this.workingForkliftsList.remove(forklift);
+                                    toBlocklist(forklift);
                                     logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                                     if (workingForkliftsList.size() == 0) {
                                         break;
@@ -530,9 +527,17 @@ public class Store {
 
     public void checkBlockedForklifts() {
         for (Forklift forklift : blockedForkliftsList) {
-            forklift.setFirstActionInProgress(); // TODo is this ok?
-            // TODO remove forklift from blocked
+            forklift.tryUnblockForklift(); // TODo is this ok?
         }
+    }
+    public void toBlocklist(Forklift forklift){
+        this.workingForkliftsList.remove(forklift);
+        this.blockedForkliftsList.add(forklift);
+    }
+
+    public void fromBlocklist(Forklift forklift){
+        this.workingForkliftsList.add(forklift);
+        this.blockedForkliftsList.remove(forklift);
     }
 
     /**
