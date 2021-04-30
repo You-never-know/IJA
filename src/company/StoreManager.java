@@ -13,13 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
@@ -246,6 +243,7 @@ public class StoreManager extends Application {
         if (visited_indexes.size() == 0) {
             return;
         }
+        int[] to_remove;
         for (Coordinates i : visited_indexes) {
             int map_value = store.getMapValue(i.getX(), i.getY());
             if (map_value == 0) {

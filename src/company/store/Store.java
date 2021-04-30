@@ -70,6 +70,7 @@ public class Store {
             delegateRequest();
             if (workingForkliftsList.size() > 0) {
                 // TODO blocked path to home in every way
+
                 for (Forklift forklift : workingForkliftsList) {
                     if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null && forklift.getRequest().getActionsList().size() != 0) {
                         forklift.setFirstActionInProgress();
@@ -148,9 +149,9 @@ public class Store {
                         forklift.moveForward();
                     } else { //is free path or forklift
                         forklift.moveForward();
-
                     }
                 }
+
             }
             for (Forklift forklift : workingForkliftsList) {
                 int x = forklift.getCoordinates().getX();
@@ -163,7 +164,6 @@ public class Store {
                 manager.draw_forklift(forklift.getCoordinates(), status);
             }
             try {
-                manager.FreeVisitedPath();
                 manager.FreeVisitedPath();
             } catch (ConcurrentModificationException e) {
                 try {
