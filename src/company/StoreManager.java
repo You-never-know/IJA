@@ -129,18 +129,27 @@ public class StoreManager extends Application {
 
 
     /**
+     * Create forklift square inside the given tile on the given index
+     * @param tile where the forklift will be drawn
+     * @param index inside the tile
+     */
+    public void set_up_forklift_tile(GridPane tile, int index) {
+        tile.getChildren().get(index).getStyleClass().clear();
+        tile.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
+        tile.getChildren().get(index).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent));
+        tile.getChildren().get(index).getStyleClass().add("forklift");
+    }
+
+
+    /**
      * Draw a forklift facing up
      * @param index on the grid pane
      */
     public void draw_up(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 15; i < 18; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
-        }
-        for (int i = 20; i < 23; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
+        int[] indexes = {15,16,17,20,21,22};
+        for (int i:indexes) {
+            set_up_forklift_tile(tile,i);
         }
     }
 
@@ -151,13 +160,9 @@ public class StoreManager extends Application {
      */
     public void draw_down(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 2; i < 5; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
-        }
-        for (int i = 7; i < 10; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
+        int[] indexes = {2,3,4,7,8,9};
+        for (int i:indexes) {
+            set_up_forklift_tile(tile,i);
         }
     }
 
@@ -167,17 +172,9 @@ public class StoreManager extends Application {
      */
     public void draw_left(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 0; i < 2; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
-        }
-        for (int i = 5; i < 7; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
-        }
-        for (int i = 10; i < 12; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
+        int[] indexes = {0,1,5,6,10,11};
+        for (int i:indexes) {
+            set_up_forklift_tile(tile,i);
         }
     }
 
@@ -187,17 +184,9 @@ public class StoreManager extends Application {
      */
     public void draw_right(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 13; i < 15; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
-        }
-        for (int i = 18; i < 20; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
-        }
-        for (int i = 23; i < 25; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).getStyleClass().add("forklift");
+        int[] indexes = {13,14,18,19,23,24};
+        for (int i:indexes) {
+            set_up_forklift_tile(tile,i);
         }
     }
 

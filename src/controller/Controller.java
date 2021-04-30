@@ -113,6 +113,14 @@ public class Controller implements Initializable {
 
     }
 
+    /**
+     * Display path and load of the forklift
+     * @param event Mouse clicked
+     */
+    public void forklift_clicked(MouseEvent event) {
+
+    }
+
     @FXML
     private TableView<Goods> selected_table = new TableView<>();
 
