@@ -84,7 +84,7 @@ public class Store {
                             if (workingForkliftsList.size() == 0) {
                                 break;
                             }
-                            continue;
+                            break;
                         }
                     }
 
@@ -95,13 +95,13 @@ public class Store {
                             if (forklift.getPath().size() == 0) {
                                 forklift.countPath(this.getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
                             }
-                            continue;
+                            break;
                         } else {
                             this.setRequestAsDone(forklift.nullGetRequest());
                             forklift.nullActionInProgress();
                             setForkliftFree(forklift);
                             if (workingForkliftsList.size() > 0) {
-                                continue;
+                                break;
                             }
                             break;
                         }
@@ -128,7 +128,7 @@ public class Store {
                                 if (workingForkliftsList.size() == 0) {
                                     break;
                                 }
-                                continue;
+                                break;
                             }
                         } else {
                             forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
@@ -140,7 +140,7 @@ public class Store {
                                     if (workingForkliftsList.size() == 0) {
                                         break;
                                     }
-                                    continue;
+                                    break;
                                 }
                             }
                         }
@@ -157,6 +157,8 @@ public class Store {
                 int map_value = getMapValue(x, y);
                 if (map_value == 11) {
                     map_value = 8;
+                } else if (map_value < 0) {
+                    continue;
                 }
                 MapCoordinateStatus status = MapCoordinateStatus.values()[map_value];
                 manager.draw_forklift(forklift.getCoordinates(), status);
