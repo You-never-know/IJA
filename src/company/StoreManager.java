@@ -243,14 +243,17 @@ public class StoreManager extends Application {
         if (visited_indexes.size() == 0) {
             return;
         }
-        int[] to_remove;
+        ArrayList<Coordinates> to_remove = new ArrayList<>();
         for (Coordinates i : visited_indexes) {
             int map_value = store.getMapValue(i.getX(), i.getY());
             if (map_value == 0) {
                 int inner_index = i.getX() * store.getHeight() + i.getY();
                 clear(inner_index);
-                visited_indexes.remove(i);
+                to_remove.add(i);
             }
+        }
+        for (Coordinates i: to_remove) {
+            visited_indexes.remove(i);
         }
     }
 

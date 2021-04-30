@@ -161,15 +161,7 @@ public class Store {
                 MapCoordinateStatus status = MapCoordinateStatus.values()[map_value];
                 manager.draw_forklift(forklift.getCoordinates(), status);
             }
-            try {
-                manager.FreeVisitedPath();
-            } catch (ConcurrentModificationException e) {
-                try {
-                    manager.FreeVisitedPath();
-                } catch (ConcurrentModificationException ex) {
-
-                }
-            }
+            manager.FreeVisitedPath();
             if (workingForkliftsList.size() > 0) {
                 try {
                     if (speed_of_time == 0) {
