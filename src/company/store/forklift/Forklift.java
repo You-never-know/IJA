@@ -238,6 +238,25 @@ public class Forklift {
     }
 
     /**
+     * Calculation of the forklift status based on its direction computed of coordinates given
+     *
+     * @param from origin coordinates
+     * @param to   destination coordinates
+     */
+    private ForkliftStatus tryStatus(Coordinates from, Coordinates to) {
+        if (from.getY() < to.getY()) {
+            return ForkliftStatus.DOWN;
+        } else if (from.getY() > to.getY()) {
+            return ForkliftStatus.UP;
+        } else if (from.getX() < to.getX()) {
+            return ForkliftStatus.RIGHT;
+        } else if (from.getX() > to.getX()) {
+            return ForkliftStatus.LEFT;
+        }
+        return null;
+    }
+
+    /**
      * @return Status of the forklift
      */
     public ForkliftStatus getStatus() {
@@ -487,11 +506,22 @@ public class Forklift {
      * Forklift moves forward: actual coordinates added to visited coordinates list, value of map reset, new statuses assigned
      */
     public void moveForward() {
-        Coordinates moveTo = popFirstPath();
+        Coordinates movingTo = getFirstPath();
+        int tryie = tryStatus(new Coordinates(movingTo.getX(), movingTo.getY()), this.path.get(1)).getNumVal();
+        int movingToMap = store.getMapValue(movingTo.getX(), movingTo.getY());
+        int res = tryie + movingToMap;
+        System.out.println(tryie);
+        System.out.println(res);
+        if (res != tryie && res != 11 && res != 7){
+            return;
+        }
+
+            Coordinates moveTo = popFirstPath();
         System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
         if (!this.coordinates.equals(store.getHomeCoordinates())) {
             store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), this.status);
         }
+
         visitedCoordinates.add(this.coordinates);
         this.setCoordinates(new Coordinates(moveTo.getX(), moveTo.getY()));
         this.countSetStatus(this.coordinates, getFirstPath());
