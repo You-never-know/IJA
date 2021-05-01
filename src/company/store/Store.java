@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -76,7 +75,6 @@ public class Store {
                         forklift.setFirstActionInProgress();
                     }
                     if (forklift.getPath().size() == 0) {
-
                         forklift.countPath(this.homeCoordinates);
                         if (forklift.getPath().size() == 0) {
                             toBlocklist(forklift);
@@ -117,7 +115,6 @@ public class Store {
                             forklift.countPath(homeCoordinates);
                         }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
-
                         //System.out.println("ERR?");
                         forklift.getPath().get(forklift.getPath().size() - 1).printCoordinates();
                         if (forklift.getPath().get(forklift.getPath().size() - 1) == this.getHomeCoordinates()) {
@@ -152,16 +149,10 @@ public class Store {
 
             }
             for (Forklift forklift : workingForkliftsList) {
-                int x = forklift.getCoordinates().getX();
-                int y = forklift.getCoordinates().getY();
-                int map_value = getMapValue(x, y);
-                if (map_value == 11) {
-                    map_value = 8;
-                } else if (map_value < 0) {
-                    continue;
+                manager.draw_forklift(forklift);
+                if (forklift.equals(manager.get_forklift())) {
+                    manager.draw_path_of_forklift(forklift);
                 }
-                MapCoordinateStatus status = MapCoordinateStatus.values()[map_value];
-                manager.draw_forklift(forklift.getCoordinates(), status);
             }
             manager.FreeVisitedPath();
             if (workingForkliftsList.size() > 0) {

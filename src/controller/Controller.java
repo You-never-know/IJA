@@ -1,10 +1,12 @@
 package controller;
 
 import company.store.Store;
+import company.store.forklift.Forklift;
 import company.store.request.Request;
 import company.store.request.action.Action;
 import company.store.shelve.Shelve;
 import company.store.shelve.goods.Goods;
+import company.store.shelve.goods.coordinates.Coordinates;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -76,6 +78,8 @@ public class Controller implements Initializable {
      * @param event Mouse clicked
      */
     public void pathClicked(MouseEvent event) {
+        store.getManager().set_forklift(null);
+        store.getManager().FreeForkliftPath();
         if (rect != null) {
             rect.getStyleClass().remove("selected_shelve");
             selected_table.getItems().clear();
@@ -118,7 +122,18 @@ public class Controller implements Initializable {
      * Display path and load of the forklift
      * @param event Mouse clicked
      */
-    public void forklift_clicked(MouseEvent event) {
+    public void forklift_clicked(MouseEvent event, Forklift forklift) {
+        if (forklift == null) {
+            return;
+        }
+        store.getManager().FreeForkliftPath();
+        store.getManager().set_forklift(forklift);
+        ArrayList<Coordinates> path = new ArrayList<>();
+        path.addAll(forklift.getPath());
+        path.remove(path.size()-1);
+        for (Coordinates c:path) {
+            store.getManager().draw_path(c);
+        }
 
     }
 

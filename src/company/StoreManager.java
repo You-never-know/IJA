@@ -1,5 +1,6 @@
 package company;
 
+import company.store.forklift.Forklift;
 import company.store.shelve.goods.coordinates.Coordinates;
 import controller.Controller;
 import company.store.Store;
@@ -19,7 +20,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class for connecting program with its GUI
@@ -37,7 +37,9 @@ public class StoreManager extends Application {
     private FXMLLoader loader;
     private SplitPane root;
     private ArrayList<Coordinates> visited_indexes;
-    public ReentrantLock lock;
+    private ArrayList<Coordinates> forklift_path;
+    private Forklift clicked_forklift;
+
 
     /**
      * Start the app, load GUI
@@ -71,7 +73,7 @@ public class StoreManager extends Application {
     public void SetUpManager() {
         store = new Store();
         visited_indexes = new ArrayList<>();
-        lock = new ReentrantLock();
+        forklift_path = new ArrayList<>();
         store.setManager(this);
         loader = new FXMLLoader();
         loader.setLocation(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
@@ -127,75 +129,102 @@ public class StoreManager extends Application {
 
     /**
      * Create forklift square inside the given tile on the given index
-     * @param tile where the forklift will be drawn
+     *
+     * @param tile  where the forklift will be drawn
      * @param index inside the tile
      */
-    public void set_up_forklift_tile(GridPane tile, int index) {
+    public void set_up_forklift_tile(GridPane tile, int index, Forklift forklift) {
         tile.getChildren().get(index).getStyleClass().clear();
         tile.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
-        tile.getChildren().get(index).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent));
+        tile.getChildren().get(index).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, forklift));
         tile.getChildren().get(index).getStyleClass().add("forklift");
     }
 
 
     /**
      * Draw a forklift facing up
+     *
      * @param index on the grid pane
      */
-    public void draw_up(int index) {
+    public void draw_up(int index, Forklift forklift) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        int[] indexes = {15,16,17,20,21,22};
-        for (int i:indexes) {
-            set_up_forklift_tile(tile,i);
+        int[] indexes = {15, 16, 17, 20, 21, 22};
+        for (int i : indexes) {
+            set_up_forklift_tile(tile, i, forklift);
         }
     }
 
 
     /**
      * Draw a forklift facing down
+     *
      * @param index on the grid pane
      */
-    public void draw_down(int index) {
+    public void draw_down(int index, Forklift forklift) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        int[] indexes = {2,3,4,7,8,9};
-        for (int i:indexes) {
-            set_up_forklift_tile(tile,i);
+        int[] indexes = {2, 3, 4, 7, 8, 9};
+        for (int i : indexes) {
+            set_up_forklift_tile(tile, i, forklift);
         }
     }
 
     /**
      * Draw a forklift facing left
+     *
      * @param index on the grid pane
      */
-    public void draw_left(int index) {
+    public void draw_left(int index, Forklift forklift) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        int[] indexes = {0,1,5,6,10,11};
-        for (int i:indexes) {
-            set_up_forklift_tile(tile,i);
+        int[] indexes = {0, 1, 5, 6, 10, 11};
+        for (int i : indexes) {
+            set_up_forklift_tile(tile, i, forklift);
         }
     }
 
     /**
      * Draw a forklift facing right
+     *
      * @param index on the grid pane
      */
-    public void draw_right(int index) {
+    public void draw_right(int index, Forklift forklift) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        int[] indexes = {13,14,18,19,23,24};
-        for (int i:indexes) {
-            set_up_forklift_tile(tile,i);
+        int[] indexes = {13, 14, 18, 19, 23, 24};
+        for (int i : indexes) {
+            set_up_forklift_tile(tile, i, forklift);
         }
     }
 
     /**
+     * Draw path of the forklift
+     *
+     * @param coordinates of the forklift
+     */
+    public void draw_path(Coordinates coordinates) {
+        int index = coordinates.getX() * store.getHeight() + coordinates.getY();
+        if (index == 0) {
+            return;
+        }
+        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        int path_tile = 12;
+        tile.getChildren().get(path_tile).getStyleClass().remove("path");
+        tile.getChildren().get(path_tile).getStyleClass().add("forklift_path");
+        forklift_path.add(coordinates);
+
+    }
+
+    /**
      * Clear the tile
+     *
      * @param index on the grid pane
      */
     private void clear(int index) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
         for (int i = 0; i < 25; i++) {
-            tile.getChildren().get(i).getStyleClass().clear();
-            tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent));
+            if (i == 12) {
+                continue;
+            }
+            tile.getChildren().get(i).getStyleClass().remove(tile.getChildren().get(i).getStyleClass().toString());
+            tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, null));
             tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
             tile.getChildren().get(i).getStyleClass().add("path");
         }
@@ -205,36 +234,69 @@ public class StoreManager extends Application {
     /**
      * Create a string representing the style class
      *
-     * @param status of the map
+     * @param index    of the tile
+     * @param forklift to be drawn in the tile
      */
-    public void drawTile(Store.MapCoordinateStatus status, int index) {
-        switch (status) {
-            case FORKLIFT_UP:
-                draw_up(index);
+    public void drawTile(int index, Forklift forklift) {
+        switch (forklift.getStatus()) {
+            case UP:
+                draw_up(index, forklift);
                 break;
-            case FORKLIFT_DOWN:
-                draw_down(index);
+            case DOWN:
+                draw_down(index, forklift);
                 break;
-            case FORKLIFT_LEFT:
-                draw_left(index);
+            case LEFT:
+                draw_left(index, forklift);
                 break;
-            case FORKLIFT_RIGHT:
-                draw_right(index);
-                break;
-            case FORKLIFTS_LEFT_RIGHT:
-                draw_left(index);
-                draw_right(index);
-                break;
-            case FORKLIFTS_UP_DOWN:
-                draw_up(index);
-                draw_down(index);
+            case RIGHT:
+                draw_right(index, forklift);
                 break;
             default:
-                clear(index);
                 break;
         }
     }
 
+    /**
+     * Set shown forklift
+     *
+     * @param forklift that is shown
+     */
+    public void set_forklift(Forklift forklift) {
+        clicked_forklift = forklift;
+    }
+
+    /**
+     * @return clicked forklift
+     */
+    public Forklift get_forklift() {
+        return clicked_forklift;
+    }
+
+    /**
+     * @param forklift whos path will be drawn
+     */
+    public void draw_path_of_forklift(Forklift forklift) {
+        controller.forklift_clicked(null, forklift);
+        set_forklift(forklift);
+    }
+
+
+    /**
+     * Free path that has been visited but now is free
+     */
+    public void FreeForkliftPath() {
+        if (forklift_path.size() == 0) {
+            return;
+        }
+        for (Coordinates i : forklift_path) {
+            int index = i.getX() * store.getHeight() + i.getY();
+            GridPane tile = (GridPane) storePlan.getChildren().get(index);
+            tile.getChildren().get(12).getStyleClass().remove("forklift_path");
+            tile.getChildren().get(12).getStyleClass().add("path");
+        }
+        forklift_path.clear();
+
+    }
 
     /**
      * Free path that has been visited but now is free
@@ -252,7 +314,7 @@ public class StoreManager extends Application {
                 to_remove.add(i);
             }
         }
-        for (Coordinates i: to_remove) {
+        for (Coordinates i : to_remove) {
             visited_indexes.remove(i);
         }
     }
@@ -261,16 +323,16 @@ public class StoreManager extends Application {
     /**
      * Draw forklift on the map
      *
-     * @param coords of the forklift on the map
-     * @param status of the forklift
+     * @param forklift to be drawn
      */
-    public void draw_forklift(Coordinates coords, Store.MapCoordinateStatus status) {
+    public void draw_forklift(Forklift forklift) {
+        Coordinates coords = forklift.getCoordinates();
         int index = coords.getX() * store.getHeight() + coords.getY();
         if (index == 0) {
             return;
         }
         visited_indexes.add(new Coordinates(coords.getX(), coords.getY()));
-        drawTile(status, index);
+        drawTile(index, forklift);
     }
 
     /**
@@ -279,7 +341,7 @@ public class StoreManager extends Application {
     public void draw_home() {
         int number_of_sub_grids = 25;
         for (int i = 0; i < number_of_sub_grids; i++) {
-            GridPane home = (GridPane)storePlan.getChildren().get(0);
+            GridPane home = (GridPane) storePlan.getChildren().get(0);
             home.getChildren().get(i).getStyleClass().remove("path");
             home.getChildren().get(i).getStyleClass().add("home");
         }
@@ -293,8 +355,8 @@ public class StoreManager extends Application {
         int number_of_cols = 5;
         NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
         NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
-        NumberBinding width = rects_width.divide((double) store.getWidth()).divide((double)number_of_cols-0.01).subtract(1.0);
-        NumberBinding height = rects_height.divide((double) store.getHeight()).divide((double)number_of_rows-0.01).subtract(1.0);
+        NumberBinding width = rects_width.divide((double) store.getWidth()).divide((double) number_of_cols - 0.01).subtract(1.0);
+        NumberBinding height = rects_height.divide((double) store.getHeight()).divide((double) number_of_rows - 0.01).subtract(1.0);
         for (int col = 0; col < number_of_cols; col++) {
             for (int row = 0; row < number_of_rows; row++) {
                 Rectangle rec = new Rectangle(20, 40);

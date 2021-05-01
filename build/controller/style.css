@@ -238,3 +238,9 @@
     -fx-stroke: #8a929c;
     -fx-stroke-width: .5;
 }
+
+.forklift_path {
+    -fx-fill: #ff002a;
+    -fx-stroke: #2b2b2c;
+    -fx-stroke-width: .5;
+}

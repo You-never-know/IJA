@@ -67,11 +67,33 @@ public class Forklift {
         this.actionInProgress = null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Forklift forklift = (Forklift) o;
+
+        return id == forklift.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
     /**
      * @return Path of the forklift
      */
     public List<Coordinates> getPath() {
         return this.path;
+    }
+
+    /**
+     * @return Visited path of the forklift
+     */
+    public List<Coordinates> getVisitedPath() {
+        return this.visitedCoordinates;
     }
 
     /**
