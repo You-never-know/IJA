@@ -328,13 +328,18 @@ public class Store {
      * @return Shelve where the Goods specified by Action are stored or null if no such Goods are in the store
      */
     public Shelve getGoodsShelve(Action action) {
-        String name = action.getName();
-        int ID = action.getId();
-        for (Goods good : goodsList) {
-            if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
-                return good.getShelve();
+        try{
+            String name = action.getName();
+            int ID = action.getId();
+            for (Goods good : goodsList) {
+                if (good.getName().compareTo(name) == 0 || good.getId() == ID) {
+                    return good.getShelve();
+                }
             }
+        }catch(Exception e){
+            return null;
         }
+
         return null;
     }
 
