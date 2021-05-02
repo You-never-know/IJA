@@ -130,7 +130,7 @@ public class Controller implements Initializable {
         store.getManager().set_forklift(forklift);
         ArrayList<Coordinates> path = new ArrayList<>();
         path.addAll(forklift.getPath());
-        if (path.size() > 1) {
+        if (path.size() > 0) {
             path.remove(path.size() - 1);
         }
         for (Coordinates c:path) {
