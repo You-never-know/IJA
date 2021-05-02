@@ -204,7 +204,8 @@ public class StoreManager extends Application {
         if (index == 0) {
             return;
         }
-        GridPane tile = (GridPane) storePlan.getChildren().get(index);
+        GridPane tile;
+        tile = (GridPane) storePlan.getChildren().get(index);
         int path_tile = 12;
         tile.getChildren().get(path_tile).getStyleClass().remove("path");
         tile.getChildren().get(path_tile).getStyleClass().add("forklift_path");

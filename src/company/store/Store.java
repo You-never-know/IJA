@@ -146,7 +146,7 @@ public class Store {
                         forklift.moveForward();
                     }
                 }
-
+                manager.FreeVisitedPath();
             }
             for (Forklift forklift : workingForkliftsList) {
                 manager.draw_forklift(forklift);
@@ -154,7 +154,6 @@ public class Store {
                     manager.draw_path_of_forklift(forklift);
                 }
             }
-            manager.FreeVisitedPath();
             if (workingForkliftsList.size() > 0) {
                 try {
                     if (speed_of_time == 0) {

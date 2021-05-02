@@ -228,19 +228,22 @@
 }
 
 .home {
-    -fx-fill: #8a929c;
-    -fx-stroke: #8a929c;
-    -fx-stroke-width: .5;
+    -fx-fill: #4e4e4e;
+    -fx-border-color: #4e4e4e;
+    -fx-stroke: #4e4e4e;
+    -fx-border-style: none;
+    -fx-stroke-width: 0.5;
 }
 
+
 .forklift {
-    -fx-fill: #95a89d;
-    -fx-stroke: #8a929c;
+    -fx-fill: #67a091;
+    -fx-stroke: #67a091;
     -fx-stroke-width: .5;
 }
 
 .forklift_path {
-    -fx-fill: #ff002a;
+    -fx-fill: #a56161;
     -fx-stroke: #2b2b2c;
     -fx-stroke-width: .5;
 }
