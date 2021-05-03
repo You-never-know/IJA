@@ -68,8 +68,6 @@ public class Store {
         while (true) {
             delegateRequest();
             if (workingForkliftsList.size() > 0) {
-                // TODO blocked path to home in every way
-
                 for (Forklift forklift : workingForkliftsList) {
                     if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null && forklift.getRequest().getActionsList().size() != 0) {
                         forklift.setFirstActionInProgress();
@@ -78,7 +76,6 @@ public class Store {
                         forklift.countPath(this.homeCoordinates);
                         if (forklift.getPath().size() == 0) {
                             toBlocklist(forklift);
-                            logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                             break;
                         }
                     }
@@ -112,22 +109,24 @@ public class Store {
                             forklift.countPath(homeCoordinates);
                         }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
-                        //System.out.println("ERR?");
                         forklift.getPath().get(forklift.getPath().size() - 1).printCoordinates();
                         if (forklift.getPath().get(forklift.getPath().size() - 1) == this.getHomeCoordinates()) {
                             forklift.countPath(this.homeCoordinates);
                             if (forklift.getPath().size() == 0) {
                                 toBlocklist(forklift);
-                                logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                                 break;
                             }
                         } else {
-                            forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            if(getGoodsShelve(forklift.getActionInProgress()) != null){
+                                forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            }else{
+                                forklift.countPath(this.homeCoordinates);
+                            }
+
                             if (forklift.getPath().size() == 0) {
                                 forklift.countPath(this.homeCoordinates);
                                 if (forklift.getPath().size() == 0) {
                                     toBlocklist(forklift);
-                                    logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                                     break;
                                 }
                             }
@@ -318,7 +317,7 @@ public class Store {
      * @return Shelve where the Goods specified by Action are stored or null if no such Goods are in the store
      */
     public Shelve getGoodsShelve(Action action) {
-        try {
+        try{
             String name = action.getName();
             int ID = action.getId();
             for (Goods good : goodsList) {
@@ -326,7 +325,7 @@ public class Store {
                     return good.getShelve();
                 }
             }
-        } catch (Exception e) {
+        }catch(Exception e){
             return null;
         }
 
@@ -510,8 +509,8 @@ public class Store {
     }
 
     public void checkBlockedForklifts() {
-        for (int i = 0; i < blockedForkliftsList.size(); i++) {
-            blockedForkliftsList.get(i).tryUnblockForklift(); // TODo is this ok?
+        for (int i = 0; i< blockedForkliftsList.size(); i++) {
+            blockedForkliftsList.get(i).tryUnblockForklift();
             continue;
 
         }
@@ -520,6 +519,7 @@ public class Store {
     public void toBlocklist(Forklift forklift) {
         this.workingForkliftsList.remove(forklift);
         this.blockedForkliftsList.add(forklift);
+        logMessageStore("Forklift n." + forklift.getId() + " is blocked");
     }
 
     public void fromBlocklist(Forklift forklift) {
