@@ -360,7 +360,9 @@ public class Forklift {
                 predecessorsOpen.remove(toExpand);
                 closed.add(expanding);
                 predecessorsClosed.add(predecessor);
+                this.updatePreMapDoAction();
                 this.path = pathRecursion(closed, predecessorsClosed, expanding);
+                this.updateAfterMapDoAction();
                 this.printPath();
                 return;
             }
@@ -490,9 +492,7 @@ public class Forklift {
                 this.goodsList.add(sold);
                 System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
                 this.piecesBearingLeft = this.piecesBearingLeft - toSell;
-                this.updatePreMapDoAction();
                 this.countPath(this.store.getGoodsShelve(actionInProgress).getCoordinates());
-                this.updateAfterMapDoAction();
             } else {
                 toSell = this.piecesBearingLeft;
                 Goods sold = shelve.sellGoods(toSell);
@@ -500,9 +500,7 @@ public class Forklift {
                 this.goodsList.add(sold);
                 System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
                 this.piecesBearingLeft = this.piecesBearingLeft - toSell;
-                this.updatePreMapDoAction();
                 this.countPath(store.getHomeCoordinates());
-                this.updateAfterMapDoAction();
             }
 
         } else if (actionInProgress.getCount() >= this.piecesBearingLeft) {
@@ -511,9 +509,7 @@ public class Forklift {
             this.goodsList.add(sold);
             System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
             this.piecesBearingLeft = this.piecesBearingLeft - sold.getCount();
-            this.updatePreMapDoAction();
             this.countPath(store.getHomeCoordinates());
-            this.updateAfterMapDoAction();
         } else {
             Goods sold = shelve.sellGoods(actionInProgress.getCount());
             actionInProgress.setCount(0);
@@ -521,17 +517,13 @@ public class Forklift {
             System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
             this.piecesBearingLeft = this.piecesBearingLeft - sold.getCount();
             if (this.request.getActionsList().size() == 1) {
-                this.updatePreMapDoAction();
                 this.countPath(store.getHomeCoordinates());
-                this.updateAfterMapDoAction();
             } else {
                 if (actionInProgress.getCount() == 0) {
                     nullActionInProgress();
                     this.request.pushActionsDoneList(this.request.popFirstActionsList());
                 }
-                this.updatePreMapDoAction();
                 this.countPath(store.getGoodsShelve(this.request.getFirstAction()).getCoordinates());
-                this.updateAfterMapDoAction();
                 return;
             }
         }
