@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -233,14 +234,12 @@ public class StoreManager extends Application {
     /**
      * Clear the tile
      *
-     * @param index on the grid pane
+     * @param index   on the grid pane
+     * @param indexes of the tiles that should be cleared
      */
-    private void clear(int index) {
+    private void clear(int index, int[] indexes) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
-        for (int i = 0; i < 25; i++) {
-            if (i == 12) {
-                continue;
-            }
+        for (int i : indexes) {
             tile.getChildren().get(i).getStyleClass().remove(tile.getChildren().get(i).getStyleClass().toString());
             tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, null));
             tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
@@ -292,7 +291,7 @@ public class StoreManager extends Application {
 
 
     /**
-     * @param forklift whos path will be drawn
+     * @param forklift who's path will be drawn
      */
     public void redraw_path_of_forklift(Forklift forklift) {
         if (forklift_path.size() == 0) {
@@ -306,7 +305,7 @@ public class StoreManager extends Application {
             forklift_path.remove(0);
             List<Goods> forklift_goods = forklift.getGoodsList();
             controller.selected_table.getItems().clear();
-            for (Goods item: forklift_goods) {
+            for (Goods item : forklift_goods) {
                 controller.selected_table.getItems().add(item);
                 controller.selected_table.refresh();
             }
@@ -341,10 +340,51 @@ public class StoreManager extends Application {
         ArrayList<Coordinates> to_remove = new ArrayList<>();
         for (Coordinates i : visited_indexes) {
             int map_value = store.getMapValue(i.getX(), i.getY());
+            int inner_index = i.getX() * store.getHeight() + i.getY();
             if (map_value == 0) {
-                int inner_index = i.getX() * store.getHeight() + i.getY();
-                clear(inner_index);
+                int[] indexes = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                clear(inner_index, indexes);
                 to_remove.add(i);
+            } else {
+                int index = map_value;
+                if (index == 11) {
+                    index = 8;
+                } else if (index < 0) {
+                    index = 0;
+                }
+                Store.MapCoordinateStatus status = Store.MapCoordinateStatus.values()[index];
+                switch (status) {
+                    case FORKLIFT_DOWN:
+                        int[] indexes3 = {0, 1, 5, 6, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                        clear(inner_index, indexes3);
+                        break;
+                    case FORKLIFT_UP:
+                        int[] indexes4 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 18, 19, 23, 24};
+                        clear(inner_index, indexes4);
+                        break;
+                    case FORKLIFT_LEFT:
+                        int[] indexes5 = { 2, 3, 4, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                        clear(inner_index, indexes5);
+                        break;
+                    case FORKLIFT_RIGHT:
+                        int[] indexes6 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 20, 21, 22};
+                        clear(inner_index, indexes6);
+                        break;
+
+                    case FORKLIFTS_LEFT_RIGHT:
+                        int[] indexes7 = { 2, 3, 4,  7, 8, 9, 15, 16, 17, 20, 21, 22};
+                        clear(inner_index, indexes7);
+                        break;
+                    case FORKLIFTS_UP_DOWN:
+                        int[] indexes1 = {0, 1, 5, 6, 10, 11, 13, 14, 18, 19, 23, 24};
+                        clear(inner_index, indexes1);
+                        break;
+                    case FREE_PATH:
+                        int[] indexes2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                        clear(inner_index, indexes2);
+                        to_remove.add(i);
+                        break;
+                }
             }
         }
         for (Coordinates i : to_remove) {
