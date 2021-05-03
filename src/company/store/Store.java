@@ -287,23 +287,23 @@ public class Store {
         if (y >= height || x >= width) {
             return;
         }
-        //System.out.println("Adding: ");
+        System.out.println("Adding: ");
         if (map[x][y] == MapCoordinateStatus.FREE_PATH.getNumVal()) {
             map[x][y] = statusMapper(forkliftStatus).getNumVal();
-            //System.out.println(map[x][y]);
+            System.out.println(map[x][y]);
             return;
         }
         if ((forkliftStatus == Forklift.ForkliftStatus.UP && map[x][y] == MapCoordinateStatus.FORKLIFT_DOWN.getNumVal()) ||
                 (forkliftStatus == Forklift.ForkliftStatus.DOWN && map[x][y] == MapCoordinateStatus.FORKLIFT_UP.getNumVal())) {
             map[x][y] = MapCoordinateStatus.FORKLIFTS_UP_DOWN.getNumVal();
-            //System.out.println(map[x][y]);
+            System.out.println(map[x][y]);
             return;
         }
 
         if ((forkliftStatus == Forklift.ForkliftStatus.LEFT && map[x][y] == MapCoordinateStatus.FORKLIFT_RIGHT.getNumVal()) ||
                 (forkliftStatus == Forklift.ForkliftStatus.RIGHT && map[x][y] == MapCoordinateStatus.FORKLIFT_LEFT.getNumVal())) {
             map[x][y] = MapCoordinateStatus.FORKLIFTS_LEFT_RIGHT.getNumVal();
-            //System.out.println(map[x][y]);
+            System.out.println(map[x][y]);
         }
     }
 
