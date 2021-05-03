@@ -68,8 +68,6 @@ public class Store {
         while (true) {
             delegateRequest();
             if (workingForkliftsList.size() > 0) {
-                // TODO blocked path to home in every way
-
                 for (Forklift forklift : workingForkliftsList) {
                     if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null && forklift.getRequest().getActionsList().size() != 0) {
                         forklift.setFirstActionInProgress();
@@ -78,7 +76,6 @@ public class Store {
                         forklift.countPath(this.homeCoordinates);
                         if (forklift.getPath().size() == 0) {
                             toBlocklist(forklift);
-                            logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                             if (workingForkliftsList.size() == 0) {
                                 break;
                             }
@@ -115,25 +112,27 @@ public class Store {
                             forklift.countPath(homeCoordinates);
                         }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
-                        //System.out.println("ERR?");
                         forklift.getPath().get(forklift.getPath().size() - 1).printCoordinates();
                         if (forklift.getPath().get(forklift.getPath().size() - 1) == this.getHomeCoordinates()) {
                             forklift.countPath(this.homeCoordinates);
                             if (forklift.getPath().size() == 0) {
                                 toBlocklist(forklift);
-                                logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                                 if (workingForkliftsList.size() == 0) {
                                     break;
                                 }
                                 break;
                             }
                         } else {
-                            forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            if(getGoodsShelve(forklift.getActionInProgress()) != null){
+                                forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
+                            }else{
+                                forklift.countPath(this.homeCoordinates);
+                            }
+
                             if (forklift.getPath().size() == 0) {
                                 forklift.countPath(this.homeCoordinates);
                                 if (forklift.getPath().size() == 0) {
                                     toBlocklist(forklift);
-                                    logMessageStore("Forklift n." + forklift.getId() + " is blocked");
                                     if (workingForkliftsList.size() == 0) {
                                         break;
                                     }
@@ -520,7 +519,7 @@ public class Store {
 
     public void checkBlockedForklifts() {
         for (int i = 0; i< blockedForkliftsList.size(); i++) {
-            blockedForkliftsList.get(i).tryUnblockForklift(); // TODo is this ok?
+            blockedForkliftsList.get(i).tryUnblockForklift();
             continue;
 
         }
@@ -529,6 +528,7 @@ public class Store {
     public void toBlocklist(Forklift forklift) {
         this.workingForkliftsList.remove(forklift);
         this.blockedForkliftsList.add(forklift);
+        logMessageStore("Forklift n." + forklift.getId() + " is blocked");
     }
 
     public void fromBlocklist(Forklift forklift) {

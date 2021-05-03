@@ -532,8 +532,6 @@ public class Forklift {
         int tryie = tryStatus(new Coordinates(movingTo.getX(), movingTo.getY()), this.path.get(1)).getNumVal();
         int movingToMap = store.getMapValue(movingTo.getX(), movingTo.getY());
         int res = tryie + movingToMap;
-        System.out.println(tryie);
-        System.out.println(res);
         if (res != tryie && res != 11 && res != 7){
             return;
         }
