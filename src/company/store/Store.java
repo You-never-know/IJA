@@ -79,9 +79,6 @@ public class Store {
                         if (forklift.getPath().size() == 0) {
                             toBlocklist(forklift);
                             logMessageStore("Forklift n." + forklift.getId() + " is blocked");
-                            if (workingForkliftsList.size() == 0) {
-                                break;
-                            }
                             break;
                         }
                     }
@@ -89,6 +86,9 @@ public class Store {
                     if (forklift.getFirstPath().equals(homeCoordinates)) {
                         forklift.moveToHome();
                         forklift.unloadGoods();
+                        if (forklift.equals(manager.get_forklift())) {
+                            manager.redraw_path_of_forklift(forklift);
+                        }
                         if (forklift.getRequest().getActionsList().size() != 0) {
                             if (forklift.getPath().size() == 0) {
                                 forklift.countPath(this.getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
@@ -98,9 +98,6 @@ public class Store {
                             this.setRequestAsDone(forklift.nullGetRequest());
                             forklift.nullActionInProgress();
                             setForkliftFree(forklift);
-                            if (workingForkliftsList.size() > 0) {
-                                break;
-                            }
                             break;
                         }
                     }
@@ -122,9 +119,6 @@ public class Store {
                             if (forklift.getPath().size() == 0) {
                                 toBlocklist(forklift);
                                 logMessageStore("Forklift n." + forklift.getId() + " is blocked");
-                                if (workingForkliftsList.size() == 0) {
-                                    break;
-                                }
                                 break;
                             }
                         } else {
@@ -134,9 +128,6 @@ public class Store {
                                 if (forklift.getPath().size() == 0) {
                                     toBlocklist(forklift);
                                     logMessageStore("Forklift n." + forklift.getId() + " is blocked");
-                                    if (workingForkliftsList.size() == 0) {
-                                        break;
-                                    }
                                     break;
                                 }
                             }
@@ -151,7 +142,7 @@ public class Store {
             for (Forklift forklift : workingForkliftsList) {
                 manager.draw_forklift(forklift);
                 if (forklift.equals(manager.get_forklift())) {
-                    manager.draw_path_of_forklift(forklift);
+                    manager.redraw_path_of_forklift(forklift);
                 }
             }
             if (workingForkliftsList.size() > 0) {
@@ -327,7 +318,7 @@ public class Store {
      * @return Shelve where the Goods specified by Action are stored or null if no such Goods are in the store
      */
     public Shelve getGoodsShelve(Action action) {
-        try{
+        try {
             String name = action.getName();
             int ID = action.getId();
             for (Goods good : goodsList) {
@@ -335,7 +326,7 @@ public class Store {
                     return good.getShelve();
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
 
@@ -519,7 +510,7 @@ public class Store {
     }
 
     public void checkBlockedForklifts() {
-        for (int i = 0; i< blockedForkliftsList.size(); i++) {
+        for (int i = 0; i < blockedForkliftsList.size(); i++) {
             blockedForkliftsList.get(i).tryUnblockForklift(); // TODo is this ok?
             continue;
 
@@ -661,6 +652,86 @@ public class Store {
         }
         return true;
     }
+
+    /**
+     * Load shopping list from the given file
+     *
+     * @param filePath Path to the shopping list file
+     * @return True if shopping list was successfully loaded
+     */
+    public boolean loadShoppingList(String filePath) {
+        filePath = manager.getClassPath() + filePath;
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            manager.logMessageTA("Shopping list file not found, try again");
+            return false;
+        }
+        try {
+            String line;
+            ArrayList<Action> actionList = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                String[] item = line.split(";");
+                Action action;
+                if (item.length != 2) {
+                    manager.logMessageTA("Shopping list not acceptable");
+                    return false;
+                }
+                // Count
+                int count;
+                try {
+                    count = Integer.parseInt(item[1].strip());
+                } catch (NumberFormatException e) {
+                    manager.logMessageTA("Shopping list not acceptable");
+                    return false;
+                }
+                if (count < 1) {
+                    manager.logMessageTA("Shopping list not acceptable");
+                    return false;
+                }
+                // name or ID
+                int ID = 0;
+                try {
+                    ID = Integer.parseInt(item[0]);
+                } catch (Exception e) {
+                    ;
+                }
+                if (ID != 0) {
+                    action = new Action(ID, count);
+                } else {
+                    action = new Action(item[0].strip(), count);
+                }
+                Shelve shelve = getGoodsShelve(action);
+                if (shelve == null) {
+                    manager.logMessageTA("Shopping list not acceptable");
+                    return false;
+                }
+                action.setId(shelve.getGoodsId());
+                action.setName(shelve.getGoods().getName());
+                if ((getGoodsCount(action)) < (count +
+
+                       manager.getController().actionListGoodsCount(action,actionList) + getGoodsRequestsListCount(action) + getGoodsInForkliftsCount(action))) {
+                    manager.logMessageTA("Not enough goods for the shopping list");
+                    return false;
+                }
+                int index = actionList.indexOf(action);
+                if (index == -1) {
+                    actionList.add(action);
+                } else {
+                    Action existing_action = actionList.get(index);
+                    existing_action.setCount(existing_action.getCount() + count);
+                }
+            }
+            Request new_request = new Request(actionList);
+            addRequest(new_request);
+            return true;
+        } catch (IOException e) {
+            manager.logMessageTA("Error while reading a file");
+            return false;
+        }
+    }
+
 
     /**
      * @return Coordinates of the starting point in the map

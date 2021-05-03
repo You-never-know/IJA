@@ -1,6 +1,7 @@
 package company;
 
 import company.store.forklift.Forklift;
+import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
 import controller.Controller;
 import company.store.Store;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -98,6 +100,21 @@ public class StoreManager extends Application {
      */
     public String getGoodsPath() {
         return this.goodsPath;
+    }
+
+    /**
+     * @return Path to the class
+     */
+    public String getClassPath() {
+        return this.classPath;
+    }
+
+
+    /**
+     * @return Controller
+     */
+    public Controller getController() {
+        return this.controller;
     }
 
     /**
@@ -273,12 +290,27 @@ public class StoreManager extends Application {
         return clicked_forklift;
     }
 
+
     /**
      * @param forklift whos path will be drawn
      */
-    public void draw_path_of_forklift(Forklift forklift) {
-        controller.forklift_clicked(null, forklift);
-        set_forklift(forklift);
+    public void redraw_path_of_forklift(Forklift forklift) {
+        if (forklift_path.size() == 0) {
+            controller.forklift_clicked(null, forklift);
+        } else {
+            Coordinates coordinates = forklift_path.get(0);
+            int index = coordinates.getX() * store.getHeight() + coordinates.getY();
+            GridPane tile = (GridPane) storePlan.getChildren().get(index);
+            tile.getChildren().get(12).getStyleClass().remove("forklift_path");
+            tile.getChildren().get(12).getStyleClass().add("path");
+            forklift_path.remove(0);
+            List<Goods> forklift_goods = forklift.getGoodsList();
+            controller.selected_table.getItems().clear();
+            for (Goods item: forklift_goods) {
+                controller.selected_table.getItems().add(item);
+                controller.selected_table.refresh();
+            }
+        }
     }
 
 

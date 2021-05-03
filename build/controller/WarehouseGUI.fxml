@@ -283,7 +283,7 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button fx:id="load_shopping_list_button" contentDisplay="CENTER" graphicTextGap="8.0" minHeight="25.0" mnemonicParsing="false" onMouseClicked="#loadMap" prefHeight="25.0" prefWidth="80.0" styleClass="buttons" text="Confirm" textAlignment="CENTER" />
+                        <Button fx:id="load_shopping_list_button" contentDisplay="CENTER" graphicTextGap="8.0" minHeight="25.0" mnemonicParsing="false" onMouseClicked="#loadShoppingList" prefHeight="25.0" prefWidth="80.0" styleClass="buttons" text="Confirm" textAlignment="CENTER" />
                      </children>
                      <VBox.margin>
                         <Insets left="5.0" right="5.0" top="5.0" />

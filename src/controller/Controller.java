@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -47,6 +48,8 @@ public class Controller implements Initializable {
      * @param event Mouse click
      */
     public void showGoodsContent(MouseEvent event) {
+        store.getManager().set_forklift(null);
+        store.getManager().FreeForkliftPath();
         if (addBarrierClicked) {
             addBarrierClicked = false;
             logMessage("Cannot add barrier to the shelve");
@@ -118,6 +121,7 @@ public class Controller implements Initializable {
 
     }
 
+
     /**
      * Display path and load of the forklift
      * @param event Mouse clicked
@@ -136,11 +140,16 @@ public class Controller implements Initializable {
         for (Coordinates c:path) {
             store.getManager().draw_path(c);
         }
-
+        List<Goods> forklift_goods = forklift.getGoodsList();
+        selected_table.getItems().clear();
+        for (Goods item: forklift_goods) {
+            selected_table.getItems().add(item);
+            selected_table.refresh();
+        }
     }
 
     @FXML
-    private TableView<Goods> selected_table = new TableView<>();
+    public TableView<Goods> selected_table = new TableView<>();
 
     @FXML
     private TableColumn<Goods, String> selected_name = new TableColumn<>("Name");
@@ -281,6 +290,19 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Load new shopping list from a file given in GUI
+     *
+     * @param event Mouse clicked
+     */
+    @FXML
+    void loadShoppingList(MouseEvent event) {
+        load_shopping_list_button.setDisable(true);
+        String g_path = shopping_list_path.getText();
+        store.loadShoppingList(g_path);
+        load_shopping_list_button.setDisable(false);
+    }
+
+    /**
      * Add item to the shopping list, check if item is in store and if there are enough items
      *
      * @param event Mouse clicked
@@ -304,7 +326,7 @@ public class Controller implements Initializable {
             add_item_button.setDisable(false);
             return;
         }
-        Integer ID = 0;
+        int ID = 0;
         try {
             ID = Integer.parseInt(good);
         } catch (Exception e) {
@@ -326,8 +348,8 @@ public class Controller implements Initializable {
 
         if ((store.getGoodsCount(action)) < (count +
 
-                actionListGoodsCount(action) + store.getGoodsRequestsListCount(action) + store.getGoodsInForkliftsCount(action))) {
-            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action) - store.getGoodsRequestsListCount(action) - store.getGoodsInForkliftsCount(action)) + " more piece(s) available");
+                actionListGoodsCount(action, action_list) + store.getGoodsRequestsListCount(action) + store.getGoodsInForkliftsCount(action))) {
+            logMessage("Sorry, only " + (store.getGoodsCount(action) - actionListGoodsCount(action, action_list) - store.getGoodsRequestsListCount(action) - store.getGoodsInForkliftsCount(action)) + " more piece(s) available");
             add_item_button.setDisable(false);
             return;
         }
@@ -355,10 +377,10 @@ public class Controller implements Initializable {
      * @param action action containing a name of the good
      * @return number of items already requested
      */
-    public int actionListGoodsCount(Action action) {
+    public int actionListGoodsCount(Action action, ArrayList<Action> act_list) {
         int count = 0;
         String name = action.getName();
-        for (Action act : action_list) {
+        for (Action act : act_list) {
             if (act.getName().compareTo(name) == 0) {
                 count += act.getCount();
             }

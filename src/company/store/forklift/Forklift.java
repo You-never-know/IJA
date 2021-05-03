@@ -164,6 +164,14 @@ public class Forklift {
         return id;
     }
 
+
+    /**
+     * @return goods list
+     */
+    public List<Goods> getGoodsList() {
+        return goodsList;
+    }
+
     /**
      * Unloads goods from the forklift, resets its bearing capacity
      */
