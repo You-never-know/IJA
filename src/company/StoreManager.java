@@ -240,10 +240,15 @@ public class StoreManager extends Application {
     private void clear(int index, int[] indexes) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
         for (int i : indexes) {
-            tile.getChildren().get(i).getStyleClass().remove(tile.getChildren().get(i).getStyleClass().toString());
-            tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, null));
-            tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
-            tile.getChildren().get(i).getStyleClass().add("path");
+            try{
+                tile.getChildren().get(i).getStyleClass().remove(tile.getChildren().get(i).getStyleClass().toString());
+                tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, null));
+                tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
+                tile.getChildren().get(i).getStyleClass().add("path");
+            }catch (Exception e){
+                clear(index, indexes);
+            }
+
         }
     }
 
