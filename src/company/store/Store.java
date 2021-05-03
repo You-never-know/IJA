@@ -324,8 +324,8 @@ public class Store {
             return;
         }
         map[x][y] -= forkliftStatus.getNumVal();
-        //System.out.println("After: ");
-        //System.out.println(map[x][y]);
+        System.out.println("After removing: ");
+        System.out.println(map[x][y]);
     }
 
     /**

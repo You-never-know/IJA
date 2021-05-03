@@ -568,11 +568,15 @@ public class Forklift {
         int movingToMap = store.getMapValue(movingTo.getX(), movingTo.getY());
         int res = tryie + movingToMap;
 
+        System.out.println("MAP: ");
         System.out.println(movingToMap);
+        System.out.println("TRY STATUS: ");
         System.out.println(tryie);
+        System.out.println("RESULT: ");
         System.out.println(res);
 
         if (res != tryie && res != 11 && res != 7){
+            System.out.println("NOT MOVING -> RETURNED");
             return;
         }
 
@@ -586,6 +590,7 @@ public class Forklift {
         this.setCoordinates(new Coordinates(moveTo.getX(), moveTo.getY()));
         this.countSetStatus(this.coordinates, getFirstPath());
         store.updateMapValueAdd(this.coordinates.getX(), this.coordinates.getY(), this.status);
+        System.out.println("---");
 
     }
 
