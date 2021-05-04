@@ -109,12 +109,14 @@ public class Controller implements Initializable {
                 }
                 addBarrierClicked = false;
             } else {
-                for (int i = 0; i < 25; i++) {
-                    ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
-                    ((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
-                }
-                store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
-                store.checkBlockedForklifts();
+            	if (store.getMapValue(x, y) == 2) {
+                	for (int i = 0; i < 25; i++) {
+                	    	((GridPane) rect).getChildren().get(i).getStyleClass().clear();
+                	    	((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
+               	}
+                		store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
+                		store.checkBlockedForklifts();
+                } 
                 removeBarrierClicked = false;
             }
         }
