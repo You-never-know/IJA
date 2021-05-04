@@ -299,6 +299,7 @@ public class StoreManager extends Application {
      * @param forklift who's path will be drawn
      */
     public void redraw_path_of_forklift(Forklift forklift) {
+    	List<Goods> forklift_goods = forklift.getGoodsList();
 	controller.selected_table.getItems().clear();
         for (Goods item : forklift_goods) {
                controller.selected_table.getItems().add(item);
@@ -313,7 +314,6 @@ public class StoreManager extends Application {
             tile.getChildren().get(12).getStyleClass().remove("forklift_path");
             tile.getChildren().get(12).getStyleClass().add("path");
             forklift_path.remove(0);
-            List<Goods> forklift_goods = forklift.getGoodsList();
         }
     }
 
