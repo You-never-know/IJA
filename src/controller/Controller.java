@@ -98,23 +98,25 @@ public class Controller implements Initializable {
                 return;
             }
             if (addBarrierClicked) {
-                for (int i = 0; i < 25; i++) {
+                if (store.getMapValue(x, y) == 0) {
+                    store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
+                    for (int i = 0; i < 25; i++) {
                     ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
                     ((GridPane) rect).getChildren().get(i).getStyleClass().add("blocked");
                 }
-                if (store.getMapValue(x, y) == 0) {
-                    store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
                 } else {
                     logMessage("Cannot add barrier here");
                 }
                 addBarrierClicked = false;
             } else {
-                for (int i = 0; i < 25; i++) {
-                    ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
-                    ((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
-                }
-                store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
-                store.checkBlockedForklifts();
+            	if (store.getMapValue(x, y) == 2) {
+                	for (int i = 0; i < 25; i++) {
+                	    	((GridPane) rect).getChildren().get(i).getStyleClass().clear();
+                	    	((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
+               	}
+                		store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
+                		store.checkBlockedForklifts();
+                } 
                 removeBarrierClicked = false;
             }
         }

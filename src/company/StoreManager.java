@@ -389,6 +389,8 @@ public class StoreManager extends Application {
                         clear(inner_index, indexes2);
                         to_remove.add(i);
                         break;
+                    default:
+                        to_remove.add(i);
                 }
             }
         }
