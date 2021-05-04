@@ -1,9 +1,11 @@
 package company;
 /**
  * Main class of the program
+ *
  * @author xmarek72
  * @author xnepra01
  */
+
 import company.store.forklift.Forklift;
 import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
@@ -34,7 +36,7 @@ import java.util.Objects;
 public class StoreManager extends Application {
 
     private Store store;
-    private final String classPath = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    private final String classPath = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath().replace("ija-app.jar", "");
     private final String defaultMapPath = classPath + "../data/map1525.in";
     private String mapPath = defaultMapPath;
     private final String defaultGoodsPath = classPath + "../data/goods.in";
@@ -56,7 +58,7 @@ public class StoreManager extends Application {
     @Override
     public void start(Stage primaryStage) {
         SetUpManager();
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(StoreManager.class.getResourceAsStream("../controller/WMico.png"))));
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(StoreManager.class.getResourceAsStream("WMico.png"))));
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -67,7 +69,7 @@ public class StoreManager extends Application {
         controller.setStore(store);
         setUPStore();
         Scene scene = new Scene(root, 1200, 800);
-        scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("../controller/style.css")));
+        scene.getStylesheets().add(String.valueOf(StoreManager.class.getResource("style.css")));
         primaryStage.setTitle("Warehouse manager");
         primaryStage.setScene(scene);
         new Thread(() -> store.main()).start();
@@ -83,7 +85,7 @@ public class StoreManager extends Application {
         forklift_path = new ArrayList<>();
         store.setManager(this);
         loader = new FXMLLoader();
-        loader.setLocation(StoreManager.class.getResource("../controller/WarehouseGUI.fxml"));
+        loader.setLocation(StoreManager.class.getResource("WarehouseGUI.fxml"));
     }
 
     /**
@@ -244,15 +246,14 @@ public class StoreManager extends Application {
     private void clear(int index, int[] indexes) {
         GridPane tile = (GridPane) storePlan.getChildren().get(index);
         for (int i : indexes) {
-            try{
-                tile.getChildren().get(i).getStyleClass().remove(tile.getChildren().get(i).getStyleClass().toString());
+            try {
+                tile.getChildren().get(i).getStyleClass().clear();
                 tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, null));
                 tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
                 tile.getChildren().get(i).getStyleClass().add("path");
-            }catch (Exception e){
-                clear(index, indexes);
-            }
+            } catch (Exception e) {
 
+            }
         }
     }
 
@@ -303,12 +304,12 @@ public class StoreManager extends Application {
      * @param forklift who's path will be drawn
      */
     public void redraw_path_of_forklift(Forklift forklift) {
-    	List<Goods> forklift_goods = forklift.getGoodsList();
-	controller.selected_table.getItems().clear();
+        List<Goods> forklift_goods = forklift.getGoodsList();
+        controller.selected_table.getItems().clear();
         for (Goods item : forklift_goods) {
-               controller.selected_table.getItems().add(item);
+            controller.selected_table.getItems().add(item);
         }
-        controller.selected_table.refresh();       
+        controller.selected_table.refresh();
         if (forklift_path.size() == 0) {
             controller.forklift_clicked(null, forklift);
         } else {
@@ -372,7 +373,7 @@ public class StoreManager extends Application {
                         clear(inner_index, indexes4);
                         break;
                     case FORKLIFT_LEFT:
-                        int[] indexes5 = { 2, 3, 4, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+                        int[] indexes5 = {2, 3, 4, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
                         clear(inner_index, indexes5);
                         break;
                     case FORKLIFT_RIGHT:
@@ -381,7 +382,7 @@ public class StoreManager extends Application {
                         break;
 
                     case FORKLIFTS_LEFT_RIGHT:
-                        int[] indexes7 = { 2, 3, 4,  7, 8, 9, 15, 16, 17, 20, 21, 22};
+                        int[] indexes7 = {2, 3, 4, 7, 8, 9, 15, 16, 17, 20, 21, 22};
                         clear(inner_index, indexes7);
                         break;
                     case FORKLIFTS_UP_DOWN:

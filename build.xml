@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Warehouse" basedir=".">
     <target name="compile" description="Compile">
-        <exec executable="javac" >
+        <exec executable="javac">
             <arg value="-classpath"/>
             <arg value="src"/>
             <arg value="--module-path"/>
@@ -12,34 +12,49 @@
             <arg value="build"/>
             <arg value="src/company/StoreManager.java"/>
         </exec>
-        <exec executable="cp" >
-            <arg value="src/controller/WarehouseGUI.fxml" />
-            <arg value="build/controller/"/>
+        <exec executable="cp">
+            <arg value="src/controller/WarehouseGUI.fxml"/>
+            <arg value="build/company/"/>
         </exec>
-        <exec executable="cp" >
-            <arg value="src/controller/style.css" />
-            <arg value="build/controller/"/>
+        <exec executable="cp">
+            <arg value="src/controller/style.css"/>
+            <arg value="build/company/"/>
         </exec>
-        <exec executable="cp" >
-            <arg value="src/controller/WMico.png" />
-            <arg value="build/controller/"/>
+        <exec executable="cp">
+            <arg value="src/controller/WMico.png"/>
+            <arg value="build/company/"/>
         </exec>
+        <jar destfile="dest/ija-app.jar"
+             basedir="build">
+            <manifest>
+                <attribute name="Main-Class" value="company.StoreManager"/>
+                <attribute name="Class-Path" value=""/>
+            </manifest>
+        </jar>
     </target>
 
     <target name="run" description="run the app">
-        <exec executable="java" >
-            <arg value="-cp"/>
-            <arg value="build"/>
+        <exec executable="java">
             <arg value="--module-path"/>
             <arg value="lib/javafx-sdk-16/lib"/>
             <arg value="--add-modules"/>
             <arg value="javafx.controls,javafx.fxml"/>
-            <arg value="company.StoreManager"/>
+            <arg value="-jar"/>
+            <arg value="dest/ija-app.jar"/>
         </exec>
     </target>
 
+    <target name="clean" description="Clean generated files">
+        <delete includeemptydirs="true">
+            <fileset dir="build" includes="**/*"/>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="dest" includes="**/*"/>
+        </delete>
+    </target>
+
     <target name="doc" description="Generate the documentation">
-        <exec executable="javadoc" >
+        <exec executable="javadoc">
             <arg value="-private"/>
             <arg value="-sourcepath"/>
             <arg value="src"/>
