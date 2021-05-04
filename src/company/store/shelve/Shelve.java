@@ -1,5 +1,8 @@
 package company.store.shelve;
-
+/**
+ * @author xmarek72
+ * @author xnepra01
+ */
 import company.store.Store;
 import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
@@ -93,13 +96,18 @@ public class Shelve {
         if (count > getGoodsCount()) {
             return null;
         }
-        this.goods.setCount(goods.getCount() - count);
-        Goods sold_goods = new Goods(this.goods);
-        sold_goods.setCount(count);
-        if (getGoodsCount() == 0) {
-            removeGoods();
+        try{
+            this.goods.setCount(goods.getCount() - count);
+            Goods sold_goods = new Goods(this.goods);
+            sold_goods.setCount(count);
+            if (getGoodsCount() == 0) {
+                removeGoods();
+            }
+            return sold_goods;
+        }catch (Exception e){
+            return null;
         }
-        return sold_goods;
+
     }
 
 

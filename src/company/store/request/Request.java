@@ -1,5 +1,7 @@
 package company.store.request;
-
+/**
+ * @author xnepra01
+ */
 import company.store.request.action.Action;
 
 import java.util.ArrayList;

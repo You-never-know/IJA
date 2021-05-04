@@ -1,5 +1,7 @@
 package company.store.shelve.goods.coordinates;
-
+/**
+ * @author xnepra01
+ */
 import java.lang.Math;
 import java.util.Objects;
 

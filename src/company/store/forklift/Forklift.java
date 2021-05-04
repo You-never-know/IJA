@@ -1,5 +1,8 @@
 package company.store.forklift;
-
+/**
+ * @author xmarek72
+ * @author xnepra01
+ */
 import company.store.Store;
 import company.store.request.Request;
 import company.store.request.action.Action;
@@ -178,7 +181,7 @@ public class Forklift {
     public void unloadGoods() {
         this.goodsList.clear();
         this.piecesBearingLeft = this.piecesBearing;
-        System.out.println("Forklift n." + this.id + " goods successfully unloaded");
+        //System.out.println("Forklift n." + this.id + " goods successfully unloaded");
     }
 
     /**
@@ -312,6 +315,10 @@ public class Forklift {
      * @param destination Destination where the forklift needs the path computed to
      */
     public void countPath(Coordinates destination) {
+        if(this.piecesBearingLeft == 0 && !destination.equals(store.getHomeCoordinates())){
+            ForkliftStatus status = this.getStatus();
+            this.countPath(store.getHomeCoordinates());
+        }
         Coordinates position = this.coordinates;
         List<Coordinates> open = new ArrayList<>();
         List<Coordinates> closed = new ArrayList<>();
@@ -363,7 +370,7 @@ public class Forklift {
                 this.updatePreMapDoAction();
                 this.path = pathRecursion(closed, predecessorsClosed, expanding);
                 this.updateAfterMapDoAction();
-                this.printPath();
+                //this.printPath();
                 return;
             }
 
@@ -479,42 +486,61 @@ public class Forklift {
      * Forklift loads goods according to active action, shelve volume and its own bearing
      */
     public void doAction() {
-        System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
+        //System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
         Coordinates shelveLocation = this.popFirstPath();
 
+        if(this.piecesBearingLeft == 0){
+            return;
+        }
         Shelve shelve = this.store.getShelve(shelveLocation.getX(), shelveLocation.getY());
         if (actionInProgress.getCount() > shelve.getGoodsCount()) {
             int toSell;
             if (shelve.getGoodsCount() < this.piecesBearingLeft) {
                 toSell = shelve.getGoodsCount();
                 Goods sold = shelve.sellGoods(toSell);
+                if(sold == null){
+                    this.countPath(store.getHomeCoordinates());
+                    return;
+                }
                 actionInProgress.setCount(actionInProgress.getCount() - toSell);
                 this.goodsList.add(sold);
-                System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
+                //System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
                 this.piecesBearingLeft = this.piecesBearingLeft - toSell;
                 this.countPath(this.store.getGoodsShelve(actionInProgress).getCoordinates());
             } else {
                 toSell = this.piecesBearingLeft;
                 Goods sold = shelve.sellGoods(toSell);
+                if(sold == null){
+                    this.countPath(store.getHomeCoordinates());
+                    return;
+                }
                 actionInProgress.setCount(actionInProgress.getCount() - toSell);
                 this.goodsList.add(sold);
-                System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
+                //System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
                 this.piecesBearingLeft = this.piecesBearingLeft - toSell;
                 this.countPath(store.getHomeCoordinates());
             }
 
         } else if (actionInProgress.getCount() >= this.piecesBearingLeft) {
             Goods sold = shelve.sellGoods(this.piecesBearingLeft);
+            if(sold == null){
+                this.countPath(store.getHomeCoordinates());
+                return;
+            }
             actionInProgress.setCount(actionInProgress.getCount() - this.piecesBearingLeft);
             this.goodsList.add(sold);
-            System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
+            //System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
             this.piecesBearingLeft = this.piecesBearingLeft - sold.getCount();
             this.countPath(store.getHomeCoordinates());
         } else {
             Goods sold = shelve.sellGoods(actionInProgress.getCount());
+            if(sold == null){
+                this.countPath(store.getHomeCoordinates());
+                return;
+            }
             actionInProgress.setCount(0);
             this.goodsList.add(sold);
-            System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
+            //System.out.println("Forklift n." + this.id + " took over goods: " + sold.getName() + " from " + shelve.getCoordinates().getX() + ", " + shelve.getCoordinates().getY());
             this.piecesBearingLeft = this.piecesBearingLeft - sold.getCount();
             if (this.request.getActionsList().size() == 1) {
                 this.countPath(store.getHomeCoordinates());
@@ -538,9 +564,14 @@ public class Forklift {
      * Removing map value before counting new path
      */
     public void updatePreMapDoAction(){
-        if (!this.coordinates.equals(store.getHomeCoordinates())) {
-            store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), this.status);
+        try{
+            if (!this.coordinates.equals(store.getHomeCoordinates())) {
+                store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), this.status);
+            }
+        }catch(Exception e){
+            store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), ForkliftStatus.RIGHT);
         }
+
     }
 
     /**
@@ -560,20 +591,12 @@ public class Forklift {
         int movingToMap = store.getMapValue(movingTo.getX(), movingTo.getY());
         int res = tryie + movingToMap;
 
-        System.out.println("MAP: ");
-        System.out.println(movingToMap);
-        System.out.println("TRY STATUS: ");
-        System.out.println(tryie);
-        System.out.println("RESULT: ");
-        System.out.println(res);
-
         if (res != tryie && res != 11 && res != 7){
-            System.out.println("NOT MOVING -> RETURNED");
             return;
         }
 
             Coordinates moveTo = popFirstPath();
-        System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
+        //System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
         if (!this.coordinates.equals(store.getHomeCoordinates())) {
             store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), this.status);
         }
@@ -582,7 +605,6 @@ public class Forklift {
         this.setCoordinates(new Coordinates(moveTo.getX(), moveTo.getY()));
         this.countSetStatus(this.coordinates, getFirstPath());
         store.updateMapValueAdd(this.coordinates.getX(), this.coordinates.getY(), this.status);
-        System.out.println("---");
 
     }
 
@@ -591,7 +613,7 @@ public class Forklift {
      */
     public void moveToHome() {
         Coordinates moveTo = popFirstPath();
-        System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
+        //System.out.println("Forklift n." + this.id + " at " + this.getCoordinates().getX() + ", " + this.getCoordinates().getY());
         store.updateMapValueRemove(this.coordinates.getX(), this.coordinates.getY(), this.status);
         visitedCoordinates.clear();
         this.setCoordinates(new Coordinates(0, 0));

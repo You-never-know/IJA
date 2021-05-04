@@ -1,5 +1,8 @@
 package company.store.shelve.goods;
-
+/**
+ * @author xmarek72
+ * @author xnepra01
+ */
 import company.store.shelve.Shelve;
 import company.store.shelve.goods.coordinates.Coordinates;
 

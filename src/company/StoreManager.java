@@ -1,5 +1,9 @@
 package company;
-
+/**
+ * Main class of the program
+ * @author xmarek72
+ * @author xnepra01
+ */
 import company.store.forklift.Forklift;
 import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;

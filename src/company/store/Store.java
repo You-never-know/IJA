@@ -1,4 +1,10 @@
 package company.store;
+/**
+ * Store class where the anchor the main operations
+ *
+ * @author xmarek72
+ * @author xnepra01
+ */
 
 import company.StoreManager;
 import company.store.forklift.Forklift;
@@ -67,7 +73,9 @@ public class Store {
 
         while (true) {
             delegateRequest();
+
             if (workingForkliftsList.size() > 0) {
+
                 for (Forklift forklift : workingForkliftsList) {
                     if (forklift.getPath().size() == 0 && forklift.getActionInProgress() == null && forklift.getRequest().getActionsList().size() != 0) {
                         forklift.setFirstActionInProgress();
@@ -108,18 +116,15 @@ public class Store {
                         forklift.doAction();
                         if ((forklift.getRequest().getActionsList().size() != 0) && (forklift.getActionInProgress() == null)) { // request has some actions left
                             forklift.setFirstActionInProgress();
-
                         }
                         if (forklift.getPath() == null) {
                             forklift.countPath(homeCoordinates);
                         }
                     } else if (getMapValue(forklift.getFirstPath().getX(), forklift.getFirstPath().getY()) == MapCoordinateStatus.BLOCK.Val) {
-                        forklift.getPath().get(forklift.getPath().size() - 1).printCoordinates();
                         if (forklift.getPath().get(forklift.getPath().size() - 1) == this.getHomeCoordinates()) {
                             forklift.countPath(this.homeCoordinates);
                             if (forklift.getPath().size() == 0) {
                                 toBlocklist(forklift);
-
 
                                 if (workingForkliftsList.size() == 0) {
                                     break;
@@ -127,9 +132,9 @@ public class Store {
                                 break;
                             }
                         } else {
-                            if(getGoodsShelve(forklift.getActionInProgress()) != null){
+                            if (getGoodsShelve(forklift.getActionInProgress()) != null) {
                                 forklift.countPath(getGoodsShelve(forklift.getActionInProgress()).getCoordinates());
-                            }else{
+                            } else {
                                 forklift.countPath(this.homeCoordinates);
                             }
 
@@ -175,6 +180,7 @@ public class Store {
 
                 }
             }
+
         }
     }
 
@@ -287,23 +293,19 @@ public class Store {
         if (y >= height || x >= width) {
             return;
         }
-        System.out.println("Adding: ");
         if (map[x][y] == MapCoordinateStatus.FREE_PATH.getNumVal()) {
             map[x][y] = statusMapper(forkliftStatus).getNumVal();
-            System.out.println(map[x][y]);
             return;
         }
         if ((forkliftStatus == Forklift.ForkliftStatus.UP && map[x][y] == MapCoordinateStatus.FORKLIFT_DOWN.getNumVal()) ||
                 (forkliftStatus == Forklift.ForkliftStatus.DOWN && map[x][y] == MapCoordinateStatus.FORKLIFT_UP.getNumVal())) {
             map[x][y] = MapCoordinateStatus.FORKLIFTS_UP_DOWN.getNumVal();
-            System.out.println(map[x][y]);
             return;
         }
 
         if ((forkliftStatus == Forklift.ForkliftStatus.LEFT && map[x][y] == MapCoordinateStatus.FORKLIFT_RIGHT.getNumVal()) ||
                 (forkliftStatus == Forklift.ForkliftStatus.RIGHT && map[x][y] == MapCoordinateStatus.FORKLIFT_LEFT.getNumVal())) {
             map[x][y] = MapCoordinateStatus.FORKLIFTS_LEFT_RIGHT.getNumVal();
-            System.out.println(map[x][y]);
         }
     }
 
@@ -318,14 +320,12 @@ public class Store {
         if (y >= height || x >= width) {
             return;
         }
-        //System.out.println("Removing");
-        if (map[x][y] - forkliftStatus.getNumVal() < 0){
+        if (map[x][y] - forkliftStatus.getNumVal() < 0) {
             map[x][y] = 0;
             return;
         }
         map[x][y] -= forkliftStatus.getNumVal();
-        System.out.println("After removing: ");
-        System.out.println(map[x][y]);
+
     }
 
     /**
@@ -343,7 +343,7 @@ public class Store {
      * @return Shelve where the Goods specified by Action are stored or null if no such Goods are in the store
      */
     public Shelve getGoodsShelve(Action action) {
-        try{
+        try {
             String name = action.getName();
             int ID = action.getId();
             for (Goods good : goodsList) {
@@ -351,7 +351,7 @@ public class Store {
                     return good.getShelve();
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
 
@@ -495,7 +495,6 @@ public class Store {
         if (requestsList.size() == 0 || freeForkliftsList.size() == 0) {
             return false;
         }
-        System.out.println("Delegating request");
         Forklift forklift = freeForkliftsList.get(0);
         freeForkliftsList.remove(0);
         Request request = requestsList.get(0);
@@ -535,7 +534,7 @@ public class Store {
     }
 
     public void checkBlockedForklifts() {
-        for (int i = 0; i< blockedForkliftsList.size(); i++) {
+        for (int i = 0; i < blockedForkliftsList.size(); i++) {
             blockedForkliftsList.get(i).tryUnblockForklift();
             continue;
 
@@ -737,7 +736,7 @@ public class Store {
                 action.setName(shelve.getGoods().getName());
                 if ((getGoodsCount(action)) < (count +
 
-                       manager.getController().actionListGoodsCount(action,actionList) + getGoodsRequestsListCount(action) + getGoodsInForkliftsCount(action))) {
+                        manager.getController().actionListGoodsCount(action, actionList) + getGoodsRequestsListCount(action) + getGoodsInForkliftsCount(action))) {
                     manager.logMessageTA("Not enough goods for the shopping list");
                     return false;
                 }

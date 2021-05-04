@@ -1,5 +1,7 @@
 package controller;
-
+/**
+ * @author xmarek72
+ */
 import company.store.Store;
 import company.store.forklift.Forklift;
 import company.store.request.Request;
@@ -406,7 +408,6 @@ public class Controller implements Initializable {
         action_list.clear();
         shopping_list.getItems().clear();
         submit_list_button.setDisable(false);
-        System.out.println("ShoppingList submitted");
     }
 
     /**
