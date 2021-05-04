@@ -98,12 +98,12 @@ public class Controller implements Initializable {
                 return;
             }
             if (addBarrierClicked) {
-                for (int i = 0; i < 25; i++) {
+                if (store.getMapValue(x, y) == 0) {
+                    store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
+                    for (int i = 0; i < 25; i++) {
                     ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
                     ((GridPane) rect).getChildren().get(i).getStyleClass().add("blocked");
                 }
-                if (store.getMapValue(x, y) == 0) {
-                    store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
                 } else {
                     logMessage("Cannot add barrier here");
                 }
