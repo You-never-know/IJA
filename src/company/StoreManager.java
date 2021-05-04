@@ -312,8 +312,8 @@ public class StoreManager extends Application {
             controller.selected_table.getItems().clear();
             for (Goods item : forklift_goods) {
                 controller.selected_table.getItems().add(item);
-                controller.selected_table.refresh();
             }
+            controller.selected_table.refresh();
         }
     }
 

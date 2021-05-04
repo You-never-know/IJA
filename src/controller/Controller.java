@@ -146,8 +146,8 @@ public class Controller implements Initializable {
         selected_table.getItems().clear();
         for (Goods item: forklift_goods) {
             selected_table.getItems().add(item);
-            selected_table.refresh();
         }
+        selected_table.refresh();
     }
 
     @FXML
