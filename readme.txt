@@ -1,7 +1,7 @@
 Java version: 11
-Demonstration class: StoreManager.java
-    Same for both students as tasks are mostly related to each other and the whole project testing has its base in GUI
+Project name: Warehouse manager
+Authors: Daniel Marek(xmarek72) Kateřina Neprašová (xnepra01)
 
-Stuff to test:
+The Warehouse manager is an app that simulates activity in the warehouse. The controls of the warehouse are accessible through the GUI, 
+that allows both reading files and inserting manually to initialize and use the the warehouse.
 
-GL&HF

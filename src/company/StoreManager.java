@@ -25,10 +25,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Class for connecting program with its GUI
@@ -37,9 +34,9 @@ public class StoreManager extends Application {
 
     private Store store;
     private final String classPath = StoreManager.class.getProtectionDomain().getCodeSource().getLocation().getPath().replace("ija-app.jar", "");
-    private final String defaultMapPath = classPath + "../data/map1525.in";
+    private final String defaultMapPath = classPath + "../data/map2525.in";
     private String mapPath = defaultMapPath;
-    private final String defaultGoodsPath = classPath + "../data/goods.in";
+    private final String defaultGoodsPath = classPath + "../data/goods_big.in";
     private String goodsPath = defaultGoodsPath;
     private GridPane storePlan;
     private Controller controller;
@@ -251,8 +248,8 @@ public class StoreManager extends Application {
                 tile.getChildren().get(i).removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.forklift_clicked(mouseEvent, null));
                 tile.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> controller.pathClicked(mouseEvent));
                 tile.getChildren().get(i).getStyleClass().add("path");
-            } catch (Exception e) {
-
+            } catch (ConcurrentModificationException e) {
+                break;
             }
         }
     }
@@ -440,8 +437,8 @@ public class StoreManager extends Application {
         int number_of_cols = 5;
         NumberBinding rects_height = Bindings.max(pane.heightProperty(), 0);
         NumberBinding rects_width = Bindings.max(0, pane.widthProperty());
-        NumberBinding width = rects_width.divide((double) store.getWidth()).divide((double) number_of_cols - 0.01).subtract(1.0);
-        NumberBinding height = rects_height.divide((double) store.getHeight()).divide((double) number_of_rows - 0.01).subtract(1.0);
+        NumberBinding width = rects_width.divide((double) store.getWidth() * number_of_cols).subtract(1.2);
+        NumberBinding height = rects_height.divide((double) store.getHeight() * number_of_rows).subtract(1.2);
         for (int col = 0; col < number_of_cols; col++) {
             for (int row = 0; row < number_of_rows; row++) {
                 Rectangle rec = new Rectangle(20, 40);

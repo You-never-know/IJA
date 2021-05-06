@@ -2,6 +2,7 @@ package company.store.request.action;
 /**
  * @author xnepra01
  */
+
 import java.util.Objects;
 
 /**
@@ -16,7 +17,7 @@ public class Action {
     /**
      * @param action action to be set as new instance
      */
-    public Action (Action action) {
+    public Action(Action action) {
         this.id = action.getId();
         this.name = action.getName();
         this.count = action.getCount();
@@ -24,10 +25,10 @@ public class Action {
 
 
     /**
-     * @param id int value to be set as id of the Action class instance object
+     * @param id    int value to be set as id of the Action class instance object
      * @param count int value to be set as count of the Action class instance object
      */
-    public Action (int id, int count) {
+    public Action(int id, int count) {
         this.id = id;
         this.name = "";
         this.count = count;
@@ -73,17 +74,23 @@ public class Action {
     /**
      * @param name name of goods bonded to action
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * @return id of goods bonded to action
      */
-    public Integer getId() { return id; }
+    public Integer getId() {
+        return id;
+    }
 
     /**
      * @param ID id of goods bonded to action
      */
-    public void setId(int ID) { this.id = ID; }
+    public void setId(int ID) {
+        this.id = ID;
+    }
 
     /**
      * @return count of goods bonded to action

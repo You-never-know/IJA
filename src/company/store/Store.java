@@ -69,7 +69,7 @@ public class Store {
             setGoods(manager.getDefaultGoodsPath());
         }
 
-        initForklifts(4);
+        initForklifts(5);
 
         while (true) {
             delegateRequest();
@@ -84,11 +84,6 @@ public class Store {
                         forklift.countPath(this.homeCoordinates);
                         if (forklift.getPath().size() == 0) {
                             toBlocklist(forklift);
-
-
-                            if (workingForkliftsList.size() == 0) {
-                                break;
-                            }
                             break;
                         }
                     }
@@ -142,11 +137,6 @@ public class Store {
                                 forklift.countPath(this.homeCoordinates);
                                 if (forklift.getPath().size() == 0) {
                                     toBlocklist(forklift);
-
-
-                                    if (workingForkliftsList.size() == 0) {
-                                        break;
-                                    }
                                     break;
                                 }
                             }
@@ -158,6 +148,7 @@ public class Store {
                 }
                 manager.FreeVisitedPath();
             }
+            manager.FreeVisitedPath();
             for (Forklift forklift : workingForkliftsList) {
                 manager.draw_forklift(forklift);
                 if (forklift.equals(manager.get_forklift())) {

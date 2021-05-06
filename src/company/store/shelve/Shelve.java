@@ -3,6 +3,7 @@ package company.store.shelve;
  * @author xmarek72
  * @author xnepra01
  */
+
 import company.store.Store;
 import company.store.shelve.goods.Goods;
 import company.store.shelve.goods.coordinates.Coordinates;
@@ -22,12 +23,12 @@ public class Shelve {
 
     /**
      * @param id the ID of the shelve, it is unique for all shelves in one store
-     * @param x x-coordinate of the shelve in the store map
-     * @param y y-coordinate of the shelve in the store map
+     * @param x  x-coordinate of the shelve in the store map
+     * @param y  y-coordinate of the shelve in the store map
      */
     public Shelve(int id, int x, int y, Store store) {
         this.id = id;
-        this.coordinates = new Coordinates(x,y);
+        this.coordinates = new Coordinates(x, y);
         this.status = ShelveStatus.FREE;
         this.goods = null;
         this.store = store;
@@ -44,6 +45,7 @@ public class Shelve {
 
     /**
      * Set two shelves as equal when their ID's match
+     *
      * @param o object that will be compared with current object
      */
     @Override
@@ -64,6 +66,7 @@ public class Shelve {
 
     /**
      * Add goods to the shelve
+     *
      * @param goods the goods that will be placed on this shelve
      */
     public void setGoods(Goods goods) {
@@ -89,6 +92,7 @@ public class Shelve {
 
     /**
      * Sell wanted number of items to the customer, if all goods are sold, remove goods from this shelve
+     *
      * @param count of items to sell
      * @return number of wanted goods if there is enough items left, null if the count is higher than items count
      */
@@ -96,7 +100,7 @@ public class Shelve {
         if (count > getGoodsCount()) {
             return null;
         }
-        try{
+        try {
             this.goods.setCount(goods.getCount() - count);
             Goods sold_goods = new Goods(this.goods);
             sold_goods.setCount(count);
@@ -104,7 +108,7 @@ public class Shelve {
                 removeGoods();
             }
             return sold_goods;
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
 

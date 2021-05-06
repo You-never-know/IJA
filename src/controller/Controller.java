@@ -1,7 +1,10 @@
 package controller;
 /**
+ * Controller for the GUI
+ *
  * @author xmarek72
  */
+
 import company.store.Store;
 import company.store.forklift.Forklift;
 import company.store.request.Request;
@@ -103,22 +106,22 @@ public class Controller implements Initializable {
                 if (store.getMapValue(x, y) == 0) {
                     store.setMapValue(x, y, Store.MapCoordinateStatus.BLOCK);
                     for (int i = 0; i < 25; i++) {
-                    ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
-                    ((GridPane) rect).getChildren().get(i).getStyleClass().add("blocked");
-                }
+                        ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
+                        ((GridPane) rect).getChildren().get(i).getStyleClass().add("blocked");
+                    }
                 } else {
                     logMessage("Cannot add barrier here");
                 }
                 addBarrierClicked = false;
             } else {
-            	if (store.getMapValue(x, y) == 2) {
-                	for (int i = 0; i < 25; i++) {
-                	    	((GridPane) rect).getChildren().get(i).getStyleClass().clear();
-                	    	((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
-               	}
-                		store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
-                		store.checkBlockedForklifts();
-                } 
+                if (store.getMapValue(x, y) == 2) {
+                    for (int i = 0; i < 25; i++) {
+                        ((GridPane) rect).getChildren().get(i).getStyleClass().clear();
+                        ((GridPane) rect).getChildren().get(i).getStyleClass().add("path");
+                    }
+                    store.setMapValue(x, y, Store.MapCoordinateStatus.FREE_PATH);
+                    store.checkBlockedForklifts();
+                }
                 removeBarrierClicked = false;
             }
         }
@@ -128,6 +131,7 @@ public class Controller implements Initializable {
 
     /**
      * Display path and load of the forklift
+     *
      * @param event Mouse clicked
      */
     public void forklift_clicked(MouseEvent event, Forklift forklift) {
@@ -141,12 +145,12 @@ public class Controller implements Initializable {
         if (path.size() > 0) {
             path.remove(path.size() - 1);
         }
-        for (Coordinates c:path) {
+        for (Coordinates c : path) {
             store.getManager().draw_path(c);
         }
         List<Goods> forklift_goods = forklift.getGoodsList();
         selected_table.getItems().clear();
-        for (Goods item: forklift_goods) {
+        for (Goods item : forklift_goods) {
             selected_table.getItems().add(item);
         }
         selected_table.refresh();
@@ -478,7 +482,7 @@ public class Controller implements Initializable {
         addBarrierClicked = false;
         removeBarrierClicked = false;
         speed_of_time = 1.0;
-        max_speed = 32.0;
-        min_speed = 1.0 / 32.0;
+        max_speed = 16.0;
+        min_speed = 1.0 / 16.0;
     }
 }

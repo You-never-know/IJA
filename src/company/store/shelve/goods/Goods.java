@@ -3,6 +3,7 @@ package company.store.shelve.goods;
  * @author xmarek72
  * @author xnepra01
  */
+
 import company.store.shelve.Shelve;
 import company.store.shelve.goods.coordinates.Coordinates;
 
@@ -22,13 +23,13 @@ public class Goods {
 
 
     /**
-     * @param name Goods class instance name
-     * @param id Goods class instance id
+     * @param name       Goods class instance name
+     * @param id         Goods class instance id
      * @param itemWeight Goods class instance item weight
-     * @param count Goods class instance item count
-     * @param x int number to be set as x-coordinate of the Goods Coordinates
-     * @param y int number to be set as y-coordinate of the Goods Coordinates
-     * @param shelve shelve storing this Goods class instance
+     * @param count      Goods class instance item count
+     * @param x          int number to be set as x-coordinate of the Goods Coordinates
+     * @param y          int number to be set as y-coordinate of the Goods Coordinates
+     * @param shelve     shelve storing this Goods class instance
      */
     public Goods(String name, int id, double itemWeight, int count, int x, int y, Shelve shelve) {
         this.name = name;
@@ -109,7 +110,9 @@ public class Goods {
     /**
      * @param count new count of goods
      */
-    public void setCount(int count) {this.Count = count; }
+    public void setCount(int count) {
+        this.Count = count;
+    }
 
     /**
      * @return coordinates where this Goods class instance is located

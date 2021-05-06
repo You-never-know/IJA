@@ -2,11 +2,12 @@ package company.store.shelve.goods.coordinates;
 /**
  * @author xnepra01
  */
+
 import java.lang.Math;
 import java.util.Objects;
 
 /**
- *  Class for storing coordinates according to warehouse map
+ * Class for storing coordinates according to warehouse map
  */
 public class Coordinates {
     private int x;

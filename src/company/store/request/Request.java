@@ -2,6 +2,7 @@ package company.store.request;
 /**
  * @author xnepra01
  */
+
 import company.store.request.action.Action;
 
 import java.util.ArrayList;
@@ -42,10 +43,10 @@ public class Request {
     /**
      * @return action from the top of the actionsList
      */
-    public Action getFirstAction(){
-        try{
+    public Action getFirstAction() {
+        try {
             return this.actionsList.get(0);
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
